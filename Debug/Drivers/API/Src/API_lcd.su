@@ -1,0 +1,14 @@
+../Drivers/API/Src/API_lcd.c:33:7:Init_Lcd	16	static
+../Drivers/API/Src/API_lcd.c:63:13:DelayLcd	16	static
+../Drivers/API/Src/API_lcd.c:77:13:ControlLcd	16	static
+../Drivers/API/Src/API_lcd.c:91:6:DatoLcd	16	static
+../Drivers/API/Src/API_lcd.c:104:6:DatoAsciiLcd	16	static
+../Drivers/API/Src/API_lcd.c:117:6:DatoBCD	16	static
+../Drivers/API/Src/API_lcd.c:134:6:Envia8bitsLcd	16	static
+../Drivers/API/Src/API_lcd.c:149:13:Envia4bitsLcd	16	static
+../Drivers/API/Src/API_lcd.c:166:6:SacaTextoLcd	16	static
+../Drivers/API/Src/API_lcd.c:179:6:ClrLcd	8	static
+../Drivers/API/Src/API_lcd.c:196:6:PosCaracHLcd	16	static
+../Drivers/API/Src/API_lcd.c:210:6:PosCaracLLcd	16	static
+../Drivers/API/Src/API_lcd.c:223:6:CursorOffLcd	8	static
+../Drivers/API/Src/API_lcd.c:236:6:CursorOnLcd	8	static

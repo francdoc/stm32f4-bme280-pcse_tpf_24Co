@@ -1,0 +1,383 @@
+#include "API_bme280.h"
+
+////////////////////////// HAL SPI  //////////////////////////
+
+#define TIMEOUT 1000 // ms
+
+SPI_HandleTypeDef hspi1;
+
+/**
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
+void BME280_Error_Handler(void)
+{
+    /* USER CODE BEGIN Error_Handler_Debug */
+    while (1)
+    {
+    }
+    /* USER CODE END Error_Handler_Debug */
+}
+
+/**
+ * @brief SPI1 Initialization Function
+ * @param None
+ * @retval None
+ */
+void MX_SPI1_Init(void)
+{
+    /* USER CODE BEGIN SPI1_Init 0 */
+
+    /* USER CODE END SPI1_Init 0 */
+
+    /* USER CODE BEGIN SPI1_Init 1 */
+
+    /* USER CODE END SPI1_Init 1 */
+    /* SPI1 parameter configuration*/
+    hspi1.Instance = SPI1;
+    hspi1.Init.Mode = SPI_MODE_MASTER;
+    hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+    hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+    hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+    hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+    hspi1.Init.NSS = SPI_NSS_SOFT;
+    hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
+    hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+    hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+    hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+    hspi1.Init.CRCPolynomial = 10;
+    if (HAL_SPI_Init(&hspi1) != HAL_OK)
+    {
+        BME280_Error_Handler();
+    }
+    /* USER CODE BEGIN SPI1_Init 2 */
+
+    /* USER CODE END SPI1_Init 2 */
+}
+
+/**
+ * @brief GPIO Initialization Function
+ * @param None
+ * @retval None
+ */
+void MX_GPIO_Init(void)
+{
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    /* USER CODE BEGIN MX_GPIO_Init_1 */
+    /* USER CODE END MX_GPIO_Init_1 */
+
+    /* GPIO Ports Clock Enable */
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOH_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOD_CLK_ENABLE();
+    __HAL_RCC_GPIOG_CLK_ENABLE();
+
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(GPIOB, LD1_Pin | LD3_Pin | CS_Pin | LD2_Pin, GPIO_PIN_RESET);
+
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(USB_PowerSwitchOn_GPIO_Port, USB_PowerSwitchOn_Pin, GPIO_PIN_RESET);
+
+    /*Configure GPIO pin : USER_Btn_Pin */
+    GPIO_InitStruct.Pin = USER_Btn_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(USER_Btn_GPIO_Port, &GPIO_InitStruct);
+
+    /*Configure GPIO pins : LD1_Pin LD3_Pin CS_Pin LD2_Pin */
+    GPIO_InitStruct.Pin = LD1_Pin | LD3_Pin | CS_Pin | LD2_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+    /*Configure GPIO pin : USB_PowerSwitchOn_Pin */
+    GPIO_InitStruct.Pin = USB_PowerSwitchOn_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(USB_PowerSwitchOn_GPIO_Port, &GPIO_InitStruct);
+
+    /*Configure GPIO pin : USB_OverCurrent_Pin */
+    GPIO_InitStruct.Pin = USB_OverCurrent_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(USB_OverCurrent_GPIO_Port, &GPIO_InitStruct);
+
+    /* USER CODE BEGIN MX_GPIO_Init_2 */
+    /* USER CODE END MX_GPIO_Init_2 */
+}
+
+static void SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
+{                                    // 6.3.2 SPI write
+    uint8_t regAddress = reg & 0x7F; // Write command -> applies mask 0x7F = 0b01111111 -> Most Significant Bit (bit number 7) = 0
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 0);
+    HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), HAL_MAX_DELAY);
+    HAL_SPI_Transmit(&hspi1, data, size, HAL_MAX_DELAY);
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 1);
+}
+
+static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
+{                                    // 6.3.1 SPI read
+    uint8_t regAddress = reg | 0x80; // Read command -> applies mask 0x80 = 0b10000000 -> Most Significant Bit (bit number 7) = 1
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 0);
+    HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), TIMEOUT);
+    HAL_SPI_Receive(&hspi1, data, size, TIMEOUT);
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 1);
+}
+
+////////////////////////// BME280 //////////////////////////
+
+/*
+BME280 – Data sheet:
+    - Document revision 1.24
+    - Document release date February 2024
+    - Document number BST-BME280-DS001-24
+*/
+
+// checked
+#define BME_HAL_DELAY 100 // ms
+#define MEMADDRESSSIZE 1  // bit
+
+#define CALIBMEMADD1 0x88
+#define CALIBMEMADD2 0xE1
+
+#define CALIBDATASIZE1 25
+#define CALIBDATASIZE2 7
+#define CMDWRITESIZE 1
+#define RAWDATASIZE 8
+#define RAWDATAREG1 0XF7
+#define CHIPIDREG 0xD0
+
+/*
+5.4.2 Register 0xE0 “reset”
+The “reset” register contains the soft reset word reset[7:0]. If the value 0xB6 is written to the register,
+the device is reset using the complete power-on-reset procedure. Writing other values than 0xB6 has
+no effect. The readout value is always 0x00.*/
+#define RESET_REG 0xE0
+
+/*
+5.4.3 Register 0xF2 “ctrl_hum”
+The “ctrl_hum” register sets the humidity data acquisition options of the device. Changes to this
+register only become effective after a write operation to “ctrl_meas”.*/
+#define CTRL_HUM 0xF2
+
+/*
+5.4.4 Register 0xF3 “status”
+The “status” register contains two bits which indicate the status of the device.
+*/
+#define STATUS 0xF3
+
+/*
+5.4.5 Register 0xF4 “ctrl_meas”
+The “ctrl_meas” register sets the pressure and temperature data acquisition options of the device. The
+register needs to be written after changing “ctrl_hum” for the changes to become effective.
+*/
+#define CTRL_MEAS 0xF4
+
+/*
+5.4.6 Register 0xF5 “config”
+The “config” register sets the rate, filter and interface options of the device. Writes to the “config”
+register in normal mode may be ignored. In sleep mode writes are not ignored.
+*/
+#define CONFIG_REG 0xF5
+
+static uint16_t dig_T1, dig_P1, dig_H1, dig_H3;
+static int16_t dig_T2, dig_T3, dig_P2, dig_P3, dig_P4, dig_P5, dig_P6, dig_P7, dig_P8, dig_P9, dig_H2, dig_H4, dig_H5, dig_H6;
+static int32_t tADC, hADC; // global
+
+typedef int32_t BME280_S32_t;  // global type
+typedef uint32_t BME280_U32_t; // global type
+
+static float temp, hum;
+
+// 4.2.2 Trimming parameter readout
+static void trimmingParametersRead(void)
+{
+    uint8_t calibData1[26]; // Table 18: Memory map -> calib00..calib25 | 0x88 to 0xA1
+    uint8_t calibData2[7];
+
+    SPI_Read(CALIBMEMADD1, calibData1, CALIBDATASIZE1); // 8-bit temperature calibration value
+    SPI_Read(CALIBMEMADD2, calibData2, CALIBDATASIZE2); // 8-bit humidity calibration value
+
+    // Combine the bytes read from the calibration memory into 16-bit integers.
+    dig_T1 = (calibData1[1] << 8) | calibData1[0];
+    dig_T2 = (calibData1[3] << 8) | calibData1[2];
+    dig_T3 = (calibData1[5] << 8) | calibData1[4];
+
+    dig_P1 = (calibData1[7] << 8) | calibData1[6];
+    dig_P2 = (calibData1[9] << 8) | calibData1[8];
+    dig_P3 = (calibData1[11] << 8) | calibData1[10];
+    dig_P4 = (calibData1[13] << 8) | calibData1[12];
+    dig_P5 = (calibData1[15] << 8) | calibData1[14];
+    dig_P6 = (calibData1[17] << 8) | calibData1[16];
+    dig_P7 = (calibData1[19] << 8) | calibData1[18];
+    dig_P8 = (calibData1[21] << 8) | calibData1[20];
+    dig_P9 = (calibData1[23] << 8) | calibData1[22];
+
+    dig_H1 = calibData1[24];
+    dig_H2 = (calibData2[1] << 8) | calibData2[0];
+    dig_H3 = calibData2[2];
+    dig_H4 = (calibData2[3] << 4) | (calibData2[4] & 0x0F);
+    dig_H5 = (calibData2[4] << 4) | (calibData2[5] >> 4);
+    dig_H6 = calibData2[6];
+}
+
+// Function to initialize the BME280 sensor
+void BME280_init(void)
+{
+    // Read trimming parameters from the sensor
+    trimmingParametersRead();
+
+    /*
+    5.4.2 The "reset" register contains the soft reset word reset[7:0].
+    If the value 0xB6 is written to the register, the device is reset using the complete power-on-reset procedure.
+    The readout value is 0x00.
+    */
+    uint8_t resetSeq = 0xB6;
+    uint8_t ctrlHum = 0x01;
+    uint8_t ctrlMeas = 0xA3; // 0b10100011 in hexadecimal
+    uint8_t config = 0x10;   // 0b00010000 in hexadecimal
+
+    // Write reset sequence to the reset register
+    SPI_Write(RESET_REG, &resetSeq, CMDWRITESIZE);
+    HAL_Delay(BME_HAL_DELAY);
+
+    // Write control settings to the control registers
+    SPI_Write(CTRL_HUM, &ctrlHum, CMDWRITESIZE);
+    HAL_Delay(BME_HAL_DELAY);
+
+    SPI_Write(CTRL_MEAS, &ctrlMeas, CMDWRITESIZE);
+    HAL_Delay(BME_HAL_DELAY);
+
+    SPI_Write(CONFIG_REG, &config, CMDWRITESIZE);
+    HAL_Delay(BME_HAL_DELAY);
+}
+
+// Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
+static BME280_S32_t t_fine; // t_fine carries fine temperature as global value
+
+// Temperature compensation formula taken from datasheet (please check page 25/60 for reference).
+static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
+{
+    BME280_S32_t var1, var2, T;
+    var1 = ((((adc_T >> 3) - ((BME280_S32_t)dig_T1 << 1))) * ((BME280_S32_t)dig_T2)) >> 11;
+    var2 = (((((adc_T >> 4) - ((BME280_S32_t)dig_T1)) * ((adc_T >> 4) - ((BME280_S32_t)dig_T1))) >> 12) * ((BME280_S32_t)dig_T3)) >> 14;
+    t_fine = var1 + var2;
+    T = (t_fine * 5 + 128) >> 8;
+    return T;
+}
+
+// Humidity compensation formula taken from datasheet (please check page 25/60 for reference).
+// Returns humidity in %RH as unsigned 32 bit integer in Q22.10 format (22 integer and 10 fractional bits).
+// Output value of “47445” represents 47445/1024 = 46.333 %RH.
+static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
+{
+    BME280_S32_t v_x1_u32r;
+    v_x1_u32r = (t_fine - ((BME280_S32_t)76800));
+    v_x1_u32r = (((((adc_H << 14) - (((BME280_S32_t)dig_H4) << 20) - (((BME280_S32_t)dig_H5) * v_x1_u32r)) + ((BME280_S32_t)16384)) >> 15) * (((((((v_x1_u32r * ((BME280_S32_t)dig_H6)) >> 10) * (((v_x1_u32r * ((BME280_S32_t)dig_H3)) >> 11) + ((BME280_S32_t)32768))) >> 10) + ((BME280_S32_t)2097152)) * ((BME280_S32_t)dig_H2) + 8192) >> 14));
+    v_x1_u32r = (v_x1_u32r - (((((v_x1_u32r >> 15) * (v_x1_u32r >> 15)) >> 7) * ((BME280_S32_t)dig_H1)) >> 4));
+    v_x1_u32r = (v_x1_u32r < 0 ? 0 : v_x1_u32r);
+    v_x1_u32r = (v_x1_u32r > 419430400 ? 419430400 : v_x1_u32r);
+    return (BME280_U32_t)(v_x1_u32r >> 12);
+}
+
+float BME280_getTemp(void)
+{
+    return temp;
+}
+
+float BME280_getHum(void)
+{
+    return hum;
+}
+
+static uint8_t BME280_read(void)
+{
+    uint8_t sensorData[8];
+    uint8_t chipID;
+
+    SPI_Read(CHIPIDREG, &chipID, MEMADDRESSSIZE);
+
+    if (chipID == 0x60)
+    {
+        for (int i = 0; i <= 2; i++)
+        {
+            BSP_LED_Toggle(LED2); // sensor ID OK
+            HAL_Delay(100);
+        }
+
+        SPI_Read(RAWDATAREG1, sensorData, RAWDATASIZE);
+
+        /* Data readout is done by starting a burst read from 0xF7 to 0xFC (temperature and pressure) or from 0xF7 to 0xFE
+         * (temperature, pressure and humidity). The data are read out in an unsigned 20-bit format both for pressure and
+         * for temperature and in an unsigned 16-bit format for humidity. */
+
+        tADC = (sensorData[3] << 12) | (sensorData[4] << 4) | (sensorData[5] >> 4);
+        hADC = (sensorData[6] << 8) | sensorData[7];
+
+        return 0;
+    }
+    else
+    {
+        for (int i = 0; i <= 2; i++)
+        {
+            BSP_LED_Toggle(LED3); // sensor ID ERROR
+            HAL_Delay(100);
+        }
+
+        return 1;
+    }
+}
+
+void BME280_calculate(void)
+{
+    if (BME280_read() == 0)
+    {
+        temp = BME280_compensate_T_int32(tADC) / 100.0;
+        hum = bme280_compensate_H_int32(hADC) / 1024.0;
+    }
+    else
+    {
+        temp = 0;
+        hum = 0;
+        uint8_t errorMessage[] = "Device not ready. Check device connection\r\n";
+        uartSendString(errorMessage);
+    }
+}
+
+#define TEST_DATA
+#define TEST_BME280
+
+void TEST_SPI()
+{
+    for (int i = 0; i <= 4; i++)
+    {
+        BSP_LED_Toggle(LED2);
+        HAL_Delay(100);
+    }
+
+#ifdef TEST_DATA
+    // Test 2 data transactions (MOSI -> SDA/SDI on bme280 board) to see them in the logic analyzer display.
+    uint8_t dato = 0xAA;
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 0);
+    HAL_SPI_Transmit(&hspi1, &dato, sizeof(dato), HAL_MAX_DELAY);
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 1);
+
+    HAL_Delay(1);
+
+    uint8_t regAddress = 0xAB;
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 0);
+    HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), HAL_MAX_DELAY);
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 1);
+
+    HAL_Delay(1);
+#endif
+#ifdef TEST_BME280
+    // Test 1 data transactions to check chip ID and see it in the logic analyzer display.
+    BME280_read();
+
+#endif
+}

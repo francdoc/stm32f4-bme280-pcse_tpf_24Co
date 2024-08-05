@@ -1,0 +1,7 @@
+../Drivers/API/Src/API_debounce.c:21:6:buttonPressed	8	static
+../Drivers/API/Src/API_debounce.c:29:6:buttonReleased	8	static
+../Drivers/API/Src/API_debounce.c:38:10:getBtnState	8	static
+../Drivers/API/Src/API_debounce.c:47:6:debounceFSM_init	8	static
+../Drivers/API/Src/API_debounce.c:59:8:readKey	4	static
+../Drivers/API/Src/API_debounce.c:81:6:debounceFSM_update	8	static
+../Drivers/API/Src/API_debounce.c:125:13:DebounceFsmErrorHandler	8	static,ignoring_inline_asm
