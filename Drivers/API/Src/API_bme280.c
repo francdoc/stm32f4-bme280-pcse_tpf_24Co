@@ -1,5 +1,11 @@
 #include "API_bme280.h"
 
+#include "API_lcd.h"
+#include "API_Lcd_port.h"
+
+#include <math.h>
+#include <stdlib.h>
+
 ////////////////////////// HAL SPI  //////////////////////////
 
 #define TIMEOUT 1000 // ms
@@ -338,6 +344,64 @@ void BME280_calculate(void)
     {
         temp = BME280_compensate_T_int32(tADC) / 100.0;
         hum = bme280_compensate_H_int32(hADC) / 1024.0;
+
+        uint8_t message[50];
+
+        // Notify that the device is ready
+        strcpy((char *)message, "Device ready, going to transfer data via UART.\r\n");
+        uartSendString(message);
+
+        // Send temperature data
+        strcpy((char *)message, "Temperature: ");
+        char tempStr[20];
+        int intPart = (int)temp;
+        int fracPart = (int)((temp - intPart) * 100);
+        itoa(intPart, tempStr, 10);
+        strcat((char *)message, tempStr);
+        strcat((char *)message, ".");
+        itoa(fracPart, tempStr, 10);
+        strcat((char *)message, tempStr);
+        strcat((char *)message, " C\r\n");
+        uartSendString(message);
+
+        // Send humidity data
+        strcpy((char *)message, "Humidity: ");
+        char humStr[20];
+        intPart = (int)hum;
+        fracPart = (int)((hum - intPart) * 100);
+        itoa(intPart, humStr, 10);
+        strcat((char *)message, humStr);
+        strcat((char *)message, ".");
+        itoa(fracPart, humStr, 10);
+        strcat((char *)message, humStr);
+        strcat((char *)message, " %\r\n");
+        uartSendString(message);
+
+        // Prepare temperature string for LCD
+        char lcdTempStr[20];
+        itoa((int)temp, lcdTempStr, 10);
+        strcat(lcdTempStr, ".");
+        itoa((int)((temp - (int)temp) * 100), lcdTempStr + strlen(lcdTempStr), 10);
+
+        // Prepare humidity string for LCD
+        char lcdHumStr[20];
+        itoa((int)hum, lcdHumStr, 10);
+        strcat(lcdHumStr, ".");
+        itoa((int)((hum - (int)hum) * 100), lcdHumStr + strlen(lcdHumStr), 10);
+
+        // Display temperature on the LCD
+        PosCaracLLcd(9); // Assuming position 0 on the upper line
+        SacaTextoLcd((uint8_t *)"T:");
+        SacaTextoLcd((uint8_t *)lcdTempStr);
+
+        HAL_Delay(500);
+
+        // Display humidity on the LCD
+        PosCaracLLcd(9); // Assuming position 0 on the lower line
+        SacaTextoLcd((uint8_t *)"H:");
+        SacaTextoLcd((uint8_t *)lcdHumStr);
+
+        HAL_Delay(500);
     }
     else
     {
@@ -378,6 +442,8 @@ void TEST_SPI()
 #ifdef TEST_BME280
     // Test 1 data transactions to check chip ID and see it in the logic analyzer display.
     BME280_read();
+    HAL_Delay(100);
+    BME280_calculate();
 
 #endif
 }
