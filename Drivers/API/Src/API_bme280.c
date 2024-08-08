@@ -1,10 +1,9 @@
+#include "API_lcd_port.h"
 #include "API_bme280.h"
-
 #include "API_lcd.h"
-#include "API_Lcd_port.h"
 
-#include <math.h>
 #include <stdlib.h>
+#include <math.h>
 
 ////////////////////////// HAL SPI  //////////////////////////
 
@@ -438,7 +437,9 @@ void TEST_SPI()
     HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 1);
 
     HAL_Delay(1);
+
 #endif
+
 #ifdef TEST_BME280
     // Test 1 data transactions to check chip ID and see it in the logic analyzer display.
     BME280_read();

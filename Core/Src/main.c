@@ -17,13 +17,13 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <API_lcd_port.h>
 #include "main.h"
 #include "string.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "API_lcd.h"
-#include "API_Lcd_port.h"
 
 /* USER CODE END Includes */
 
