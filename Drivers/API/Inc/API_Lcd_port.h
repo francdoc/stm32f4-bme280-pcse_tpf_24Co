@@ -6,4 +6,4 @@
 #include "API_lcd.h"
 
 extern void Error_Handler(void);
-void LCD_Write_Byte(uint8_t valor);
+void LCD_HAL_I2C_Write(uint8_t valor);

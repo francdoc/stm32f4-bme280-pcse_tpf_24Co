@@ -29,25 +29,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  12 .ARM.attributes 00000030  00000000  00000000  00008018  2**0
                   CONTENTS, READONLY
- 13 .debug_info   00017780  00000000  00000000  00008048  2**0
+ 13 .debug_info   0001776b  00000000  00000000  00008048  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 00003122  00000000  00000000  0001f7c8  2**0
+ 14 .debug_abbrev 0000311f  00000000  00000000  0001f7b3  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00001370  00000000  00000000  000228f0  2**3
+ 15 .debug_aranges 00001370  00000000  00000000  000228d8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 00000f1f  00000000  00000000  00023c60  2**0
+ 16 .debug_rnglists 00000f1f  00000000  00000000  00023c48  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  000275dd  00000000  00000000  00024b7f  2**0
+ 17 .debug_macro  000275dd  00000000  00000000  00024b67  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   000185e2  00000000  00000000  0004c15c  2**0
+ 18 .debug_line   000185e2  00000000  00000000  0004c144  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e6e6d  00000000  00000000  0006473e  2**0
+ 19 .debug_str    000e6e67  00000000  00000000  00064726  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0014b5ab  2**0
+ 20 .comment      00000043  00000000  00000000  0014b58d  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  0000540c  00000000  00000000  0014b5f0  2**2
+ 21 .debug_frame  0000540c  00000000  00000000  0014b5d0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  001509fc  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  001509dc  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -4430,23 +4430,23 @@ _Bool Init_Lcd(void){
  800224c:	b580      	push	{r7, lr}
  800224e:	b082      	sub	sp, #8
  8002250:	af00      	add	r7, sp, #0
-   DelayLcd(millisecond*20);
+   SleepLcdBlocking(millisecond*20);
  8002252:	2014      	movs	r0, #20
- 8002254:	f000 f83e 	bl	80022d4 <DelayLcd>
+ 8002254:	f000 f83e 	bl	80022d4 <SleepLcdBlocking>
    Envia4bitsLcd(COMANDO_INI1,CONTROL);
  8002258:	2100      	movs	r1, #0
  800225a:	2030      	movs	r0, #48	@ 0x30
  800225c:	f000 f8a4 	bl	80023a8 <Envia4bitsLcd>
-   DelayLcd(millisecond*10);
+   SleepLcdBlocking(millisecond*10);
  8002260:	200a      	movs	r0, #10
- 8002262:	f000 f837 	bl	80022d4 <DelayLcd>
+ 8002262:	f000 f837 	bl	80022d4 <SleepLcdBlocking>
    Envia4bitsLcd(COMANDO_INI1,CONTROL);
  8002266:	2100      	movs	r1, #0
  8002268:	2030      	movs	r0, #48	@ 0x30
  800226a:	f000 f89d 	bl	80023a8 <Envia4bitsLcd>
-   DelayLcd(millisecond*1);
+   SleepLcdBlocking(millisecond*1);
  800226e:	2001      	movs	r0, #1
- 8002270:	f000 f830 	bl	80022d4 <DelayLcd>
+ 8002270:	f000 f830 	bl	80022d4 <SleepLcdBlocking>
    Envia4bitsLcd(COMANDO_INI1,CONTROL);
  8002274:	2100      	movs	r1, #0
  8002276:	2030      	movs	r0, #48	@ 0x30
@@ -4470,10 +4470,10 @@ _Bool Init_Lcd(void){
  800229c:	79fb      	ldrb	r3, [r7, #7]
  800229e:	2b05      	cmp	r3, #5
  80022a0:	d9f3      	bls.n	800228a <Init_Lcd+0x3e>
-   DelayLcd(millisecond*2);
+   SleepLcdBlocking(millisecond*2);
  80022a2:	2002      	movs	r0, #2
- 80022a4:	f000 f816 	bl	80022d4 <DelayLcd>
-   for (int i = 0; i <= 3; i++)
+ 80022a4:	f000 f816 	bl	80022d4 <SleepLcdBlocking>
+   for (int i = 0; i <= 4; i++)
  80022a8:	2300      	movs	r3, #0
  80022aa:	603b      	str	r3, [r7, #0]
  80022ac:	e008      	b.n	80022c0 <Init_Lcd+0x74>
@@ -4481,18 +4481,18 @@ _Bool Init_Lcd(void){
  	   BSP_LED_Toggle(LED1); // init LCD OK
  80022ae:	2000      	movs	r0, #0
  80022b0:	f000 f99a 	bl	80025e8 <BSP_LED_Toggle>
- 	   HAL_Delay(millisecond*250);
- 80022b4:	20fa      	movs	r0, #250	@ 0xfa
- 80022b6:	f000 fa23 	bl	8002700 <HAL_Delay>
-   for (int i = 0; i <= 3; i++)
+ 	   SleepLcdBlocking(millisecond*25);
+ 80022b4:	2019      	movs	r0, #25
+ 80022b6:	f000 f80d 	bl	80022d4 <SleepLcdBlocking>
+   for (int i = 0; i <= 4; i++)
  80022ba:	683b      	ldr	r3, [r7, #0]
  80022bc:	3301      	adds	r3, #1
  80022be:	603b      	str	r3, [r7, #0]
  80022c0:	683b      	ldr	r3, [r7, #0]
- 80022c2:	2b03      	cmp	r3, #3
+ 80022c2:	2b04      	cmp	r3, #4
  80022c4:	ddf3      	ble.n	80022ae <Init_Lcd+0x62>
     }
-   return LCD_OK;
+   return 0;
  80022c6:	2300      	movs	r3, #0
 }
  80022c8:	4618      	mov	r0, r3
@@ -4501,9 +4501,9 @@ _Bool Init_Lcd(void){
  80022ce:	bd80      	pop	{r7, pc}
  80022d0:	08006e50 	.word	0x08006e50
 
-080022d4 <DelayLcd>:
+080022d4 <SleepLcdBlocking>:
 
-static void DelayLcd(uint32_t demora){
+static void SleepLcdBlocking(uint32_t demora){
  80022d4:	b580      	push	{r7, lr}
  80022d6:	b082      	sub	sp, #8
  80022d8:	af00      	add	r7, sp, #0
@@ -4646,7 +4646,7 @@ static void Envia4bitsLcd (uint8_t valor,_Bool tipo){
  80023b2:	71fb      	strb	r3, [r7, #7]
  80023b4:	4613      	mov	r3, r2
  80023b6:	71bb      	strb	r3, [r7, #6]
-	LCD_Write_Byte(valor+tipo+EN+BL);
+	LCD_HAL_I2C_Write(valor+tipo+EN+BL);
  80023b8:	79ba      	ldrb	r2, [r7, #6]
  80023ba:	79fb      	ldrb	r3, [r7, #7]
  80023bc:	4413      	add	r3, r2
@@ -4654,11 +4654,11 @@ static void Envia4bitsLcd (uint8_t valor,_Bool tipo){
  80023c0:	330c      	adds	r3, #12
  80023c2:	b2db      	uxtb	r3, r3
  80023c4:	4618      	mov	r0, r3
- 80023c6:	f000 f849 	bl	800245c <LCD_Write_Byte>
-	DelayLcd(millisecond);
+ 80023c6:	f000 f849 	bl	800245c <LCD_HAL_I2C_Write>
+	SleepLcdBlocking(millisecond);
  80023ca:	2001      	movs	r0, #1
- 80023cc:	f7ff ff82 	bl	80022d4 <DelayLcd>
-	LCD_Write_Byte(valor+tipo+BL);
+ 80023cc:	f7ff ff82 	bl	80022d4 <SleepLcdBlocking>
+	LCD_HAL_I2C_Write(valor+tipo+BL);
  80023d0:	79ba      	ldrb	r2, [r7, #6]
  80023d2:	79fb      	ldrb	r3, [r7, #7]
  80023d4:	4413      	add	r3, r2
@@ -4666,10 +4666,10 @@ static void Envia4bitsLcd (uint8_t valor,_Bool tipo){
  80023d8:	3308      	adds	r3, #8
  80023da:	b2db      	uxtb	r3, r3
  80023dc:	4618      	mov	r0, r3
- 80023de:	f000 f83d 	bl	800245c <LCD_Write_Byte>
-	DelayLcd(millisecond);
+ 80023de:	f000 f83d 	bl	800245c <LCD_HAL_I2C_Write>
+	SleepLcdBlocking(millisecond);
  80023e2:	2001      	movs	r0, #1
- 80023e4:	f7ff ff76 	bl	80022d4 <DelayLcd>
+ 80023e4:	f7ff ff76 	bl	80022d4 <SleepLcdBlocking>
 }
  80023e8:	bf00      	nop
  80023ea:	3708      	adds	r7, #8
@@ -4703,9 +4703,9 @@ void SacaTextoLcd (uint8_t *texto){
  8002418:	bd80      	pop	{r7, pc}
 
 0800241a <PosCaracHLcd>:
+void ClrLcd(void){
    ControlLcd(CLR_LCD);
-   DelayLcd(millisecond*2);
-
+   SleepLcdBlocking(millisecond*2);
 }
 
 void PosCaracHLcd(uint8_t posH){
@@ -4747,12 +4747,12 @@ void PosCaracLLcd(uint8_t posL){
  8002458:	bd80      	pop	{r7, pc}
 	...
 
-0800245c <LCD_Write_Byte>:
+0800245c <LCD_HAL_I2C_Write>:
 #include"API_Lcd_port.h"
 
 extern I2C_HandleTypeDef hi2c1;
 
-void LCD_Write_Byte(uint8_t valor){
+void LCD_HAL_I2C_Write(uint8_t valor){
  800245c:	b580      	push	{r7, lr}
  800245e:	b084      	sub	sp, #16
  8002460:	af02      	add	r7, sp, #8
@@ -4764,11 +4764,11 @@ void LCD_Write_Byte(uint8_t valor){
  800246c:	9300      	str	r3, [sp, #0]
  800246e:	2301      	movs	r3, #1
  8002470:	214e      	movs	r1, #78	@ 0x4e
- 8002472:	4806      	ldr	r0, [pc, #24]	@ (800248c <LCD_Write_Byte+0x30>)
+ 8002472:	4806      	ldr	r0, [pc, #24]	@ (800248c <LCD_HAL_I2C_Write+0x30>)
  8002474:	f001 f89a 	bl	80035ac <HAL_I2C_Master_Transmit>
  8002478:	4603      	mov	r3, r0
  800247a:	2b00      	cmp	r3, #0
- 800247c:	d001      	beq.n	8002482 <LCD_Write_Byte+0x26>
+ 800247c:	d001      	beq.n	8002482 <LCD_HAL_I2C_Write+0x26>
  800247e:	f7fe fe8b 	bl	8001198 <Error_Handler>
 
 }

@@ -9,13 +9,6 @@
 
 #include "API_Lcd_port.h"
 
-typedef enum
-{
-  LCD_OK = 0x00U,
-  LCD_ERROR = 0x01U,
-
-} LCD_Status_t;
-
 #define DATOS 0x01
 #define CONTROL 0x00
 #define LCD_DIR 0x27

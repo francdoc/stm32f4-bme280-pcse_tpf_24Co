@@ -1,6 +1,6 @@
 #include "API_lcd.h"
 
-static void DelayLcd(uint32_t demora);
+static void SleepLcdBlocking(uint32_t demora);
 static void ControlLcd(uint8_t valor);
 static void Envia8bitsLcd (uint8_t valor,_Bool tipo);
 static void Envia4bitsLcd (uint8_t valor,_Bool tipo);
@@ -10,24 +10,24 @@ static const uint8_t LCD_INIT_CMD[]={
 };
 
 _Bool Init_Lcd(void){
-   DelayLcd(millisecond*20);
+   SleepLcdBlocking(millisecond*20);
    Envia4bitsLcd(COMANDO_INI1,CONTROL);
-   DelayLcd(millisecond*10);
+   SleepLcdBlocking(millisecond*10);
    Envia4bitsLcd(COMANDO_INI1,CONTROL);
-   DelayLcd(millisecond*1);
+   SleepLcdBlocking(millisecond*1);
    Envia4bitsLcd(COMANDO_INI1,CONTROL);
    Envia4bitsLcd(COMANDO_INI2,CONTROL);
    for(uint8_t i=0;i<sizeof(LCD_INIT_CMD);i++)ControlLcd(LCD_INIT_CMD[i]);
-   DelayLcd(millisecond*2);
-   for (int i = 0; i <= 3; i++)
+   SleepLcdBlocking(millisecond*2);
+   for (int i = 0; i <= 4; i++)
     {
  	   BSP_LED_Toggle(LED1); // init LCD OK
- 	   HAL_Delay(millisecond*250);
+ 	   SleepLcdBlocking(millisecond*25);
     }
-   return LCD_OK;
+   return 0;
 }
 
-static void DelayLcd(uint32_t demora){
+static void SleepLcdBlocking(uint32_t demora){
 	  HAL_Delay(demora);
 }
 
@@ -54,10 +54,10 @@ void Envia8bitsLcd (uint8_t valor,_Bool tipo){
 }
 
 static void Envia4bitsLcd (uint8_t valor,_Bool tipo){
-	LCD_Write_Byte(valor+tipo+EN+BL);
-	DelayLcd(millisecond);
-	LCD_Write_Byte(valor+tipo+BL);
-	DelayLcd(millisecond);
+	LCD_HAL_I2C_Write(valor+tipo+EN+BL);
+	SleepLcdBlocking(millisecond);
+	LCD_HAL_I2C_Write(valor+tipo+BL);
+	SleepLcdBlocking(millisecond);
 }
 
 void SacaTextoLcd (uint8_t *texto){
@@ -66,8 +66,7 @@ void SacaTextoLcd (uint8_t *texto){
 
 void ClrLcd(void){
    ControlLcd(CLR_LCD);
-   DelayLcd(millisecond*2);
-
+   SleepLcdBlocking(millisecond*2);
 }
 
 void PosCaracHLcd(uint8_t posH){
