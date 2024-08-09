@@ -135,6 +135,25 @@ static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
 
 ////////////////////////// BME280 //////////////////////////
 
+typedef enum {
+  TEMP_NORMAL,
+  TEMP_ALARM,
+} tempState_t;
+
+static tempState_t currentTempState;
+
+void tempFSM_init() {
+	currentTempState = TEMP_NORMAL;
+}
+
+// THIS MUST BE IN A SEPARATE FILE
+/*
+ * However, for a temperature monitoring system with normal vs. alarm states, a debounce mechanism
+ * is typically not necessary or applicable unless there is a specific condition that would cause
+ * rapid, noisy transitions between these states */
+void FSM_update();
+static void DebounceFsmErrorHandler();
+
 /*
 BME280 – Data sheet:
     - Document revision 1.24
@@ -189,6 +208,7 @@ register in normal mode may be ignored. In sleep mode writes are not ignored.
 */
 #define CONFIG_REG 0xF5
 
+// HACER STRUCTURA CON PUNTEROS! EVALUAR!
 static uint16_t dig_T1, dig_P1, dig_H1, dig_H3;
 static int16_t dig_T2, dig_T3, dig_P2, dig_P3, dig_P4, dig_P5, dig_P6, dig_P7, dig_P8, dig_P9, dig_H2, dig_H4, dig_H5, dig_H6;
 static int32_t tADC, hADC; // global
@@ -199,6 +219,7 @@ typedef uint32_t BME280_U32_t; // global type
 static float temp, hum;
 
 // 4.2.2 Trimming parameter readout
+// UNDERSTAND AND ADAPT TO OWN IT
 static void trimmingParametersRead(void)
 {
     uint8_t calibData1[26]; // Table 18: Memory map -> calib00..calib25 | 0x88 to 0xA1
@@ -233,6 +254,8 @@ static void trimmingParametersRead(void)
 // Function to initialize the BME280 sensor
 void BME280_init(void)
 {
+	tempFSM_init();
+
     // Read trimming parameters from the sensor
     trimmingParametersRead();
 
@@ -299,6 +322,7 @@ float BME280_getHum(void)
     return hum;
 }
 
+
 static uint8_t BME280_read(void)
 {
     uint8_t sensorData[8];
@@ -320,10 +344,10 @@ static uint8_t BME280_read(void)
          * (temperature, pressure and humidity). The data are read out in an unsigned 20-bit format both for pressure and
          * for temperature and in an unsigned 16-bit format for humidity. */
 
-        tADC = (sensorData[3] << 12) | (sensorData[4] << 4) | (sensorData[5] >> 4);
+        tADC = (sensorData[3] << 12) | (sensorData[4] << 4) | (sensorData[5] >> 4); // WE CAN RETURN THIS WITH * & in the function signature
         hADC = (sensorData[6] << 8) | sensorData[7];
 
-        return 0;
+        return 0; // check state of the function return and pass the data with pointer * & for the return of tADC hADC
     }
     else
     {
@@ -337,16 +361,58 @@ static uint8_t BME280_read(void)
     }
 }
 
+void eval_data()
+{
+	PosCaracLLcd(9);
+	SacaTextoLcd((uint8_t *)"                "); // Clear 16 characters
+	HAL_Delay(100);
+
+	BME280_read();
+
+    uint8_t message[50];
+
+    if (temp > 27.0){
+        currentTempState = TEMP_ALARM;
+        strcpy((char *)message, "Temperature Alarm State.\r\n");
+        uartSendString(message);  // Debug message
+        for (int i = 0; i <= 3; i++)
+        {
+        	BSP_LED_Toggle(LED3); // sensor ID ERROR
+        	HAL_Delay(100);
+        }
+
+        // Send temperature data
+        strcpy((char *)message, "Temperature: ");
+        char tempStr[20];
+        int intPart = (int)temp;
+        int fracPart = (int)((temp - intPart) * 100);
+        itoa(intPart, tempStr, 10);
+        strcat((char *)message, tempStr);
+        strcat((char *)message, ".");
+        itoa(fracPart, tempStr, 10);
+        strcat((char *)message, tempStr);
+        strcat((char *)message, " C\r\n");
+        uartSendString(message);
+    }
+    else
+    {
+        currentTempState = TEMP_NORMAL;
+        strcpy((char *)message, "Temperature Normal State.\r\n");
+        uartSendString(message);
+    }
+}
+
 void BME280_calculate(void)
 {
     if (BME280_read() == 0)
     {
-        temp = BME280_compensate_T_int32(tADC) / 100.0;
-        hum = bme280_compensate_H_int32(hADC) / 1024.0;
+        temp = ((float) BME280_compensate_T_int32(tADC)) / 100.0; // from integer to float
+        hum = ((float) bme280_compensate_H_int32(hADC)) / 1024.0; // WATCHOUT FOR IMPLICIT TYPECASTS!!!!!!!!!
 
         uint8_t message[50];
 
         // Notify that the device is ready
+        // Esto es redundante! Enviar directamente por uartSendString!!!!!!
         strcpy((char *)message, "Device ready, going to transfer data via UART.\r\n");
         uartSendString(message);
 
@@ -411,6 +477,43 @@ void BME280_calculate(void)
     }
 }
 
+void FSM_update() {
+	uint8_t message[50];
+	strcpy((char *)message, "Evaluating Temperature data.\r\n");
+	uartSendString(message);
+
+	eval_data();
+
+	switch (currentTempState) {
+	case TEMP_ALARM:
+	  // PONER UNA FUNCION ESPECIFICA!
+      PosCaracLLcd(9); // Assuming position 0 on the lower line
+      SacaTextoLcd((uint8_t *)"ALARMA");
+	  BME280_calculate();
+	  break;
+	case TEMP_NORMAL:
+	  // Clear the "ALARMA" message from the LCD before updating with normal data
+	  // Assuming the LCD has 16 characters per line, this will overwrite the "ALARMA" message
+	  BME280_calculate();
+	  break;
+	default:
+	  DebounceFsmErrorHandler();
+    break;
+  }
+}
+
+/**
+ * @brief Handles invalid case in button debouncing FSM.
+ */
+static void DebounceFsmErrorHandler()
+{
+    BSP_LED_On(LED3);
+    while (1)
+    {
+        __NOP();
+    }
+}
+
 #define TEST_DATA
 #define TEST_BME280
 
@@ -437,14 +540,10 @@ void TEST_SPI()
     HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 1);
 
     HAL_Delay(1);
-
 #endif
 
 #ifdef TEST_BME280
     // Test 1 data transactions to check chip ID and see it in the logic analyzer display.
-    BME280_read();
-    HAL_Delay(100);
-    BME280_calculate();
-
+    FSM_update();
 #endif
 }
