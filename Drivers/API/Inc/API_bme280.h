@@ -63,6 +63,7 @@ The “config” register sets the rate, filter and interface options of the dev
 register in normal mode may be ignored. In sleep mode writes are not ignored.
 */
 #define CONFIG_REG 0xF5
+#define THRESHOLD_TEMP 24
 
 void BME280_init(void);
 void BME280_calculate(void);

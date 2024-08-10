@@ -7,6 +7,7 @@
 "./Core/Startup/startup_stm32f429zitx.o"
 "./Drivers/API/Src/API_bme280.o"
 "./Drivers/API/Src/API_delay.o"
+"./Drivers/API/Src/API_fsm.o"
 "./Drivers/API/Src/API_lcd.o"
 "./Drivers/API/Src/API_lcd_port.o"
 "./Drivers/API/Src/API_uart.o"

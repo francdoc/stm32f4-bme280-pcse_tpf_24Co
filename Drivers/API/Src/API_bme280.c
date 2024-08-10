@@ -8,6 +8,52 @@
 RTC_TimeTypeDef sTime = {0}; // key user variables for RTC date
 RTC_DateTypeDef sDate = {0};
 
+void update_lcd_clock(void)
+{
+    HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
+    HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BCD);
+
+    PosCaracHLcd(0);
+    DatoBCD(sTime.Hours);
+    DatoLcd(':');
+    DatoBCD(sTime.Minutes);
+    DatoLcd(':');
+    DatoBCD(sTime.Seconds);
+
+    PosCaracLLcd(0);
+    DatoBCD(sDate.Date);
+    DatoLcd('/');
+    DatoBCD(sDate.Month);
+    DatoLcd('/');
+    DatoBCD(sDate.Year);
+}
+
+void lcd_init_code(void){
+	/*
+	* * Initialize RTC and set the Time and Date
+	*/
+
+	sTime.Hours = 0x01;
+	sTime.Minutes = 0x20;
+	sTime.Seconds = 0x00;
+	sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+	sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+
+	if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
+	{
+	Error_Handler();
+	}
+	sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+	sDate.Month = RTC_MONTH_AUGUST;
+	sDate.Date = 0x05;
+	sDate.Year = 0x24;
+
+	if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
+	{
+	Error_Handler();
+	}
+}
+
 /**
  * @brief  This function is executed in case of error occurrence.
  * @retval None
@@ -95,52 +141,6 @@ static void trimmingParametersRead(void)
     dig_H4 = (calibData2[3] << 4) | (calibData2[4] & 0x0F);
     dig_H5 = (calibData2[4] << 4) | (calibData2[5] >> 4);
     dig_H6 = calibData2[6];
-}
-
-void update_lcd_clock(void)
-{
-    HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
-    HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BCD);
-
-    PosCaracHLcd(0);
-    DatoBCD(sTime.Hours);
-    DatoLcd(':');
-    DatoBCD(sTime.Minutes);
-    DatoLcd(':');
-    DatoBCD(sTime.Seconds);
-
-    PosCaracLLcd(0);
-    DatoBCD(sDate.Date);
-    DatoLcd('/');
-    DatoBCD(sDate.Month);
-    DatoLcd('/');
-    DatoBCD(sDate.Year);
-}
-
-void lcd_init_code(void){
-	/*
-	* * Initialize RTC and set the Time and Date
-	*/
-
-	sTime.Hours = 0x01;
-	sTime.Minutes = 0x20;
-	sTime.Seconds = 0x00;
-	sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
-	sTime.StoreOperation = RTC_STOREOPERATION_RESET;
-
-	if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
-	{
-	Error_Handler();
-	}
-	sDate.WeekDay = RTC_WEEKDAY_MONDAY;
-	sDate.Month = RTC_MONTH_AUGUST;
-	sDate.Date = 0x05;
-	sDate.Year = 0x24;
-
-	if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
-	{
-	Error_Handler();
-	}
 }
 
 // Function to initialize the BME280 sensor
@@ -254,13 +254,9 @@ static uint8_t BME280_read(void)
 
 void eval_data()
 {
-	PosCaracLLcd(9);
+    uint8_t message[50]; // check buffer memory and clear and creation
 
-	BME280_read();
-
-    uint8_t message[50];
-
-    if (temp > 27.0){
+    if (temp > THRESHOLD_TEMP){
         currentTempState = TEMP_ALARM;
         strcpy((char *)message, "Temperature Alarm State.\r\n");
         uartSendString(message);  // Debug message
@@ -310,6 +306,8 @@ void BME280_calculate(void)
 }
 
 void lcd_display_data(void){
+	update_lcd_clock();
+
     uint8_t message[50];
 
     // Notify that the device is ready
@@ -367,7 +365,8 @@ void lcd_display_data(void){
 }
 
 void FSM_update() {
-	update_lcd_clock();
+	BME280_read();
+
 	uint8_t message[50];
 	strcpy((char *)message, "Evaluating Temperature data.\r\n");
 	uartSendString(message);
