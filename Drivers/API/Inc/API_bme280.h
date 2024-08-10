@@ -15,9 +15,6 @@ extern SPI_HandleTypeDef hspi1;
 #define CS_Pin GPIO_PIN_3
 #define CS_GPIO_Port GPIOB
 
-void MX_SPI1_Init(void);
-void MX_GPIO_Init(void);
-
 void BME280_init(void);
 void BME280_calculate(void);
 float BME280_getTemp();

@@ -63,6 +63,9 @@ void SystemClock_Config(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_RTC_Init(void);
+static void MX_SPI1_Init(void);
+static void MX_GPIO_Init(void);
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
