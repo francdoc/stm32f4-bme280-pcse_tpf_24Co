@@ -2,6 +2,7 @@
 #include "API_uart.h"
 
 /* Private variable ----------------------------------------------------------*/
+
 /* UART handler declaration */
 UART_HandleTypeDef UartHandle;
 

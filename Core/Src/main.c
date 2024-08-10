@@ -17,7 +17,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <API_lcd_port.h>
+#include "API_lcd_port.h"
 #include "main.h"
 #include "string.h"
 
@@ -29,6 +29,8 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+RTC_TimeTypeDef sTime = {0}; // key user variables for RTC date
+RTC_DateTypeDef sDate = {0};
 
 /* USER CODE END PTD */
 
@@ -83,6 +85,9 @@ static void MX_RTC_Init(void);
 #define BME280
 #define LCD
 
+#define MAX_BUFFER 50 // Example buffer size
+uint8_t uartBuffer[MAX_BUFFER];
+
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -95,8 +100,6 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  RTC_TimeTypeDef sTime = {0};
-  RTC_DateTypeDef sDate = {0};
 
   /* USER CODE END Init */
 
@@ -128,9 +131,9 @@ int main(void)
 
 #ifdef BME280
   BME280_init();
-  #endif
+#endif
 
-  // first SPI try before main loop
+  // First SPI try before main loop
   TEST_SPI();
 
 #ifdef LCD
@@ -139,64 +142,84 @@ int main(void)
 
   for (int i = 0; i <= 3; i++)
   {
-      BSP_LED_Toggle(LED1); // init LCD OK
-      HAL_Delay(100);
+    BSP_LED_Toggle(LED1); // Init LCD OK
+    HAL_Delay(100);
   }
 
+  char response = '\0';
+
+  bool rtcConfigured = false;
+
+  while (!rtcConfigured)
+  {
+    uartReceiveStringSize((uint8_t *)&response, sizeof(response));
+
+    if ('c' == response)
+    {
+      uartSendString((uint8_t *)"UART3 9600 7O1\r\n");
+
+      rtcConfigured = true;
+
+      response = '\0';
+    }
+
+    HAL_Delay(500); // Add a delay to avoid overwhelming the system
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  /* USER CODE END WHILE */
+    /* USER CODE END WHILE */
 
-	  /* USER CODE BEGIN 3 */
-	  TEST_SPI();
+    /* USER CODE BEGIN 3 */
+
+    TEST_SPI();
 
 #ifdef LCD
-	  HAL_RTC_GetTime(&hrtc,&sTime,RTC_FORMAT_BCD);
-	  HAL_RTC_GetDate(&hrtc,&sDate,RTC_FORMAT_BCD);
+    HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
+    HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BCD);
 
-	  PosCaracHLcd(0);
-	  SacaTextoLcd((uint8_t *)"TIME:");
-	  DatoBCD(sTime.Hours);
-	  DatoLcd(':');
-	  DatoBCD(sTime.Minutes);
-	  DatoLcd(':');
-	  DatoBCD(sTime.Seconds);
+    PosCaracHLcd(0);
+    SacaTextoLcd((uint8_t *)"TIME:");
+    DatoBCD(sTime.Hours);
+    DatoLcd(':');
+    DatoBCD(sTime.Minutes);
+    DatoLcd(':');
+    DatoBCD(sTime.Seconds);
 
-	  PosCaracLLcd(0);
-	  DatoBCD(sDate.Date);
-	  DatoLcd('/');
-	  DatoBCD(sDate.Month);
-	  DatoLcd('/');
-	  DatoBCD(sDate.Year);
+    PosCaracLLcd(0);
+    DatoBCD(sDate.Date);
+    DatoLcd('/');
+    DatoBCD(sDate.Month);
+    DatoLcd('/');
+    DatoBCD(sDate.Year);
 
-	  BSP_LED_Toggle(LED1); // looping signal
+    BSP_LED_Toggle(LED1); // Looping signal
 #endif
   }
   /* USER CODE END 3 */
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
-  */
+   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
+   * in the RCC_OscInitTypeDef structure.
+   */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -352,9 +375,6 @@ static void MX_RTC_Init(void)
   /* USER CODE END RTC_Init 0 */
 
   /* USER CODE BEGIN RTC_Init 1 */
-
-  RTC_TimeTypeDef sTime = {0}; // key user variables for RTC date
-  RTC_DateTypeDef sDate = {0};
 
   /* USER CODE END RTC_Init 1 */
 
