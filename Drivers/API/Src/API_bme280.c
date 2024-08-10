@@ -384,6 +384,13 @@ void FSM_update() {
   }
 }
 
+void APP_init()
+{
+	  uartInit();
+	  BME280_init();
+	  Init_Lcd();
+}
+
 void APP_update()
 {
 	BME280_read();

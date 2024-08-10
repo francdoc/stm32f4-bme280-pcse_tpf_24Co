@@ -17,4 +17,5 @@
 ../Drivers/API/Src/API_bme280.c:340:6:lcd_display_data	1
 ../Drivers/API/Src/API_bme280.c:366:6:lcd_alarm	1
 ../Drivers/API/Src/API_bme280.c:371:6:FSM_update	3
-../Drivers/API/Src/API_bme280.c:387:6:APP_update	1
+../Drivers/API/Src/API_bme280.c:387:6:APP_init	1
+../Drivers/API/Src/API_bme280.c:394:6:APP_update	1

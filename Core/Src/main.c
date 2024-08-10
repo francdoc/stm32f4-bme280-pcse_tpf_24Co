@@ -75,9 +75,6 @@ static void MX_GPIO_Init(void);
   * @retval int
   */
 
-#define BME280
-#define LCD
-
 #define MAX_BUFFER 50 // Example buffer size
 uint8_t uartBuffer[MAX_BUFFER];
 
@@ -107,8 +104,6 @@ int main(void)
   MX_I2C1_Init();
   MX_RTC_Init();
 
-  uartInit();
-
   // Init GPIO & SPI
   MX_GPIO_Init();
   MX_SPI1_Init();
@@ -120,19 +115,13 @@ int main(void)
   BSP_LED_Init(LED2);
   BSP_LED_Init(LED3);
 
-#ifdef BME280
-  BME280_init();
-#endif
-
-#ifdef LCD
-  Init_Lcd();
-#endif
-
   for (int i = 0; i <= 3; i++)
   {
     BSP_LED_Toggle(LED1); // Init LCD OK
     HAL_Delay(100);
   }
+
+  APP_init();
 
   /* USER CODE END 2 */
 

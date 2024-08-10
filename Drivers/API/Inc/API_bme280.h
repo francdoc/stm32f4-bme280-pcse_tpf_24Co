@@ -80,6 +80,7 @@ void APP_update(void);
 void update_lcd_clock(void);
 void lcd_display_data(void);
 void clock_init_code(void);
+void APP_init(void);
 
 void lcd_alarm();
 
