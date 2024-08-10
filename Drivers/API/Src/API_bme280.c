@@ -97,8 +97,6 @@ static void trimmingParametersRead(void)
     dig_H6 = calibData2[6];
 }
 
-
-
 void update_lcd_clock(void)
 {
     HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
@@ -117,6 +115,32 @@ void update_lcd_clock(void)
     DatoBCD(sDate.Month);
     DatoLcd('/');
     DatoBCD(sDate.Year);
+}
+
+void lcd_init_code(void){
+	/*
+	* * Initialize RTC and set the Time and Date
+	*/
+
+	sTime.Hours = 0x01;
+	sTime.Minutes = 0x20;
+	sTime.Seconds = 0x00;
+	sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+	sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+
+	if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
+	{
+	Error_Handler();
+	}
+	sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+	sDate.Month = RTC_MONTH_AUGUST;
+	sDate.Date = 0x05;
+	sDate.Year = 0x24;
+
+	if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
+	{
+	Error_Handler();
+	}
 }
 
 // Function to initialize the BME280 sensor
@@ -150,32 +174,6 @@ void BME280_init(void)
 
     SPI_Write(CONFIG_REG, &config, CMDWRITESIZE);
     HAL_Delay(BME_HAL_DELAY);
-
-    // Important RTC init code.
-      /*
-       * * Initialize RTC and set the Time and Date
-      */
-
-      sTime.Hours = 0x01;
-      sTime.Minutes = 0x20;
-      sTime.Seconds = 0x00;
-      sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
-      sTime.StoreOperation = RTC_STOREOPERATION_RESET;
-
-      if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
-      {
-        Error_Handler();
-      }
-      sDate.WeekDay = RTC_WEEKDAY_MONDAY;
-      sDate.Month = RTC_MONTH_AUGUST;
-      sDate.Date = 0x05;
-      sDate.Year = 0x24;
-
-      if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
-      {
-        Error_Handler();
-      }
-
 }
 
 // Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
