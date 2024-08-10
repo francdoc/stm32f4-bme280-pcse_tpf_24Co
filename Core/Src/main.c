@@ -144,7 +144,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-    APP();
+    APP_update();
 
     BSP_LED_Toggle(LED1); // Looping signal
   }

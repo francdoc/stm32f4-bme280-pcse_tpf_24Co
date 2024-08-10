@@ -97,6 +97,28 @@ static void trimmingParametersRead(void)
     dig_H6 = calibData2[6];
 }
 
+
+
+void update_lcd_clock(void)
+{
+    HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
+    HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BCD);
+
+    PosCaracHLcd(0);
+    DatoBCD(sTime.Hours);
+    DatoLcd(':');
+    DatoBCD(sTime.Minutes);
+    DatoLcd(':');
+    DatoBCD(sTime.Seconds);
+
+    PosCaracLLcd(0);
+    DatoBCD(sDate.Date);
+    DatoLcd('/');
+    DatoBCD(sDate.Month);
+    DatoLcd('/');
+    DatoBCD(sDate.Year);
+}
+
 // Function to initialize the BME280 sensor
 void BME280_init(void)
 {
@@ -194,7 +216,6 @@ float BME280_getHum(void)
     return hum;
 }
 
-
 static uint8_t BME280_read(void)
 {
     uint8_t sensorData[8];
@@ -280,60 +301,6 @@ void BME280_calculate(void)
         temp = ((float) BME280_compensate_T_int32(tADC)) / 100.0; // from integer to float
         hum = ((float) bme280_compensate_H_int32(hADC)) / 1024.0; // WATCHOUT FOR IMPLICIT TYPECASTS!!!!!!!!!
 
-        uint8_t message[50];
-
-        // Notify that the device is ready
-        // Esto es redundante! Enviar directamente por uartSendString!!!!!!
-        strcpy((char *)message, "Device ready, going to transfer data via UART.\r\n");
-        uartSendString(message);
-
-        // Send temperature data
-        strcpy((char *)message, "Temperature: ");
-        char tempStr[20];
-        int intPart = (int)temp;
-        int fracPart = (int)((temp - intPart) * 100);
-        itoa(intPart, tempStr, 10);
-        strcat((char *)message, tempStr);
-        strcat((char *)message, ".");
-        itoa(fracPart, tempStr, 10);
-        strcat((char *)message, tempStr);
-        strcat((char *)message, " C\r\n");
-        uartSendString(message);
-
-        // Send humidity data
-        strcpy((char *)message, "Humidity: ");
-        char humStr[20];
-        intPart = (int)hum;
-        fracPart = (int)((hum - intPart) * 100);
-        itoa(intPart, humStr, 10);
-        strcat((char *)message, humStr);
-        strcat((char *)message, ".");
-        itoa(fracPart, humStr, 10);
-        strcat((char *)message, humStr);
-        strcat((char *)message, " %\r\n");
-        uartSendString(message);
-
-        // Prepare temperature string for LCD
-        char lcdTempStr[20];
-        itoa((int)temp, lcdTempStr, 10);
-        strcat(lcdTempStr, ".");
-        itoa((int)((temp - (int)temp) * 100), lcdTempStr + strlen(lcdTempStr), 10);
-
-        // Prepare humidity string for LCD
-        char lcdHumStr[20];
-        itoa((int)hum, lcdHumStr, 10);
-        strcat(lcdHumStr, ".");
-        itoa((int)((hum - (int)hum) * 100), lcdHumStr + strlen(lcdHumStr), 10);
-
-        // Display temperature on the LCD
-        PosCaracLLcd(9); // Assuming position 0 on the upper line
-        SacaTextoLcd((uint8_t *)"T:");
-        SacaTextoLcd((uint8_t *)lcdTempStr);
-
-        // Display humidity on the LCD
-        PosCaracHLcd(9); // Assuming position 0 on the lower line
-        SacaTextoLcd((uint8_t *)"H:");
-        SacaTextoLcd((uint8_t *)lcdHumStr);
     }
     else
     {
@@ -344,7 +311,65 @@ void BME280_calculate(void)
     }
 }
 
+void lcd_display_data(void){
+    uint8_t message[50];
+
+    // Notify that the device is ready
+    // Esto es redundante! Enviar directamente por uartSendString!!!!!!
+    strcpy((char *)message, "Device ready, going to transfer data via UART.\r\n");
+    uartSendString(message);
+
+    // Send temperature data
+    strcpy((char *)message, "Temperature: ");
+    char tempStr[20];
+    int intPart = (int)temp;
+    int fracPart = (int)((temp - intPart) * 100);
+    itoa(intPart, tempStr, 10);
+    strcat((char *)message, tempStr);
+    strcat((char *)message, ".");
+    itoa(fracPart, tempStr, 10);
+    strcat((char *)message, tempStr);
+    strcat((char *)message, " C\r\n");
+    uartSendString(message);
+
+    // Send humidity data
+    strcpy((char *)message, "Humidity: ");
+    char humStr[20];
+    intPart = (int)hum;
+    fracPart = (int)((hum - intPart) * 100);
+    itoa(intPart, humStr, 10);
+    strcat((char *)message, humStr);
+    strcat((char *)message, ".");
+    itoa(fracPart, humStr, 10);
+    strcat((char *)message, humStr);
+    strcat((char *)message, " %\r\n");
+    uartSendString(message);
+
+    // Prepare temperature string for LCD
+    char lcdTempStr[20];
+    itoa((int)temp, lcdTempStr, 10);
+    strcat(lcdTempStr, ".");
+    itoa((int)((temp - (int)temp) * 100), lcdTempStr + strlen(lcdTempStr), 10);
+
+    // Prepare humidity string for LCD
+    char lcdHumStr[20];
+    itoa((int)hum, lcdHumStr, 10);
+    strcat(lcdHumStr, ".");
+    itoa((int)((hum - (int)hum) * 100), lcdHumStr + strlen(lcdHumStr), 10);
+
+    // Display temperature on the LCD
+    PosCaracLLcd(9); // Assuming position 0 on the upper line
+    SacaTextoLcd((uint8_t *)"T:");
+    SacaTextoLcd((uint8_t *)lcdTempStr);
+
+    // Display humidity on the LCD
+    PosCaracHLcd(9); // Assuming position 0 on the lower line
+    SacaTextoLcd((uint8_t *)"H:");
+    SacaTextoLcd((uint8_t *)lcdHumStr);
+}
+
 void FSM_update() {
+	update_lcd_clock();
 	uint8_t message[50];
 	strcpy((char *)message, "Evaluating Temperature data.\r\n");
 	uartSendString(message);
@@ -357,35 +382,20 @@ void FSM_update() {
       PosCaracLLcd(9); // Assuming position 0 on the lower line
       SacaTextoLcd((uint8_t *)"ALARMA!");
 	  BME280_calculate();
+	  lcd_display_data();
 	  break;
 	case TEMP_NORMAL:
 	  // Clear the "ALARMA" message from the LCD before updating with normal data
 	  // Assuming the LCD has 16 characters per line, this will overwrite the "ALARMA" message
 	  BME280_calculate();
+	  lcd_display_data();
 	  break;
 	default:
     break;
   }
 }
 
-void APP()
+void APP_update()
 {
-    HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
-    HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BCD);
-
-    PosCaracHLcd(0);
-    DatoBCD(sTime.Hours);
-    DatoLcd(':');
-    DatoBCD(sTime.Minutes);
-    DatoLcd(':');
-    DatoBCD(sTime.Seconds);
-
-    PosCaracLLcd(0);
-    DatoBCD(sDate.Date);
-    DatoLcd('/');
-    DatoBCD(sDate.Month);
-    DatoLcd('/');
-    DatoBCD(sDate.Year);
-
     FSM_update();
 }

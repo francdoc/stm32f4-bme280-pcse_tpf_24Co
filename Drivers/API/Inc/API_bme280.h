@@ -75,6 +75,8 @@ typedef enum {
   TEMP_ALARM,
 } tempState_t;
 
-void APP(void);
+void APP_update(void);
+void update_lcd_clock(void);
+void lcd_display_data(void);
 
 #endif /* API_INC_DRIVER_BME280_H_ */
