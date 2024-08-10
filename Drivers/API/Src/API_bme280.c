@@ -7,9 +7,6 @@
 
 ////////////////////////// HAL SPI  //////////////////////////
 
-#define TIMEOUT 1000 // ms
-
-
 /**
  * @brief  This function is executed in case of error occurrence.
  * @retval None
@@ -54,13 +51,7 @@ void tempFSM_init() {
 	currentTempState = TEMP_NORMAL;
 }
 
-// THIS MUST BE IN A SEPARATE FILE
-/*
- * However, for a temperature monitoring system with normal vs. alarm states, a debounce mechanism
- * is typically not necessary or applicable unless there is a specific condition that would cause
- * rapid, noisy transitions between these states */
 void FSM_update();
-static void DebounceFsmErrorHandler();
 
 /*
 BME280 – Data sheet:
@@ -405,53 +396,16 @@ void FSM_update() {
 	  BME280_calculate();
 	  break;
 	default:
-	  DebounceFsmErrorHandler();
     break;
   }
 }
 
-/**
- * @brief Handles invalid case in button debouncing FSM.
- */
-static void DebounceFsmErrorHandler()
-{
-    BSP_LED_On(LED3);
-    while (1)
-    {
-        __NOP();
-    }
-}
-
-#define TEST_DATA
-#define TEST_BME280
-
-void TEST_SPI()
+void APP()
 {
     for (int i = 0; i <= 4; i++)
     {
         BSP_LED_Toggle(LED2);
         HAL_Delay(100);
     }
-
-#ifdef TEST_DATA
-    // Test 2 data transactions (MOSI -> SDA/SDI on bme280 board) to see them in the logic analyzer display.
-    uint8_t dato = 0xAA;
-    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 0);
-    HAL_SPI_Transmit(&hspi1, &dato, sizeof(dato), HAL_MAX_DELAY);
-    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 1);
-
-    HAL_Delay(1);
-
-    uint8_t regAddress = 0xAB;
-    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 0);
-    HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), HAL_MAX_DELAY);
-    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 1);
-
-    HAL_Delay(1);
-#endif
-
-#ifdef TEST_BME280
-    // Test 1 data transactions to check chip ID and see it in the logic analyzer display.
     FSM_update();
-#endif
 }

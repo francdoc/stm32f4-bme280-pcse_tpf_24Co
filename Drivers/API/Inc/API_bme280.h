@@ -12,14 +12,17 @@
 
 extern SPI_HandleTypeDef hspi1;
 
+#define TIMEOUT 1000 // ms
+
 #define CS_Pin GPIO_PIN_3
 #define CS_GPIO_Port GPIOB
 
 void BME280_init(void);
 void BME280_calculate(void);
-float BME280_getTemp();
-float BME280_getHum();
+float BME280_getTemp(void);
+float BME280_getHum(void);
 void BME280_Error_Handler(void);
-void TEST_SPI();
+
+void APP(void);
 
 #endif /* API_INC_DRIVER_BME280_H_ */
