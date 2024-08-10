@@ -386,22 +386,37 @@ void APP_init()
     Init_Lcd();
 }
 
-void APP_update()
+void APP_updateLCD(void)
 {
     update_lcd_clock();
     lcd_display_clock();
+}
 
+void APP_updateSensorData(void)
+{
     BME280_read();
-
-    FSM_update();
-
     BME280_calculate();
+}
 
+void APP_prepareAndDisplaySensorData(void)
+{
+    prepare_sensor_data_for_lcd();
+    lcd_display_sensor_data();
+}
+
+void APP_prepareAndSendUARTData(void)
+{
     uint8_t message_tem[50];
     uint8_t message_hum[50];
     prepare_sensor_data_for_uart(message_tem, message_hum);
     uart_display_data(message_tem, message_hum);
+}
 
-    prepare_sensor_data_for_lcd();
-    lcd_display_sensor_data();
+void APP_update()
+{
+	APP_updateSensorData();
+    APP_updateLCD();
+    APP_prepareAndDisplaySensorData();
+    APP_prepareAndSendUARTData();
+    FSM_update();
 }

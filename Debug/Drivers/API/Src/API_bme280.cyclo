@@ -22,4 +22,8 @@
 ../Drivers/API/Src/API_bme280.c:355:6:lcd_display_date	1
 ../Drivers/API/Src/API_bme280.c:365:6:FSM_update	3
 ../Drivers/API/Src/API_bme280.c:382:6:APP_init	1
-../Drivers/API/Src/API_bme280.c:389:6:APP_update	1
+../Drivers/API/Src/API_bme280.c:389:6:APP_updateLCD	1
+../Drivers/API/Src/API_bme280.c:395:6:APP_updateSensorData	1
+../Drivers/API/Src/API_bme280.c:401:6:APP_prepareAndDisplaySensorData	1
+../Drivers/API/Src/API_bme280.c:407:6:APP_prepareAndSendUARTData	1
+../Drivers/API/Src/API_bme280.c:415:6:APP_update	1

@@ -89,4 +89,9 @@ void lcd_alarm();
 void prepare_sensor_data_for_uart(uint8_t *message_1, uint8_t *message_2);
 void uart_display_data(uint8_t *message_1, uint8_t *message_2);
 
+void APP_updateLCD(void);
+void APP_updateSensorData(void);
+void APP_prepareAndDisplaySensorData(void);
+void APP_prepareAndSendUARTData(void);
+
 #endif /* API_INC_DRIVER_BME280_H_ */
