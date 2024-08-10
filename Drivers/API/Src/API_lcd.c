@@ -19,10 +19,11 @@ _Bool Init_Lcd(void){
    Envia4bitsLcd(COMANDO_INI2,CONTROL);
    for(uint8_t i=0;i<sizeof(LCD_INIT_CMD);i++)ControlLcd(LCD_INIT_CMD[i]);
    SleepLcdBlocking(millisecond*2);
+
    for (int i = 0; i <= 4; i++)
     {
  	   BSP_LED_Toggle(LED1); // init LCD OK
- 	   SleepLcdBlocking(millisecond*25);
+ 	   SleepLcdBlocking(millisecond*1);
     }
    return 0;
 }

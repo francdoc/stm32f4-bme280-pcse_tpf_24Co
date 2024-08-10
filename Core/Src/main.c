@@ -29,8 +29,6 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-RTC_TimeTypeDef sTime = {0}; // key user variables for RTC date
-RTC_DateTypeDef sDate = {0};
 
 /* USER CODE END PTD */
 
@@ -148,27 +146,7 @@ int main(void)
 
     APP();
 
-#ifdef LCD
-    HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
-    HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BCD);
-
-    PosCaracHLcd(0);
-    SacaTextoLcd((uint8_t *)"TIME:");
-    DatoBCD(sTime.Hours);
-    DatoLcd(':');
-    DatoBCD(sTime.Minutes);
-    DatoLcd(':');
-    DatoBCD(sTime.Seconds);
-
-    PosCaracLLcd(0);
-    DatoBCD(sDate.Date);
-    DatoLcd('/');
-    DatoBCD(sDate.Month);
-    DatoLcd('/');
-    DatoBCD(sDate.Year);
-
     BSP_LED_Toggle(LED1); // Looping signal
-#endif
   }
   /* USER CODE END 3 */
 }
@@ -406,31 +384,6 @@ static void MX_RTC_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN RTC_Init 2 */
-
-  // Important RTC init code.
-  /*
-   * * Initialize RTC and set the Time and Date
-  */
-
-  sTime.Hours = 0x01;
-  sTime.Minutes = 0x20;
-  sTime.Seconds = 0x00;
-  sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
-  sTime.StoreOperation = RTC_STOREOPERATION_RESET;
-
-  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sDate.WeekDay = RTC_WEEKDAY_MONDAY;
-  sDate.Month = RTC_MONTH_AUGUST;
-  sDate.Date = 0x05;
-  sDate.Year = 0x24;
-
-  if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
-  {
-    Error_Handler();
-  }
 
   /* USER CODE END RTC_Init 2 */
 }

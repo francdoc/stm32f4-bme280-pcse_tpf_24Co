@@ -5,7 +5,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-////////////////////////// HAL SPI  //////////////////////////
+RTC_TimeTypeDef sTime = {0}; // key user variables for RTC date
+RTC_DateTypeDef sDate = {0};
 
 /**
  * @brief  This function is executed in case of error occurrence.
@@ -23,27 +24,20 @@ void BME280_Error_Handler(void)
 static void SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
 {
     uint8_t regAddress = reg & WRITE_CMD_BIT; // Apply the write command mask
-    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 0);
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateLow);
     HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), HAL_MAX_DELAY);
     HAL_SPI_Transmit(&hspi1, data, size, HAL_MAX_DELAY);
-    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 1);
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateHigh);
 }
 
 static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
 {
     uint8_t regAddress = reg | READ_CMD_BIT; // Apply the read command mask
-    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 0);
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateLow);
     HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), TIMEOUT);
     HAL_SPI_Receive(&hspi1, data, size, TIMEOUT);
-    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 1);
+    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateHigh);
 }
-
-////////////////////////// BME280 //////////////////////////
-
-typedef enum {
-  TEMP_NORMAL,
-  TEMP_ALARM,
-} tempState_t;
 
 static tempState_t currentTempState;
 
@@ -51,28 +45,7 @@ void tempFSM_init() {
 	currentTempState = TEMP_NORMAL;
 }
 
-void FSM_update();
-
-/*
-BME280 – Data sheet:
-    - Document revision 1.24
-    - Document release date February 2024
-    - Document number BST-BME280-DS001-24
-*/
-
-// checked
-#define BME_HAL_DELAY 100 // ms
-#define MEMADDRESSSIZE 1  // bit
-
-#define CALIBMEMADD1 0x88
-#define CALIBMEMADD2 0xE1
-
-#define CALIBDATASIZE1 25
-#define CALIBDATASIZE2 7
-#define CMDWRITESIZE 1
-#define RAWDATASIZE 8
-#define RAWDATAREG1 0XF7
-#define CHIPIDREG 0xD0
+void FSM_update(void);
 
 /*
 5.4.2 Register 0xE0 “reset”
@@ -80,32 +53,6 @@ The “reset” register contains the soft reset word reset[7:0]. If the value 0
 the device is reset using the complete power-on-reset procedure. Writing other values than 0xB6 has
 no effect. The readout value is always 0x00.*/
 #define RESET_REG 0xE0
-
-/*
-5.4.3 Register 0xF2 “ctrl_hum”
-The “ctrl_hum” register sets the humidity data acquisition options of the device. Changes to this
-register only become effective after a write operation to “ctrl_meas”.*/
-#define CTRL_HUM 0xF2
-
-/*
-5.4.4 Register 0xF3 “status”
-The “status” register contains two bits which indicate the status of the device.
-*/
-#define STATUS 0xF3
-
-/*
-5.4.5 Register 0xF4 “ctrl_meas”
-The “ctrl_meas” register sets the pressure and temperature data acquisition options of the device. The
-register needs to be written after changing “ctrl_hum” for the changes to become effective.
-*/
-#define CTRL_MEAS 0xF4
-
-/*
-5.4.6 Register 0xF5 “config”
-The “config” register sets the rate, filter and interface options of the device. Writes to the “config”
-register in normal mode may be ignored. In sleep mode writes are not ignored.
-*/
-#define CONFIG_REG 0xF5
 
 // HACER STRUCTURA CON PUNTEROS! EVALUAR!
 static uint16_t dig_T1, dig_P1, dig_H1, dig_H3;
@@ -181,6 +128,32 @@ void BME280_init(void)
 
     SPI_Write(CONFIG_REG, &config, CMDWRITESIZE);
     HAL_Delay(BME_HAL_DELAY);
+
+    // Important RTC init code.
+      /*
+       * * Initialize RTC and set the Time and Date
+      */
+
+      sTime.Hours = 0x01;
+      sTime.Minutes = 0x20;
+      sTime.Seconds = 0x00;
+      sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+      sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+
+      if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
+      {
+        Error_Handler();
+      }
+      sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+      sDate.Month = RTC_MONTH_AUGUST;
+      sDate.Date = 0x05;
+      sDate.Year = 0x24;
+
+      if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
+      {
+        Error_Handler();
+      }
+
 }
 
 // Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
@@ -263,8 +236,6 @@ static uint8_t BME280_read(void)
 void eval_data()
 {
 	PosCaracLLcd(9);
-	SacaTextoLcd((uint8_t *)"                "); // Clear 16 characters
-	HAL_Delay(100);
 
 	BME280_read();
 
@@ -274,10 +245,11 @@ void eval_data()
         currentTempState = TEMP_ALARM;
         strcpy((char *)message, "Temperature Alarm State.\r\n");
         uartSendString(message);  // Debug message
+
         for (int i = 0; i <= 3; i++)
         {
         	BSP_LED_Toggle(LED3); // sensor ID ERROR
-        	HAL_Delay(100);
+        	HAL_Delay(10);
         }
 
         // Send temperature data
@@ -358,14 +330,10 @@ void BME280_calculate(void)
         SacaTextoLcd((uint8_t *)"T:");
         SacaTextoLcd((uint8_t *)lcdTempStr);
 
-        HAL_Delay(500);
-
         // Display humidity on the LCD
-        PosCaracLLcd(9); // Assuming position 0 on the lower line
+        PosCaracHLcd(9); // Assuming position 0 on the lower line
         SacaTextoLcd((uint8_t *)"H:");
         SacaTextoLcd((uint8_t *)lcdHumStr);
-
-        HAL_Delay(500);
     }
     else
     {
@@ -387,7 +355,7 @@ void FSM_update() {
 	case TEMP_ALARM:
 	  // PONER UNA FUNCION ESPECIFICA!
       PosCaracLLcd(9); // Assuming position 0 on the lower line
-      SacaTextoLcd((uint8_t *)"ALARMA");
+      SacaTextoLcd((uint8_t *)"ALARMA!");
 	  BME280_calculate();
 	  break;
 	case TEMP_NORMAL:
@@ -402,10 +370,22 @@ void FSM_update() {
 
 void APP()
 {
-    for (int i = 0; i <= 4; i++)
-    {
-        BSP_LED_Toggle(LED2);
-        HAL_Delay(100);
-    }
+    HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
+    HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BCD);
+
+    PosCaracHLcd(0);
+    DatoBCD(sTime.Hours);
+    DatoLcd(':');
+    DatoBCD(sTime.Minutes);
+    DatoLcd(':');
+    DatoBCD(sTime.Seconds);
+
+    PosCaracLLcd(0);
+    DatoBCD(sDate.Date);
+    DatoLcd('/');
+    DatoBCD(sDate.Month);
+    DatoLcd('/');
+    DatoBCD(sDate.Year);
+
     FSM_update();
 }
