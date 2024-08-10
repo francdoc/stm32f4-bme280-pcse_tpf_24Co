@@ -79,6 +79,6 @@ typedef enum {
 void APP_update(void);
 void update_lcd_clock(void);
 void lcd_display_data(void);
-void lcd_init_code(void);
+void clock_init_code(void);
 
 #endif /* API_INC_DRIVER_BME280_H_ */

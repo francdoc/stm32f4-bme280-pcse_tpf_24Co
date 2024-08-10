@@ -28,7 +28,7 @@ void update_lcd_clock(void)
     DatoBCD(sDate.Year);
 }
 
-void lcd_init_code(void){
+void clock_init_code(void){
 	/*
 	* * Initialize RTC and set the Time and Date
 	*/
@@ -146,6 +146,8 @@ static void trimmingParametersRead(void)
 // Function to initialize the BME280 sensor
 void BME280_init(void)
 {
+	clock_init_code();
+
 	tempFSM_init();
 
     // Read trimming parameters from the sensor
