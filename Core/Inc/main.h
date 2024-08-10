@@ -30,7 +30,9 @@ extern "C" {
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_nucleo_144.h" /* <- BSP include */
 
-#include "API_bme280.h"
+#include "string.h"
+
+#include "API_fsm.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */

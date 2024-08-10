@@ -1,20 +1,15 @@
 #ifndef API_INC_DRIVER_BME280_H_
 #define API_INC_DRIVER_BME280_H_
 
+#include <math.h>
+
 #include <stdint.h>
 #include <stdio.h>
 
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_nucleo_144.h" /* <- BSP include */
 
-#include "API_delay.h"
-#include "API_uart.h"
-
 extern SPI_HandleTypeDef hspi1;
-
-extern RTC_HandleTypeDef hrtc;
-
-#define TIMEOUT 1000 // ms
 
 #define CS_Pin GPIO_PIN_3
 #define CS_GPIO_Port GPIOB
@@ -23,7 +18,9 @@ extern RTC_HandleTypeDef hrtc;
 #define WRITE_CMD_BIT 0x7F // Command bit for write operation (Most Significant Bit = 0) | 6.3.2 SPI write | applies mask 0x7F = 0b01111111 -> Most Significant Bit (bit number 7) = 0
 
 #define BME_HAL_DELAY 100 // ms
+
 #define MEMADDRESSSIZE 1  // bit
+#define TIMEOUT 1000 // ms
 
 #define CALIBMEMADD1 0x88
 #define CALIBMEMADD2 0xE1
@@ -63,7 +60,12 @@ The “config” register sets the rate, filter and interface options of the dev
 register in normal mode may be ignored. In sleep mode writes are not ignored.
 */
 #define CONFIG_REG 0xF5
-#define THRESHOLD_TEMP 24
+
+typedef int32_t BME280_S32_t;  // global type
+typedef uint32_t BME280_U32_t; // global type
+
+// Declare temp and hum as extern to make them accessible in other files
+extern float temp, hum;
 
 void BME280_init(void);
 void BME280_calculate(void);
@@ -77,21 +79,6 @@ typedef enum
   TEMP_ALARM,
 } tempState_t;
 
-void APP_update(void);
-void update_lcd_clock(void);
-void lcd_display_date(void);
-void lcd_display_clock(void);
-void clock_init_code(void);
-void APP_init(void);
-void prepare_sensor_data_for_lcd(void);
-void lcd_display_sensor_data(void);
-void lcd_alarm();
-void prepare_sensor_data_for_uart(uint8_t *message_1, uint8_t *message_2);
-void uart_display_data(uint8_t *message_1, uint8_t *message_2);
-
-void APP_updateLCD(void);
-void APP_updateSensorData(void);
-void APP_prepareAndDisplaySensorData(void);
-void APP_prepareAndSendUARTData(void);
+extern uint8_t BME280_read(void);
 
 #endif /* API_INC_DRIVER_BME280_H_ */

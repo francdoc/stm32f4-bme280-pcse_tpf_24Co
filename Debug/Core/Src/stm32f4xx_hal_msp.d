@@ -35,9 +35,13 @@ Core/Src/stm32f4xx_hal_msp.o: ../Core/Src/stm32f4xx_hal_msp.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h \
  /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/BSP/STM32F4xx_Nucleo_144/stm32f4xx_nucleo_144.h \
- /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_bme280.h \
+ /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_fsm.h \
  /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_delay.h \
- /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_uart.h
+ /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_uart.h \
+ /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_lcd.h \
+ /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_lcd_port.h \
+ /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_lcd_port.h \
+ /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_bme280.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -75,6 +79,10 @@ Core/Src/stm32f4xx_hal_msp.o: ../Core/Src/stm32f4xx_hal_msp.c \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h:
 /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/BSP/STM32F4xx_Nucleo_144/stm32f4xx_nucleo_144.h:
-/home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_bme280.h:
+/home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_fsm.h:
 /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_delay.h:
 /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_uart.h:
+/home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_lcd.h:
+/home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_lcd_port.h:
+/home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_lcd_port.h:
+/home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_bme280.h:

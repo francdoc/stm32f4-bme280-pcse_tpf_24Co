@@ -17,13 +17,10 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "API_lcd_port.h"
 #include "main.h"
-#include "string.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "API_lcd.h"
 
 /* USER CODE END Includes */
 
@@ -114,12 +111,6 @@ int main(void)
   BSP_LED_Init(LED1);
   BSP_LED_Init(LED2);
   BSP_LED_Init(LED3);
-
-  for (int i = 0; i <= 3; i++)
-  {
-    BSP_LED_Toggle(LED1); // Init LCD OK
-    HAL_Delay(100);
-  }
 
   APP_init();
 
