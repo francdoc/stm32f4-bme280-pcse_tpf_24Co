@@ -146,25 +146,6 @@ int main(void)
     HAL_Delay(100);
   }
 
-  char response = '\0';
-
-  bool rtcConfigured = false;
-
-  while (!rtcConfigured)
-  {
-    uartReceiveStringSize((uint8_t *)&response, sizeof(response));
-
-    if ('c' == response)
-    {
-      uartSendString((uint8_t *)"UART3 9600 7O1\r\n");
-
-      rtcConfigured = true;
-
-      response = '\0';
-    }
-
-    HAL_Delay(500); // Add a delay to avoid overwhelming the system
-  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
