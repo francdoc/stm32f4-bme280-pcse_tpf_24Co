@@ -21,8 +21,8 @@ void BME280_Error_Handler(void)
 }
 
 static void SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
-{                                    // 6.3.2 SPI write
-    uint8_t regAddress = reg & 0x7F; // Write command -> applies mask 0x7F = 0b01111111 -> Most Significant Bit (bit number 7) = 0
+{
+    uint8_t regAddress = reg & WRITE_CMD_BIT; // Apply the write command mask
     HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 0);
     HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), HAL_MAX_DELAY);
     HAL_SPI_Transmit(&hspi1, data, size, HAL_MAX_DELAY);
@@ -30,8 +30,8 @@ static void SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
 }
 
 static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
-{                                    // 6.3.1 SPI read
-    uint8_t regAddress = reg | 0x80; // Read command -> applies mask 0x80 = 0b10000000 -> Most Significant Bit (bit number 7) = 1
+{
+    uint8_t regAddress = reg | READ_CMD_BIT; // Apply the read command mask
     HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, 0);
     HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), TIMEOUT);
     HAL_SPI_Receive(&hspi1, data, size, TIMEOUT);

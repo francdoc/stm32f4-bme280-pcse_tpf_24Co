@@ -37,17 +37,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_rnglists 00000b67  00000000  00000000  0001c1a0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  00027019  00000000  00000000  0001cd07  2**0
+ 17 .debug_macro  00027025  00000000  00000000  0001cd07  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00013952  00000000  00000000  00043d20  2**0
+ 18 .debug_line   00013952  00000000  00000000  00043d2c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e4faf  00000000  00000000  00057672  2**0
+ 19 .debug_str    000e4fd4  00000000  00000000  0005767e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0013c621  2**0
+ 20 .comment      00000043  00000000  00000000  0013c652  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003e2c  00000000  00000000  0013c664  2**2
+ 21 .debug_frame  00003e2c  00000000  00000000  0013c698  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  00140490  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  001404c4  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2684,7 +2684,7 @@ void BME280_Error_Handler(void)
 }
 
 static void SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
-{                                    // 6.3.2 SPI write
+{
  80015d4:	b580      	push	{r7, lr}
  80015d6:	b084      	sub	sp, #16
  80015d8:	af00      	add	r7, sp, #0
@@ -2693,7 +2693,7 @@ static void SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
  80015de:	71fb      	strb	r3, [r7, #7]
  80015e0:	4613      	mov	r3, r2
  80015e2:	80bb      	strh	r3, [r7, #4]
-    uint8_t regAddress = reg & 0x7F; // Write command -> applies mask 0x7F = 0b01111111 -> Most Significant Bit (bit number 7) = 0
+    uint8_t regAddress = reg & WRITE_CMD_BIT; // Apply the write command mask
  80015e4:	79fb      	ldrb	r3, [r7, #7]
  80015e6:	f003 037f 	and.w	r3, r3, #127	@ 0x7f
  80015ea:	b2db      	uxtb	r3, r3
@@ -2731,7 +2731,7 @@ static void SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
 08001630 <SPI_Read>:
 
 static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
-{                                    // 6.3.1 SPI read
+{
  8001630:	b580      	push	{r7, lr}
  8001632:	b084      	sub	sp, #16
  8001634:	af00      	add	r7, sp, #0
@@ -2740,7 +2740,7 @@ static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
  800163a:	71fb      	strb	r3, [r7, #7]
  800163c:	4613      	mov	r3, r2
  800163e:	80bb      	strh	r3, [r7, #4]
-    uint8_t regAddress = reg | 0x80; // Read command -> applies mask 0x80 = 0b10000000 -> Most Significant Bit (bit number 7) = 1
+    uint8_t regAddress = reg | READ_CMD_BIT; // Apply the read command mask
  8001640:	79fb      	ldrb	r3, [r7, #7]
  8001642:	f063 037f 	orn	r3, r3, #127	@ 0x7f
  8001646:	b2db      	uxtb	r3, r3

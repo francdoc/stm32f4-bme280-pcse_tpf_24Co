@@ -17,6 +17,9 @@ extern SPI_HandleTypeDef hspi1;
 #define CS_Pin GPIO_PIN_3
 #define CS_GPIO_Port GPIOB
 
+#define READ_CMD_BIT 0x80  // Command bit for read operation (Most Significant Bit = 1) | 6.3.1 SPI read | applies mask 0x80 = 0b10000000 -> Most Significant Bit (bit number 7) = 1
+#define WRITE_CMD_BIT 0x7F // Command bit for write operation (Most Significant Bit = 0) | 6.3.2 SPI write | applies mask 0x7F = 0b01111111 -> Most Significant Bit (bit number 7) = 0
+
 void BME280_init(void);
 void BME280_calculate(void);
 float BME280_getTemp(void);
