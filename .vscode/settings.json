@@ -2,6 +2,7 @@
     "files.associations": {
         "*.go": "go",
         "stm32f4xx_hal.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "api_delay.h": "c"
     }
 }

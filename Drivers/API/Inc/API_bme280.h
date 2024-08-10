@@ -71,19 +71,22 @@ float BME280_getTemp(void);
 float BME280_getHum(void);
 void BME280_Error_Handler(void);
 
-typedef enum {
+typedef enum
+{
   TEMP_NORMAL,
   TEMP_ALARM,
 } tempState_t;
 
 void APP_update(void);
 void update_lcd_clock(void);
-void lcd_display_data(void);
+void lcd_display_date(void);
+void lcd_display_clock(void);
 void clock_init_code(void);
 void APP_init(void);
-
+void prepare_sensor_data_for_lcd(void);
+void lcd_display_sensor_data(void);
 void lcd_alarm();
-
-void uart_display_data(void);
+void prepare_sensor_data_for_uart(uint8_t *message_1, uint8_t *message_2);
+void uart_display_data(uint8_t *message_1, uint8_t *message_2);
 
 #endif /* API_INC_DRIVER_BME280_H_ */

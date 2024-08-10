@@ -12,46 +12,33 @@ void update_lcd_clock(void)
 {
     HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
     HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BCD);
-
-    PosCaracHLcd(0);
-    DatoBCD(sTime.Hours);
-    DatoLcd(':');
-    DatoBCD(sTime.Minutes);
-    DatoLcd(':');
-    DatoBCD(sTime.Seconds);
-
-    PosCaracLLcd(0);
-    DatoBCD(sDate.Date);
-    DatoLcd('/');
-    DatoBCD(sDate.Month);
-    DatoLcd('/');
-    DatoBCD(sDate.Year);
 }
 
-void clock_init_code(void){
-	/*
-	* * Initialize RTC and set the Time and Date
-	*/
+void clock_init_code(void)
+{
+    /*
+     * * Initialize RTC and set the Time and Date
+     */
 
-	sTime.Hours = 0x01;
-	sTime.Minutes = 0x20;
-	sTime.Seconds = 0x00;
-	sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
-	sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+    sTime.Hours = 0x01;
+    sTime.Minutes = 0x20;
+    sTime.Seconds = 0x00;
+    sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+    sTime.StoreOperation = RTC_STOREOPERATION_RESET;
 
-	if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
-	{
-	Error_Handler();
-	}
-	sDate.WeekDay = RTC_WEEKDAY_MONDAY;
-	sDate.Month = RTC_MONTH_AUGUST;
-	sDate.Date = 0x05;
-	sDate.Year = 0x24;
+    if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+    sDate.Month = RTC_MONTH_AUGUST;
+    sDate.Date = 0x05;
+    sDate.Year = 0x24;
 
-	if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
-	{
-	Error_Handler();
-	}
+    if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
+    {
+        Error_Handler();
+    }
 }
 
 /**
@@ -87,8 +74,9 @@ static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
 
 static tempState_t currentTempState;
 
-void tempFSM_init() {
-	currentTempState = TEMP_NORMAL;
+void tempFSM_init()
+{
+    currentTempState = TEMP_NORMAL;
 }
 
 void FSM_update(void);
@@ -146,9 +134,9 @@ static void trimmingParametersRead(void)
 // Function to initialize the BME280 sensor
 void BME280_init(void)
 {
-	clock_init_code();
+    clock_init_code();
 
-	tempFSM_init();
+    tempFSM_init();
 
     // Read trimming parameters from the sensor
     trimmingParametersRead();
@@ -225,12 +213,14 @@ static uint8_t BME280_read(void)
 
     if (chipID == 0x60)
     {
+#ifdef DEBUG_BME280
+        // blocking delays affect clock display performance negatively (time-lcd lag)
         for (int i = 0; i <= 2; i++)
         {
             BSP_LED_Toggle(LED2); // sensor ID OK
             HAL_Delay(100);
         }
-
+#endif
         SPI_Read(RAWDATAREG1, sensorData, RAWDATASIZE);
 
         /* Data readout is done by starting a burst read from 0xF7 to 0xFC (temperature and pressure) or from 0xF7 to 0xFE
@@ -256,36 +246,20 @@ static uint8_t BME280_read(void)
 
 void eval_data()
 {
-	uint8_t message[50]; // check how to clear buffer to reuse
-
-	strcpy((char *)message, "Evaluating Temperature data.\r\n");
-	uartSendString(message);
-
-    uint8_t message_2[50]; // check buffer memory and clear and creation
-
-    if (temp > THRESHOLD_TEMP){
+    uint8_t message[50];
+    if (temp > THRESHOLD_TEMP)
+    {
         currentTempState = TEMP_ALARM;
-        strcpy((char *)message_2, "Temperature Alarm State.\r\n");
-        uartSendString(message_2);  // Debug message
+        strcpy((char *)message, "Temperature Alarm State.\r\n");
+        uartSendString(message);
 
+#ifdef DEBUG_EVAL_DATA
         for (int i = 0; i <= 3; i++)
         {
-        	BSP_LED_Toggle(LED3); // sensor ID ERROR
-        	HAL_Delay(10);
+            BSP_LED_Toggle(LED3);
+            HAL_Delay(20);
         }
-
-        // Send temperature data
-        strcpy((char *)message, "Temperature: ");
-        char tempStr[20];
-        int intPart = (int)temp;
-        int fracPart = (int)((temp - intPart) * 100);
-        itoa(intPart, tempStr, 10);
-        strcat((char *)message, tempStr);
-        strcat((char *)message, ".");
-        itoa(fracPart, tempStr, 10);
-        strcat((char *)message, tempStr);
-        strcat((char *)message, " C\r\n");
-        uartSendString(message);
+#endif
     }
     else
     {
@@ -297,61 +271,60 @@ void eval_data()
 
 void BME280_calculate(void)
 {
-	temp = ((float) BME280_compensate_T_int32(tADC)) / 100.0; // from integer to float
-	hum = ((float) bme280_compensate_H_int32(hADC)) / 1024.0; // WATCHOUT FOR IMPLICIT TYPECASTS!!!!!!!!!
+    temp = ((float)BME280_compensate_T_int32(tADC)) / 100.0; // from integer to float
+    hum = ((float)bme280_compensate_H_int32(hADC)) / 1024.0; // WATCHOUT FOR IMPLICIT TYPECASTS!!!!!!!!!
 }
 
-void uart_display_data(void){
-    uint8_t message[50];
+char tempStr[20];
+char humStr[20];
 
+void prepare_sensor_data_for_uart(uint8_t *message_1, uint8_t *message_2)
+{
     int intPart = (int)temp;
     int fracPart = (int)((temp - intPart) * 100);
-
-    strcpy((char *)message, "Device ready, going to transfer data via UART.\r\n");
-    uartSendString(message);
-
-    // Send temperature data
-    strcpy((char *)message, "Temperature: ");
-
-    char tempStr[20];
-
+    strcpy((char *)message_1, "Temperature: ");
     itoa(intPart, tempStr, 10);
-    strcat((char *)message, tempStr);
-    strcat((char *)message, ".");
+    strcat((char *)message_1, tempStr);
+    strcat((char *)message_1, ".");
     itoa(fracPart, tempStr, 10);
-    strcat((char *)message, tempStr);
-    strcat((char *)message, " C\r\n");
-    uartSendString(message);
+    strcat((char *)message_1, tempStr);
+    strcat((char *)message_1, " C\r\n");
 
-    // Send humidity data
-    strcpy((char *)message, "Humidity: ");
-    char humStr[20];
+    strcpy((char *)message_2, "Humidity: ");
     intPart = (int)hum;
     fracPart = (int)((hum - intPart) * 100);
     itoa(intPart, humStr, 10);
-    strcat((char *)message, humStr);
-    strcat((char *)message, ".");
+    strcat((char *)message_2, humStr);
+    strcat((char *)message_2, ".");
     itoa(fracPart, humStr, 10);
-    strcat((char *)message, humStr);
-    strcat((char *)message, " %\r\n");
-    uartSendString(message);
+    strcat((char *)message_2, humStr);
+    strcat((char *)message_2, " %\r\n");
 }
 
-void lcd_display_data(void){
-	update_lcd_clock();
+void uart_display_data(uint8_t *message_1, uint8_t *message_2)
+{
+    uartSendString(message_1);
+    uartSendString(message_2);
+}
 
+char lcdTempStr[20];
+char lcdHumStr[20];
+
+void prepare_sensor_data_for_lcd(void)
+{
     // Prepare temperature string for LCD
-    char lcdTempStr[20];
     itoa((int)temp, lcdTempStr, 10);
     strcat(lcdTempStr, ".");
     itoa((int)((temp - (int)temp) * 100), lcdTempStr + strlen(lcdTempStr), 10);
 
     // Prepare humidity string for LCD
-    char lcdHumStr[20];
     itoa((int)hum, lcdHumStr, 10);
     strcat(lcdHumStr, ".");
     itoa((int)((hum - (int)hum) * 100), lcdHumStr + strlen(lcdHumStr), 10);
+}
 
+void lcd_display_sensor_data(void)
+{
     // Display temperature on the LCD
     PosCaracLLcd(9); // Assuming position 0 on the upper line
     SacaTextoLcd((uint8_t *)"T:");
@@ -363,40 +336,72 @@ void lcd_display_data(void){
     SacaTextoLcd((uint8_t *)lcdHumStr);
 }
 
-void lcd_alarm(){
-    PosCaracLLcd(9); // Assuming position 0 on the lower line
-    SacaTextoLcd((uint8_t *)"ALARMA!");
+void lcd_alarm()
+{
+    PosCaracLLcd(0);
+    SacaTextoLcd((uint8_t *)"ALARMA! ");
 }
 
-void FSM_update() {
-	eval_data();
+void lcd_display_clock()
+{
+    PosCaracHLcd(0);
+    DatoBCD(sTime.Hours);
+    DatoLcd(':');
+    DatoBCD(sTime.Minutes);
+    DatoLcd(':');
+    DatoBCD(sTime.Seconds);
+}
 
-	switch (currentTempState) {
-	case TEMP_ALARM:
-		lcd_alarm();
-	  break;
-	case TEMP_NORMAL:
-	  // Clear the "ALARMA" message from the LCD before updating with normal data
-	  // Assuming the LCD has 16 characters per line, this will overwrite the "ALARMA" message
-	  break;
-	default:
-    break;
-  }
+void lcd_display_date()
+{
+    PosCaracLLcd(0);
+    DatoBCD(sDate.Date);
+    DatoLcd('/');
+    DatoBCD(sDate.Month);
+    DatoLcd('/');
+    DatoBCD(sDate.Year);
+}
+
+void FSM_update()
+{
+    eval_data();
+
+    switch (currentTempState)
+    {
+    case TEMP_ALARM:
+        lcd_alarm();
+        break;
+    case TEMP_NORMAL:
+        lcd_display_date();
+        break;
+    default:
+        break;
+    }
 }
 
 void APP_init()
 {
-	  uartInit();
-	  BME280_init();
-	  Init_Lcd();
+    uartInit();
+    BME280_init();
+    Init_Lcd();
 }
 
 void APP_update()
 {
-	BME280_read();
-	FSM_update();
-	BME280_calculate();
+    update_lcd_clock();
+    lcd_display_clock();
 
-	uart_display_data();
-	lcd_display_data();
+    BME280_read();
+
+    FSM_update();
+
+    BME280_calculate();
+
+    uint8_t message_tem[50];
+    uint8_t message_hum[50];
+    prepare_sensor_data_for_uart(message_tem, message_hum);
+    uart_display_data(message_tem, message_hum);
+
+    prepare_sensor_data_for_lcd();
+    lcd_display_sensor_data();
 }
