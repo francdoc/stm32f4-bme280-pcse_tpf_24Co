@@ -11,8 +11,10 @@
 ../Drivers/API/Src/API_bme280.c:209:7:BME280_getTemp	4	static
 ../Drivers/API/Src/API_bme280.c:214:7:BME280_getHum	4	static
 ../Drivers/API/Src/API_bme280.c:219:16:BME280_read	32	static
-../Drivers/API/Src/API_bme280.c:257:6:eval_data	104	static
-../Drivers/API/Src/API_bme280.c:293:6:BME280_calculate	64	static
-../Drivers/API/Src/API_bme280.c:310:6:lcd_display_data	168	static
-../Drivers/API/Src/API_bme280.c:369:6:FSM_update	72	static
-../Drivers/API/Src/API_bme280.c:397:6:APP_update	8	static
+../Drivers/API/Src/API_bme280.c:257:6:eval_data	152	static
+../Drivers/API/Src/API_bme280.c:298:6:BME280_calculate	8	static
+../Drivers/API/Src/API_bme280.c:304:6:uart_display_data	120	static
+../Drivers/API/Src/API_bme280.c:340:6:lcd_display_data	56	static
+../Drivers/API/Src/API_bme280.c:366:6:lcd_alarm	8	static
+../Drivers/API/Src/API_bme280.c:371:6:FSM_update	8	static
+../Drivers/API/Src/API_bme280.c:387:6:APP_update	8	static

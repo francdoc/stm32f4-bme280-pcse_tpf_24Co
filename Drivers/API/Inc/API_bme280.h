@@ -81,4 +81,8 @@ void update_lcd_clock(void);
 void lcd_display_data(void);
 void clock_init_code(void);
 
+void lcd_alarm();
+
+void uart_display_data(void);
+
 #endif /* API_INC_DRIVER_BME280_H_ */

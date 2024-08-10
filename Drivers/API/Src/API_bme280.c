@@ -256,12 +256,17 @@ static uint8_t BME280_read(void)
 
 void eval_data()
 {
-    uint8_t message[50]; // check buffer memory and clear and creation
+	uint8_t message[50]; // check how to clear buffer to reuse
+
+	strcpy((char *)message, "Evaluating Temperature data.\r\n");
+	uartSendString(message);
+
+    uint8_t message_2[50]; // check buffer memory and clear and creation
 
     if (temp > THRESHOLD_TEMP){
         currentTempState = TEMP_ALARM;
-        strcpy((char *)message, "Temperature Alarm State.\r\n");
-        uartSendString(message);  // Debug message
+        strcpy((char *)message_2, "Temperature Alarm State.\r\n");
+        uartSendString(message_2);  // Debug message
 
         for (int i = 0; i <= 3; i++)
         {
@@ -292,36 +297,24 @@ void eval_data()
 
 void BME280_calculate(void)
 {
-    if (BME280_read() == 0)
-    {
-        temp = ((float) BME280_compensate_T_int32(tADC)) / 100.0; // from integer to float
-        hum = ((float) bme280_compensate_H_int32(hADC)) / 1024.0; // WATCHOUT FOR IMPLICIT TYPECASTS!!!!!!!!!
-
-    }
-    else
-    {
-        temp = 0;
-        hum = 0;
-        uint8_t errorMessage[] = "Device not ready. Check device connection\r\n";
-        uartSendString(errorMessage);
-    }
+	temp = ((float) BME280_compensate_T_int32(tADC)) / 100.0; // from integer to float
+	hum = ((float) bme280_compensate_H_int32(hADC)) / 1024.0; // WATCHOUT FOR IMPLICIT TYPECASTS!!!!!!!!!
 }
 
-void lcd_display_data(void){
-	update_lcd_clock();
-
+void uart_display_data(void){
     uint8_t message[50];
 
-    // Notify that the device is ready
-    // Esto es redundante! Enviar directamente por uartSendString!!!!!!
+    int intPart = (int)temp;
+    int fracPart = (int)((temp - intPart) * 100);
+
     strcpy((char *)message, "Device ready, going to transfer data via UART.\r\n");
     uartSendString(message);
 
     // Send temperature data
     strcpy((char *)message, "Temperature: ");
+
     char tempStr[20];
-    int intPart = (int)temp;
-    int fracPart = (int)((temp - intPart) * 100);
+
     itoa(intPart, tempStr, 10);
     strcat((char *)message, tempStr);
     strcat((char *)message, ".");
@@ -342,6 +335,10 @@ void lcd_display_data(void){
     strcat((char *)message, humStr);
     strcat((char *)message, " %\r\n");
     uartSendString(message);
+}
+
+void lcd_display_data(void){
+	update_lcd_clock();
 
     // Prepare temperature string for LCD
     char lcdTempStr[20];
@@ -366,28 +363,21 @@ void lcd_display_data(void){
     SacaTextoLcd((uint8_t *)lcdHumStr);
 }
 
+void lcd_alarm(){
+    PosCaracLLcd(9); // Assuming position 0 on the lower line
+    SacaTextoLcd((uint8_t *)"ALARMA!");
+}
+
 void FSM_update() {
-	BME280_read();
-
-	uint8_t message[50];
-	strcpy((char *)message, "Evaluating Temperature data.\r\n");
-	uartSendString(message);
-
 	eval_data();
 
 	switch (currentTempState) {
 	case TEMP_ALARM:
-	  // PONER UNA FUNCION ESPECIFICA!
-      PosCaracLLcd(9); // Assuming position 0 on the lower line
-      SacaTextoLcd((uint8_t *)"ALARMA!");
-	  BME280_calculate();
-	  lcd_display_data();
+		lcd_alarm();
 	  break;
 	case TEMP_NORMAL:
 	  // Clear the "ALARMA" message from the LCD before updating with normal data
 	  // Assuming the LCD has 16 characters per line, this will overwrite the "ALARMA" message
-	  BME280_calculate();
-	  lcd_display_data();
 	  break;
 	default:
     break;
@@ -396,5 +386,10 @@ void FSM_update() {
 
 void APP_update()
 {
-    FSM_update();
+	BME280_read();
+	FSM_update();
+	BME280_calculate();
+
+	uart_display_data();
+	lcd_display_data();
 }
