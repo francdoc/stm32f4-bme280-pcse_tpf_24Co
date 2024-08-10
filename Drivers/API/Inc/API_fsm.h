@@ -1,6 +1,5 @@
-#include <stdint.h>
 #include <stdio.h>
-
+#include <stdint.h>
 #include <stdlib.h>
 
 #include "stm32f4xx_hal.h"
@@ -14,12 +13,10 @@
 
 #include "API_bme280.h"
 
-extern RTC_HandleTypeDef hrtc;
+#include "API_clock_date.h"
 
 #define THRESHOLD_TEMP 24
 
-void clock_init_code(void);
-void update_lcd_clock(void);
 void lcd_display_date(void);
 void lcd_display_clock(void);
 

@@ -41,7 +41,8 @@ Drivers/API/Src/API_fsm.o: ../Drivers/API/Src/API_fsm.c \
  /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_lcd.h \
  /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_lcd_port.h \
  /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_lcd_port.h \
- /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_bme280.h
+ /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_bme280.h \
+ /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_clock_date.h
 /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_fsm.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -85,3 +86,4 @@ Drivers/API/Src/API_fsm.o: ../Drivers/API/Src/API_fsm.c \
 /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_lcd_port.h:
 /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_lcd_port.h:
 /home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_bme280.h:
+/home/franco/CESE/PDM/PdM_workspace/SPI_test/Drivers/API/Inc/API_clock_date.h:

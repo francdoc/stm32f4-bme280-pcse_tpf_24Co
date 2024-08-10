@@ -6,6 +6,7 @@
 "./Core/Src/system_stm32f4xx.o"
 "./Core/Startup/startup_stm32f429zitx.o"
 "./Drivers/API/Src/API_bme280.o"
+"./Drivers/API/Src/API_clock_date.o"
 "./Drivers/API/Src/API_delay.o"
 "./Drivers/API/Src/API_fsm.o"
 "./Drivers/API/Src/API_lcd.o"
