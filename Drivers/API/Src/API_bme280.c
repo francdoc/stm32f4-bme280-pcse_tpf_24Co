@@ -1,6 +1,7 @@
 #include "API_bme280.h"
 
-// Declare global variables for temperature and humidity
+// Declare global variables for temperature and humidity,
+// we will use them later in the finite-state machine app code.
 float temp, hum;
 
 // Calibration variables
@@ -22,16 +23,14 @@ static BME280_S32_t tADC, hADC;
  */
 void BME280_Error_Handler(void)
 {
-    /* USER CODE BEGIN Error_Handler_Debug */
     while (1)
     {
     }
-    /* USER CODE END Error_Handler_Debug */
 }
 
 static void SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
 {
-    uint8_t regAddress = reg & WRITE_CMD_BIT; // Apply the write command mask
+    uint8_t regAddress = reg & WRITE_CMD_BIT; // Apply the write command mask.
     HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateLow);
     HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), HAL_MAX_DELAY);
     HAL_SPI_Transmit(&hspi1, data, size, HAL_MAX_DELAY);
@@ -40,22 +39,14 @@ static void SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
 
 static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
 {
-    uint8_t regAddress = reg | READ_CMD_BIT; // Apply the read command mask
+    uint8_t regAddress = reg | READ_CMD_BIT; // Apply the read command mask.
     HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateLow);
     HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), TIMEOUT);
     HAL_SPI_Receive(&hspi1, data, size, TIMEOUT);
     HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateHigh);
 }
 
-/*
-5.4.2 Register 0xE0 “reset”
-The “reset” register contains the soft reset word reset[7:0]. If the value 0xB6 is written to the register,
-the device is reset using the complete power-on-reset procedure. Writing other values than 0xB6 has
-no effect. The readout value is always 0x00.*/
-#define RESET_REG 0xE0
-
 // 4.2.2 Trimming parameter readout
-// UNDERSTAND AND ADAPT TO OWN IT
 static void trimmingParametersRead(void)
 {
     uint8_t calibData1[26]; // Table 18: Memory map -> calib00..calib25 | 0x88 to 0xA1
@@ -118,8 +109,7 @@ void BME280_init(void)
     HAL_Delay(BME_HAL_DELAY);
 }
 
-// Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
-static BME280_S32_t t_fine; // t_fine carries fine temperature as global value
+static BME280_S32_t t_fine;
 
 // Temperature compensation formula taken from datasheet (please check page 25/60 for reference).
 static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
@@ -146,12 +136,6 @@ static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
     return (BME280_U32_t)(v_x1_u32r >> 12);
 }
 
-void BME280_calculate(void)
-{
-    temp = ((float)BME280_compensate_T_int32(tADC)) / 100.0; // from integer to float
-    hum = ((float)bme280_compensate_H_int32(hADC)) / 1024.0; // WATCHOUT FOR IMPLICIT TYPECASTS!!!!!!!!!
-}
-
 float BME280_getTemp(void)
 {
     return temp;
@@ -173,9 +157,9 @@ uint8_t BME280_read(void)
     {
 #ifdef DEBUG_BME280
         // blocking delays affect clock display performance negatively (time-lcd lag)
-        for (int i = 0; i <= 2; i++)
+        for (int i = 0; i <= NumBlinks; i++)
         {
-            BSP_LED_Toggle(LED2); // sensor ID OK
+            BSP_LED_Toggle(LED2); // blink indicates sensor ID rx is OK
             HAL_Delay(100);
         }
 #endif
@@ -201,3 +185,10 @@ uint8_t BME280_read(void)
         return 1;
     }
 }
+
+void BME280_calculate(void)
+{
+    temp = ((float)BME280_compensate_T_int32(tADC)) / 100.0;
+    hum = ((float)bme280_compensate_H_int32(hADC)) / 1024.0;
+}
+

@@ -5,7 +5,7 @@
 ../Drivers/API/Src/API_bme280.c:91:6:BME280_init	16	static
 ../Drivers/API/Src/API_bme280.c:125:21:BME280_compensate_T_int32	32	static
 ../Drivers/API/Src/API_bme280.c:138:21:bme280_compensate_H_int32	24	static
-../Drivers/API/Src/API_bme280.c:149:6:BME280_calculate	8	static
-../Drivers/API/Src/API_bme280.c:155:7:BME280_getTemp	4	static
-../Drivers/API/Src/API_bme280.c:160:7:BME280_getHum	4	static
-../Drivers/API/Src/API_bme280.c:165:9:BME280_read	24	static
+../Drivers/API/Src/API_bme280.c:149:7:BME280_getTemp	4	static
+../Drivers/API/Src/API_bme280.c:154:7:BME280_getHum	4	static
+../Drivers/API/Src/API_bme280.c:159:9:BME280_read	24	static
+../Drivers/API/Src/API_bme280.c:199:6:BME280_calculate	8	static

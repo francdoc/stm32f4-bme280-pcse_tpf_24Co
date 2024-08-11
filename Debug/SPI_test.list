@@ -3076,159 +3076,159 @@ static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
  80018e0:	20000122 	.word	0x20000122
  80018e4:	20000120 	.word	0x20000120
 
-080018e8 <BME280_calculate>:
-
-void BME280_calculate(void)
-{
- 80018e8:	b580      	push	{r7, lr}
- 80018ea:	af00      	add	r7, sp, #0
-    temp = ((float)BME280_compensate_T_int32(tADC)) / 100.0; // from integer to float
- 80018ec:	4b1b      	ldr	r3, [pc, #108]	@ (800195c <BME280_calculate+0x74>)
- 80018ee:	681b      	ldr	r3, [r3, #0]
- 80018f0:	4618      	mov	r0, r3
- 80018f2:	f7ff ff4b 	bl	800178c <BME280_compensate_T_int32>
- 80018f6:	ee07 0a90 	vmov	s15, r0
- 80018fa:	eef8 7ae7 	vcvt.f32.s32	s15, s15
- 80018fe:	ee17 0a90 	vmov	r0, s15
- 8001902:	f7fe fddf 	bl	80004c4 <__aeabi_f2d>
- 8001906:	f04f 0200 	mov.w	r2, #0
- 800190a:	4b15      	ldr	r3, [pc, #84]	@ (8001960 <BME280_calculate+0x78>)
- 800190c:	f7fe ff5c 	bl	80007c8 <__aeabi_ddiv>
- 8001910:	4602      	mov	r2, r0
- 8001912:	460b      	mov	r3, r1
- 8001914:	4610      	mov	r0, r2
- 8001916:	4619      	mov	r1, r3
- 8001918:	f7ff f83e 	bl	8000998 <__aeabi_d2f>
- 800191c:	4603      	mov	r3, r0
- 800191e:	4a11      	ldr	r2, [pc, #68]	@ (8001964 <BME280_calculate+0x7c>)
- 8001920:	6013      	str	r3, [r2, #0]
-    hum = ((float)bme280_compensate_H_int32(hADC)) / 1024.0; // WATCHOUT FOR IMPLICIT TYPECASTS!!!!!!!!!
- 8001922:	4b11      	ldr	r3, [pc, #68]	@ (8001968 <BME280_calculate+0x80>)
- 8001924:	681b      	ldr	r3, [r3, #0]
- 8001926:	4618      	mov	r0, r3
- 8001928:	f7ff ff72 	bl	8001810 <bme280_compensate_H_int32>
- 800192c:	ee07 0a90 	vmov	s15, r0
- 8001930:	eef8 7a67 	vcvt.f32.u32	s15, s15
- 8001934:	ee17 0a90 	vmov	r0, s15
- 8001938:	f7fe fdc4 	bl	80004c4 <__aeabi_f2d>
- 800193c:	f04f 0200 	mov.w	r2, #0
- 8001940:	4b0a      	ldr	r3, [pc, #40]	@ (800196c <BME280_calculate+0x84>)
- 8001942:	f7fe ff41 	bl	80007c8 <__aeabi_ddiv>
- 8001946:	4602      	mov	r2, r0
- 8001948:	460b      	mov	r3, r1
- 800194a:	4610      	mov	r0, r2
- 800194c:	4619      	mov	r1, r3
- 800194e:	f7ff f823 	bl	8000998 <__aeabi_d2f>
- 8001952:	4603      	mov	r3, r0
- 8001954:	4a06      	ldr	r2, [pc, #24]	@ (8001970 <BME280_calculate+0x88>)
- 8001956:	6013      	str	r3, [r2, #0]
-}
- 8001958:	bf00      	nop
- 800195a:	bd80      	pop	{r7, pc}
- 800195c:	2000012c 	.word	0x2000012c
- 8001960:	40590000 	.word	0x40590000
- 8001964:	20000100 	.word	0x20000100
- 8001968:	20000130 	.word	0x20000130
- 800196c:	40900000 	.word	0x40900000
- 8001970:	20000104 	.word	0x20000104
-
-08001974 <BME280_read>:
+080018e8 <BME280_read>:
 {
     return hum;
 }
 
 uint8_t BME280_read(void)
 {
- 8001974:	b580      	push	{r7, lr}
- 8001976:	b084      	sub	sp, #16
- 8001978:	af00      	add	r7, sp, #0
+ 80018e8:	b580      	push	{r7, lr}
+ 80018ea:	b084      	sub	sp, #16
+ 80018ec:	af00      	add	r7, sp, #0
     uint8_t sensorData[8];
     uint8_t chipID;
 
     SPI_Read(CHIPIDREG, &chipID, MEMADDRESSSIZE);
- 800197a:	1cfb      	adds	r3, r7, #3
- 800197c:	2201      	movs	r2, #1
- 800197e:	4619      	mov	r1, r3
- 8001980:	20d0      	movs	r0, #208	@ 0xd0
- 8001982:	f7ff fdc9 	bl	8001518 <SPI_Read>
+ 80018ee:	1cfb      	adds	r3, r7, #3
+ 80018f0:	2201      	movs	r2, #1
+ 80018f2:	4619      	mov	r1, r3
+ 80018f4:	20d0      	movs	r0, #208	@ 0xd0
+ 80018f6:	f7ff fe0f 	bl	8001518 <SPI_Read>
 
     if (chipID == 0x60)
- 8001986:	78fb      	ldrb	r3, [r7, #3]
- 8001988:	2b60      	cmp	r3, #96	@ 0x60
- 800198a:	d118      	bne.n	80019be <BME280_read+0x4a>
+ 80018fa:	78fb      	ldrb	r3, [r7, #3]
+ 80018fc:	2b60      	cmp	r3, #96	@ 0x60
+ 80018fe:	d118      	bne.n	8001932 <BME280_read+0x4a>
         {
-            BSP_LED_Toggle(LED2); // sensor ID OK
+            BSP_LED_Toggle(LED2); // blink indicates sensor ID rx is OK
             HAL_Delay(100);
         }
 #endif
         SPI_Read(RAWDATAREG1, sensorData, RAWDATASIZE);
- 800198c:	1d3b      	adds	r3, r7, #4
- 800198e:	2208      	movs	r2, #8
- 8001990:	4619      	mov	r1, r3
- 8001992:	20f7      	movs	r0, #247	@ 0xf7
- 8001994:	f7ff fdc0 	bl	8001518 <SPI_Read>
+ 8001900:	1d3b      	adds	r3, r7, #4
+ 8001902:	2208      	movs	r2, #8
+ 8001904:	4619      	mov	r1, r3
+ 8001906:	20f7      	movs	r0, #247	@ 0xf7
+ 8001908:	f7ff fe06 	bl	8001518 <SPI_Read>
 
         /* Data readout is done by starting a burst read from 0xF7 to 0xFC (temperature and pressure) or from 0xF7 to 0xFE
          * (temperature, pressure and humidity). The data are read out in an unsigned 20-bit format both for pressure and
          * for temperature and in an unsigned 16-bit format for humidity. */
 
         tADC = (sensorData[3] << 12) | (sensorData[4] << 4) | (sensorData[5] >> 4); // WE CAN RETURN THIS WITH * & in the function signature
- 8001998:	79fb      	ldrb	r3, [r7, #7]
- 800199a:	031a      	lsls	r2, r3, #12
- 800199c:	7a3b      	ldrb	r3, [r7, #8]
- 800199e:	011b      	lsls	r3, r3, #4
- 80019a0:	4313      	orrs	r3, r2
- 80019a2:	7a7a      	ldrb	r2, [r7, #9]
- 80019a4:	0912      	lsrs	r2, r2, #4
- 80019a6:	b2d2      	uxtb	r2, r2
- 80019a8:	4313      	orrs	r3, r2
- 80019aa:	4a0f      	ldr	r2, [pc, #60]	@ (80019e8 <BME280_read+0x74>)
- 80019ac:	6013      	str	r3, [r2, #0]
+ 800190c:	79fb      	ldrb	r3, [r7, #7]
+ 800190e:	031a      	lsls	r2, r3, #12
+ 8001910:	7a3b      	ldrb	r3, [r7, #8]
+ 8001912:	011b      	lsls	r3, r3, #4
+ 8001914:	4313      	orrs	r3, r2
+ 8001916:	7a7a      	ldrb	r2, [r7, #9]
+ 8001918:	0912      	lsrs	r2, r2, #4
+ 800191a:	b2d2      	uxtb	r2, r2
+ 800191c:	4313      	orrs	r3, r2
+ 800191e:	4a0f      	ldr	r2, [pc, #60]	@ (800195c <BME280_read+0x74>)
+ 8001920:	6013      	str	r3, [r2, #0]
         hADC = (sensorData[6] << 8) | sensorData[7];
- 80019ae:	7abb      	ldrb	r3, [r7, #10]
- 80019b0:	021b      	lsls	r3, r3, #8
- 80019b2:	7afa      	ldrb	r2, [r7, #11]
- 80019b4:	4313      	orrs	r3, r2
- 80019b6:	4a0d      	ldr	r2, [pc, #52]	@ (80019ec <BME280_read+0x78>)
- 80019b8:	6013      	str	r3, [r2, #0]
+ 8001922:	7abb      	ldrb	r3, [r7, #10]
+ 8001924:	021b      	lsls	r3, r3, #8
+ 8001926:	7afa      	ldrb	r2, [r7, #11]
+ 8001928:	4313      	orrs	r3, r2
+ 800192a:	4a0d      	ldr	r2, [pc, #52]	@ (8001960 <BME280_read+0x78>)
+ 800192c:	6013      	str	r3, [r2, #0]
 
         return 0; // check state of the function return and pass the data with pointer * & for the return of tADC hADC
- 80019ba:	2300      	movs	r3, #0
- 80019bc:	e00f      	b.n	80019de <BME280_read+0x6a>
+ 800192e:	2300      	movs	r3, #0
+ 8001930:	e00f      	b.n	8001952 <BME280_read+0x6a>
     }
     else
     {
         for (int i = 0; i <= 2; i++)
- 80019be:	2300      	movs	r3, #0
- 80019c0:	60fb      	str	r3, [r7, #12]
- 80019c2:	e008      	b.n	80019d6 <BME280_read+0x62>
+ 8001932:	2300      	movs	r3, #0
+ 8001934:	60fb      	str	r3, [r7, #12]
+ 8001936:	e008      	b.n	800194a <BME280_read+0x62>
         {
             BSP_LED_Toggle(LED3); // sensor ID ERROR
- 80019c4:	2002      	movs	r0, #2
- 80019c6:	f000 fc91 	bl	80022ec <BSP_LED_Toggle>
+ 8001938:	2002      	movs	r0, #2
+ 800193a:	f000 fcd7 	bl	80022ec <BSP_LED_Toggle>
             HAL_Delay(100);
- 80019ca:	2064      	movs	r0, #100	@ 0x64
- 80019cc:	f000 fd1a 	bl	8002404 <HAL_Delay>
+ 800193e:	2064      	movs	r0, #100	@ 0x64
+ 8001940:	f000 fd60 	bl	8002404 <HAL_Delay>
         for (int i = 0; i <= 2; i++)
- 80019d0:	68fb      	ldr	r3, [r7, #12]
- 80019d2:	3301      	adds	r3, #1
- 80019d4:	60fb      	str	r3, [r7, #12]
- 80019d6:	68fb      	ldr	r3, [r7, #12]
- 80019d8:	2b02      	cmp	r3, #2
- 80019da:	ddf3      	ble.n	80019c4 <BME280_read+0x50>
+ 8001944:	68fb      	ldr	r3, [r7, #12]
+ 8001946:	3301      	adds	r3, #1
+ 8001948:	60fb      	str	r3, [r7, #12]
+ 800194a:	68fb      	ldr	r3, [r7, #12]
+ 800194c:	2b02      	cmp	r3, #2
+ 800194e:	ddf3      	ble.n	8001938 <BME280_read+0x50>
         }
 
         return 1;
- 80019dc:	2301      	movs	r3, #1
+ 8001950:	2301      	movs	r3, #1
     }
 }
- 80019de:	4618      	mov	r0, r3
- 80019e0:	3710      	adds	r7, #16
- 80019e2:	46bd      	mov	sp, r7
- 80019e4:	bd80      	pop	{r7, pc}
- 80019e6:	bf00      	nop
- 80019e8:	2000012c 	.word	0x2000012c
- 80019ec:	20000130 	.word	0x20000130
+ 8001952:	4618      	mov	r0, r3
+ 8001954:	3710      	adds	r7, #16
+ 8001956:	46bd      	mov	sp, r7
+ 8001958:	bd80      	pop	{r7, pc}
+ 800195a:	bf00      	nop
+ 800195c:	2000012c 	.word	0x2000012c
+ 8001960:	20000130 	.word	0x20000130
+
+08001964 <BME280_calculate>:
+
+void BME280_calculate(void)
+{
+ 8001964:	b580      	push	{r7, lr}
+ 8001966:	af00      	add	r7, sp, #0
+    temp = ((float)BME280_compensate_T_int32(tADC)) / 100.0;
+ 8001968:	4b1b      	ldr	r3, [pc, #108]	@ (80019d8 <BME280_calculate+0x74>)
+ 800196a:	681b      	ldr	r3, [r3, #0]
+ 800196c:	4618      	mov	r0, r3
+ 800196e:	f7ff ff0d 	bl	800178c <BME280_compensate_T_int32>
+ 8001972:	ee07 0a90 	vmov	s15, r0
+ 8001976:	eef8 7ae7 	vcvt.f32.s32	s15, s15
+ 800197a:	ee17 0a90 	vmov	r0, s15
+ 800197e:	f7fe fda1 	bl	80004c4 <__aeabi_f2d>
+ 8001982:	f04f 0200 	mov.w	r2, #0
+ 8001986:	4b15      	ldr	r3, [pc, #84]	@ (80019dc <BME280_calculate+0x78>)
+ 8001988:	f7fe ff1e 	bl	80007c8 <__aeabi_ddiv>
+ 800198c:	4602      	mov	r2, r0
+ 800198e:	460b      	mov	r3, r1
+ 8001990:	4610      	mov	r0, r2
+ 8001992:	4619      	mov	r1, r3
+ 8001994:	f7ff f800 	bl	8000998 <__aeabi_d2f>
+ 8001998:	4603      	mov	r3, r0
+ 800199a:	4a11      	ldr	r2, [pc, #68]	@ (80019e0 <BME280_calculate+0x7c>)
+ 800199c:	6013      	str	r3, [r2, #0]
+    hum = ((float)bme280_compensate_H_int32(hADC)) / 1024.0;
+ 800199e:	4b11      	ldr	r3, [pc, #68]	@ (80019e4 <BME280_calculate+0x80>)
+ 80019a0:	681b      	ldr	r3, [r3, #0]
+ 80019a2:	4618      	mov	r0, r3
+ 80019a4:	f7ff ff34 	bl	8001810 <bme280_compensate_H_int32>
+ 80019a8:	ee07 0a90 	vmov	s15, r0
+ 80019ac:	eef8 7a67 	vcvt.f32.u32	s15, s15
+ 80019b0:	ee17 0a90 	vmov	r0, s15
+ 80019b4:	f7fe fd86 	bl	80004c4 <__aeabi_f2d>
+ 80019b8:	f04f 0200 	mov.w	r2, #0
+ 80019bc:	4b0a      	ldr	r3, [pc, #40]	@ (80019e8 <BME280_calculate+0x84>)
+ 80019be:	f7fe ff03 	bl	80007c8 <__aeabi_ddiv>
+ 80019c2:	4602      	mov	r2, r0
+ 80019c4:	460b      	mov	r3, r1
+ 80019c6:	4610      	mov	r0, r2
+ 80019c8:	4619      	mov	r1, r3
+ 80019ca:	f7fe ffe5 	bl	8000998 <__aeabi_d2f>
+ 80019ce:	4603      	mov	r3, r0
+ 80019d0:	4a06      	ldr	r2, [pc, #24]	@ (80019ec <BME280_calculate+0x88>)
+ 80019d2:	6013      	str	r3, [r2, #0]
+}
+ 80019d4:	bf00      	nop
+ 80019d6:	bd80      	pop	{r7, pc}
+ 80019d8:	2000012c 	.word	0x2000012c
+ 80019dc:	40590000 	.word	0x40590000
+ 80019e0:	20000100 	.word	0x20000100
+ 80019e4:	20000130 	.word	0x20000130
+ 80019e8:	40900000 	.word	0x40900000
+ 80019ec:	20000104 	.word	0x20000104
 
 080019f0 <RTC_Error_Handler>:
 
@@ -3940,9 +3940,9 @@ void APP_updateSensorData(void)
  8001ee8:	b580      	push	{r7, lr}
  8001eea:	af00      	add	r7, sp, #0
     BME280_read();
- 8001eec:	f7ff fd42 	bl	8001974 <BME280_read>
+ 8001eec:	f7ff fcfc 	bl	80018e8 <BME280_read>
     BME280_calculate();
- 8001ef0:	f7ff fcfa 	bl	80018e8 <BME280_calculate>
+ 8001ef0:	f7ff fd38 	bl	8001964 <BME280_calculate>
 }
  8001ef4:	bf00      	nop
  8001ef6:	bd80      	pop	{r7, pc}

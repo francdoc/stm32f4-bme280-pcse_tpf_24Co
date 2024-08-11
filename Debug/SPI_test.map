@@ -6179,12 +6179,12 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
                 0x0800178c       0x84 ./Drivers/API/Src/API_bme280.o
  .text.bme280_compensate_H_int32
                 0x08001810       0xd8 ./Drivers/API/Src/API_bme280.o
- .text.BME280_calculate
-                0x080018e8       0x8c ./Drivers/API/Src/API_bme280.o
-                0x080018e8                BME280_calculate
  .text.BME280_read
-                0x08001974       0x7c ./Drivers/API/Src/API_bme280.o
-                0x08001974                BME280_read
+                0x080018e8       0x7c ./Drivers/API/Src/API_bme280.o
+                0x080018e8                BME280_read
+ .text.BME280_calculate
+                0x08001964       0x8c ./Drivers/API/Src/API_bme280.o
+                0x08001964                BME280_calculate
  .text.RTC_Error_Handler
                 0x080019f0        0x8 ./Drivers/API/Src/API_clock_date.o
                 0x080019f0                RTC_Error_Handler

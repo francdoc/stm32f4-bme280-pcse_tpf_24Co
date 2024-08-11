@@ -35,6 +35,15 @@ extern SPI_HandleTypeDef hspi1;
 #define PinStateLow 0
 #define PinStateHigh 1
 
+#define NumBlinks 2
+
+/*
+5.4.2 Register 0xE0 “reset”
+The “reset” register contains the soft reset word reset[7:0]. If the value 0xB6 is written to the register,
+the device is reset using the complete power-on-reset procedure. Writing other values than 0xB6 has
+no effect. The readout value is always 0x00.*/
+#define RESET_REG 0xE0
+
 /*
 5.4.3 Register 0xF2 “ctrl_hum”
 The “ctrl_hum” register sets the humidity data acquisition options of the device. Changes to this
