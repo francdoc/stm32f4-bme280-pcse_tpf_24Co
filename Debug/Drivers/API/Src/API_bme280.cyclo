@@ -5,6 +5,6 @@
 ../Drivers/API/Src/API_bme280.c:50:6:BME280_Error_Handler	1
 ../Drivers/API/Src/API_bme280.c:59:13:BME280_CalibrationParams	1
 ../Drivers/API/Src/API_bme280.c:96:6:BME280_init	1
-../Drivers/API/Src/API_bme280.c:144:21:BME280_compensate_T_int32	1
-../Drivers/API/Src/API_bme280.c:157:21:bme280_compensate_H_int32	1
-../Drivers/API/Src/API_bme280.c:168:9:BME280_read	3
+../Drivers/API/Src/API_bme280.c:146:21:BME280_compensate_T_int32	1
+../Drivers/API/Src/API_bme280.c:159:21:bme280_compensate_H_int32	1
+../Drivers/API/Src/API_bme280.c:170:9:BME280_read	3

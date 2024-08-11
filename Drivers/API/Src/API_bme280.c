@@ -141,6 +141,8 @@ void BME280_init(void)
 static BME280_S32_t t_fine;
 
 // Temperature compensation formula taken from datasheet (please check page 25/60 for reference).
+// Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
+// t_fine carries fine temperature as global value for bme280_compensate_H_int32 to process its return humidity value.
 static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
 {
     BME280_S32_t var1, var2, T;
@@ -153,7 +155,7 @@ static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
 
 // Humidity compensation formula taken from datasheet (please check page 25/60 for reference).
 // Returns humidity in %RH as unsigned 32 bit integer in Q22.10 format (22 integer and 10 fractional bits).
-// For example an output value of “47445” represents 47445/1024 = 46.333 %RH.
+// - For example an output value of “47445” represents 47445/1024 = 46.333 %RH.
 static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
 {
     BME280_S32_t v_x1_u32r;
@@ -179,7 +181,7 @@ uint8_t BME280_read(void)
         for (int i = 0; i <= NumOkRxBlinks; i++)
         {
             BSP_LED_Toggle(LED2); // blink indicates sensor ID rx is OK
-            HAL_Delay(100);
+            HAL_Delay(BME280_HAL_DELAY);
         }
 #endif
         /* Data readout is done by starting a burst read from 0xF7 to 0xFE (temperature, pressure and humidity).
@@ -200,26 +202,31 @@ uint8_t BME280_read(void)
 
         SPI_Read(PRESSURE_MSB_REG, sensorDataBuffer, RAW_OUTPUT_DATA_SIZE);
 
-        // Combine the bytes to form the 20-bit temperature value (tADC)
-        tADC = (sensorDataBuffer[TEMP_MSB_INDEX] << 12) |
-        		(sensorDataBuffer[TEMP_LSB_INDEX] << 4) |
-				(sensorDataBuffer[TEMP_XLSB_INDEX] >> 4);
+        // The BME280 output consists of the ADC output values that have to be compensated afterwards.
 
-        hADC = (sensorDataBuffer[HUM_MSB_INDEX] << 8) |
+        // Combine the bytes to form the 20-bit temperature value (tADC).
+        tADC = (sensorDataBuffer[TEMP_MSB_INDEX] << TEMP_MSB_SHIFT) |
+        		(sensorDataBuffer[TEMP_LSB_INDEX] << TEMP_LSB_SHIFT) |
+				(sensorDataBuffer[TEMP_XLSB_INDEX] >> TEMP_XLSB_SHIFT);
+
+        // Apply compensation formula to temperature ADC value.
+        temp = ((float)BME280_compensate_T_int32(tADC)) / TEMPERATURE_SCALE_FACTOR;
+
+        // Combine the bytes to form the 16-bit humidity value (hADC).
+        hADC = (sensorDataBuffer[HUM_MSB_INDEX] << HUM_MSB_SHIFT) |
         		sensorDataBuffer[HUM_LSB_INDEX];
 
-        // Combine the bytes to form the 16-bit humidity value (hADC)
-        temp = ((float)BME280_compensate_T_int32(tADC)) / 100.0;
-        hum = ((float)bme280_compensate_H_int32(hADC)) / 1024.0;
+        // Apply compensation formula to humidity ADC value.
+        hum = ((float)bme280_compensate_H_int32(hADC)) / HUMIDITY_SCALE_FACTOR;
 
-        return 0; // check state of the function return and pass the data with pointer * & for the return of tADC hADC
+        return 0;
     }
     else
     {
-        for (int i = 0; i <= 2; i++)
+        for (int i = 0; i <= NumErrorRxBlinks; i++)
         {
             BSP_LED_Toggle(LED3); // sensor ID ERROR
-            HAL_Delay(100);
+            HAL_Delay(BME280_HAL_DELAY);
         }
 
         return 1;
