@@ -50,8 +50,8 @@ static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
 #define BME280_CALIB_26_ADDR 0xE1 // Starting address for the second block of calibration data (humidity)
 
 // Define the sizes of the calibration data blocks
-#define BME280_CALIBDATA1_SIZE 26 // Size of the first block of calibration data (temperature and pressure)
-#define BME280_CALIBDATA2_SIZE 7  // Size of the second block of calibration data (humidity)
+#define BME280_CALIBDATA_BLOCK1_SIZE 26 // Size of the first block of calibration data (temperature and pressure)
+#define BME280_CALIBDATA_BLOCK2_SIZE 7  // Size of the second block of calibration data (humidity)
 
 // Define indices for calibration data bytes
 #define DIG_T1_LSB_INDEX  0
@@ -71,53 +71,55 @@ static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
 #define DIG_H5_LSB_INDEX  5
 #define DIG_H6_INDEX      6
 
-// Function to combine two bytes into a 16-bit integer
+// Combines two bytes into a 16-bit integer
 static uint16_t combineBytes(uint8_t msb, uint8_t lsb) {
     return ((uint16_t)msb << 8) | lsb;
 }
 
-// Function to extract specific bits from a byte value
+// Extracts specific bits from a byte value
 static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift) {
     return (value & mask) >> shift;
 }
 
-// Function to read the calibration parameters from the BME280 sensor
-static void trimmingParametersRead(void) {
-    uint8_t calibData1[BME280_CALIBDATA1_SIZE]; // Array to store the first block of calibration data
-    uint8_t calibData2[BME280_CALIBDATA2_SIZE]; // Array to store the second block of calibration data
+// Function to read the calibration parameters from the BME280 sensor. Each compensation word is a 16-bit signed or unsigned integer value stored in two’s complement.
+static void BME280_CalibrationParams(void) {
+    uint8_t calibDataBuffer1[BME280_CALIBDATA_BLOCK1_SIZE];
+    uint8_t calibDataBuffer2[BME280_CALIBDATA_BLOCK2_SIZE];
 
-    // Read the first block of calibration data from the sensor
-    SPI_Read(BME280_CALIB_00_ADDR, calibData1, BME280_CALIBDATA1_SIZE);
+    /* Read the first block of calibration data from the sensor, storing the data read from memory addresses 0x88 to 0xA1.
+     * This block contains the calibration values for temperature and pressure, covering a 26-byte range.
+     * Although the pressure values won't be used, they will be extracted anyways.*/
+    SPI_Read(BME280_CALIB_00_ADDR, calibDataBuffer1, BME280_CALIBDATA_BLOCK1_SIZE);
 
-    // Read the second block of calibration data from the sensor
-    SPI_Read(BME280_CALIB_26_ADDR, calibData2, BME280_CALIBDATA2_SIZE);
+    /* Read the second block of calibration data from the sensor, storing the data read from memory addresses 0x88 to 0xA1.
+    * This block contains the calibration values for humidity, covering a 7-byte range.*/
+    SPI_Read(BME280_CALIB_26_ADDR, calibDataBuffer2, BME280_CALIBDATA_BLOCK2_SIZE);
 
-    // Combine the bytes read from the calibration memory into 16-bit integers for temperature and pressure
-    dig_T1 = combineBytes(calibData1[DIG_T1_MSB_INDEX], calibData1[DIG_T1_LSB_INDEX]);
-    dig_T2 = combineBytes(calibData1[DIG_T2_MSB_INDEX], calibData1[DIG_T2_LSB_INDEX]);
-    dig_T3 = combineBytes(calibData1[DIG_T3_MSB_INDEX], calibData1[DIG_T3_LSB_INDEX]);
+    // Combine the bytes read from the calibration memory into 16-bit integers for temperature
+    dig_T1 = combineBytes(calibDataBuffer1[DIG_T1_MSB_INDEX], calibDataBuffer1[DIG_T1_LSB_INDEX]);
+    dig_T2 = combineBytes(calibDataBuffer1[DIG_T2_MSB_INDEX], calibDataBuffer1[DIG_T2_LSB_INDEX]);
+    dig_T3 = combineBytes(calibDataBuffer1[DIG_T3_MSB_INDEX], calibDataBuffer1[DIG_T3_LSB_INDEX]);
 
-    // Store the humidity calibration data directly from the corresponding bytes
-    dig_H1 = calibData1[DIG_H1_INDEX];
+    // Extract data for first trimming humidity value (dig_H1)
+    dig_H1 = calibDataBuffer1[DIG_H1_INDEX];
 
-    dig_H2 = combineBytes(calibData2[DIG_H2_MSB_INDEX], calibData2[DIG_H2_LSB_INDEX]);
-    dig_H3 = calibData2[DIG_H3_INDEX];
+    dig_H2 = combineBytes(calibDataBuffer2[DIG_H2_MSB_INDEX], calibDataBuffer2[DIG_H2_LSB_INDEX]);
+    dig_H3 = calibDataBuffer2[DIG_H3_INDEX];
 
     // For dig_H4, special bit manipulations are required to combine parts of two different bytes
-    dig_H4 = (calibData2[DIG_H4_MSB_INDEX] << 4) | extractBits(calibData2[DIG_H4_LSB_INDEX], 0x0F, 0);
+    dig_H4 = (calibDataBuffer2[DIG_H4_MSB_INDEX] << 4) | extractBits(calibDataBuffer2[DIG_H4_LSB_INDEX], 0x0F, 0);
 
     // For dig_H5, special bit manipulations are required to combine parts of two different bytes
-    dig_H5 = (calibData2[DIG_H5_MSB_INDEX] << 4) | (calibData2[DIG_H5_LSB_INDEX] >> 4);
+    dig_H5 = (calibDataBuffer2[DIG_H5_MSB_INDEX] << 4) | (calibDataBuffer2[DIG_H5_LSB_INDEX] >> 4);
 
     // Store the final humidity calibration value directly from the corresponding byte
-    dig_H6 = calibData2[DIG_H6_INDEX];
+    dig_H6 = calibDataBuffer2[DIG_H6_INDEX];
 }
 
 // Function to initialize the BME280 sensor
 void BME280_init(void)
 {
-    // Read trimming parameters from the sensor
-    trimmingParametersRead();
+	BME280_CalibrationParams();
 
     /*
     5.4.2 The "reset" register contains the soft reset word reset[7:0].
