@@ -10,8 +10,6 @@
 
 #include "API_bme280_port.h"
 
-extern SPI_HandleTypeDef hspi1;
-
 #define CS_Pin GPIO_PIN_3
 #define CS_GPIO_Port GPIOB
 

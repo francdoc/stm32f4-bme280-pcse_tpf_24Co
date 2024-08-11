@@ -29,25 +29,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  12 .ARM.attributes 00000030  00000000  00000000  00007018  2**0
                   CONTENTS, READONLY
- 13 .debug_info   000120fb  00000000  00000000  00007048  2**0
+ 13 .debug_info   000120f8  00000000  00000000  00007048  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 00002c1e  00000000  00000000  00019143  2**0
+ 14 .debug_abbrev 00002c1b  00000000  00000000  00019140  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00000f68  00000000  00000000  0001bd68  2**3
+ 15 .debug_aranges 00000f68  00000000  00000000  0001bd60  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 00000be1  00000000  00000000  0001ccd0  2**0
+ 16 .debug_rnglists 00000be1  00000000  00000000  0001ccc8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  0002787d  00000000  00000000  0001d8b1  2**0
+ 17 .debug_macro  0002787d  00000000  00000000  0001d8a9  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00015492  00000000  00000000  0004512e  2**0
+ 18 .debug_line   00015494  00000000  00000000  00045126  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e5477  00000000  00000000  0005a5c0  2**0
+ 19 .debug_str    000e5477  00000000  00000000  0005a5ba  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0013fa37  2**0
+ 20 .comment      00000043  00000000  00000000  0013fa31  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003ecc  00000000  00000000  0013fa7c  2**2
+ 21 .debug_frame  00003ecc  00000000  00000000  0013fa74  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  00143948  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  00143940  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2423,8 +2423,10 @@ uint8_t BME280_read(void)
  8001054:	20000104 	.word	0x20000104
 
 08001058 <BME280_HAL_SPI_Write>:
-#include "API_bme280_port.h"
-
+  * @param  uint8_t *data: Pointer to the data buffer that holds the data to be written.
+  * @param  uint16_t size: The size of the data buffer in bytes.
+  * @retval None.
+  */
 void BME280_HAL_SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
 {
  8001058:	b580      	push	{r7, lr}
@@ -2471,7 +2473,10 @@ void BME280_HAL_SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
  80010b0:	20000088 	.word	0x20000088
 
 080010b4 <BME280_HAL_SPI_Read>:
-
+  * @param  uint8_t *data: Pointer to the data buffer where the read data will be stored.
+  * @param  uint16_t size: The size of the data buffer in bytes.
+  * @retval None.
+  */
 void BME280_HAL_SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
 {
  80010b4:	b580      	push	{r7, lr}
@@ -3623,9 +3628,10 @@ void PosCaracLLcd(uint8_t posL){
 	...
 
 0800187c <LCD_HAL_I2C_Write>:
-#include"API_lcd_port.h"
 
 extern I2C_HandleTypeDef hi2c1;
+
+/* Public functions ----------------------------------------------------------*/
 
 void LCD_HAL_I2C_Write(uint8_t valor){
  800187c:	b580      	push	{r7, lr}
