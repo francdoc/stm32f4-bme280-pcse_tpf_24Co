@@ -6,14 +6,14 @@
 float temp, hum;
 
 // Calibration variables
-uint16_t dig_T1;
-int16_t dig_T2, dig_T3;
+static uint16_t dig_T1;
+static int16_t dig_T2, dig_T3;
 
-uint8_t dig_H1;
-int16_t dig_H2;
-uint8_t dig_H3;
-int16_t dig_H4, dig_H5;
-int8_t dig_H6;
+static uint8_t dig_H1;
+static int16_t dig_H2;
+static uint8_t dig_H3;
+static int16_t dig_H4, dig_H5;
+static int8_t dig_H6;
 
 /* Public functions ----------------------------------------------------------*/
 
@@ -60,7 +60,7 @@ static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift) {
   * @param  None
   * @retval None
   */
-static void BME280_error_led_signal(){
+static void BME280_error_led_signal(void){
     for (int i = 0; i <= NumErrorRxBlinks; i++)
     {
         BSP_LED_Toggle(LED3); // sensor ID ERROR
@@ -73,7 +73,7 @@ static void BME280_error_led_signal(){
   * @param  None
   * @retval None
   */
-static void BME280_ok_rx_led_signal(){
+static void BME280_ok_rx_led_signal(void){
     for (int i = 0; i <= NumOkRxBlinks; i++)
     {
         BSP_LED_Toggle(LED2); // blink indicates sensor ID rx is OK
@@ -176,7 +176,7 @@ void BME280_init(void)
 static BME280_S32_t t_fine;
 
 /**
-  * @brief  Temperature compensation formula taken from datasheet (please check page 25/60 for reference).
+  * @brief  Temperature compensation formula & function taken from datasheet (please check page 25/60 for reference).
   *         Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
   *         t_fine carries fine temperature as global value for bme280_compensate_H_int32 to process its return humidity value.
   * @param  BME280_S32_t adc_T: Raw ADC temperature value.
@@ -193,7 +193,7 @@ static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
 }
 
 /**
-  * @brief  Humidity compensation formula taken from datasheet (please check page 25/60 for reference).
+  * @brief  Humidity compensation formula & function taken from datasheet (please check page 25/60 for reference).
   *         Returns humidity in %RH as unsigned 32-bit integer in Q22.10 format (22 integer and 10 fractional bits).
   *         For example, an output value of “47445” represents 47445/1024 = 46.333 %RH.
   * @param  BME280_S32_t adc_H: Raw ADC humidity value.
@@ -268,6 +268,7 @@ uint8_t BME280_read(void)
     else
     {
     	BME280_error_led_signal();
+
         return 1;
     }
 }
