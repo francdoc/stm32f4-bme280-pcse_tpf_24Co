@@ -8,6 +8,8 @@
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_nucleo_144.h" /* <- BSP include */
 
+#include "API_bme280_port.h"
+
 extern SPI_HandleTypeDef hspi1;
 
 #define CS_Pin GPIO_PIN_3

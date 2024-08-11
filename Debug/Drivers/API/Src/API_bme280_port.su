@@ -1,0 +1,2 @@
+../Drivers/API/Src/API_bme280_port.c:3:6:BME280_HAL_SPI_Write	24	static
+../Drivers/API/Src/API_bme280_port.c:12:6:BME280_HAL_SPI_Read	24	static

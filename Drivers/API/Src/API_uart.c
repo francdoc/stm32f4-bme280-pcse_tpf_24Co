@@ -12,9 +12,9 @@ static void Error_Handler(void);
 /* Public functions ----------------------------------------------------------*/
 
 /**
-  * @brief  Initialize UART with specific settings
-  * @param  None
-  * @retval bool_t: returns true if initialization is successful, otherwise false
+  * @brief  Initialize UART with specific settings.
+  * @param  None.
+  * @retval bool_t: returns true if initialization is successful, otherwise false.
   */
 
 bool_t uartInit(void)
@@ -40,9 +40,9 @@ bool_t uartInit(void)
 }
 
 /**
-  * @brief  Send a null-terminated string via UART
-  * @param  uint8_t * pstring: pointer to the null-terminated string
-  * @retval None
+  * @brief  Send a null-terminated string via UART.
+  * @param  uint8_t * pstring: pointer to the null-terminated string.
+  * @retval None.
   */
 void uartSendString(uint8_t * pstring)
 {
@@ -56,10 +56,10 @@ void uartSendString(uint8_t * pstring)
 }
 
 /**
-  * @brief  Send a specific number of characters from a null-terminated string via UART
-  * @param  uint8_t * pstring: pointer to the null-terminated string
-  * @param  uint16_t size: number of characters to send
-  * @retval None
+  * @brief  Send a specific number of characters from a null-terminated string via UART.
+  * @param  uint8_t * pstring: pointer to the null-terminated string.
+  * @param  uint16_t size: number of characters to send.
+  * @retval None.
   */
 void uartSendStringSize(uint8_t * pstring, uint16_t size)
 {
@@ -73,10 +73,10 @@ void uartSendStringSize(uint8_t * pstring, uint16_t size)
 }
 
 /**
-  * @brief  Receive a specific number of characters via UART
-  * @param  uint8_t * pstring: pointer to the buffer where received characters will be stored
-  * @param  uint16_t size: number of characters to receive
-  * @retval None
+  * @brief  Receive a specific number of characters via UART.
+  * @param  uint8_t * pstring: pointer to the buffer where received characters will be stored.
+  * @param  uint16_t size: number of characters to receive.
+  * @retval None.
   */
 void uartReceiveStringSize(uint8_t * pstring, uint16_t size)
 {
@@ -92,9 +92,9 @@ void uartReceiveStringSize(uint8_t * pstring, uint16_t size)
 /* Private API code ----------------------------------------------------------*/
 
 /**
-  * @brief  Handles errors by entering an infinite loop
-  * @param  None
-  * @retval None
+  * @brief  Handles errors by entering an infinite loop.
+  * @param  None.
+  * @retval None.
   */
 static void Error_Handler(void)
 {

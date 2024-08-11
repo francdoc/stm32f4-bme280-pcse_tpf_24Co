@@ -15,24 +15,6 @@ int8_t dig_H6;
 
 static BME280_S32_t tADC, hADC;
 
-static void SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
-{
-    uint8_t regAddress = reg & WRITE_CMD_BIT; // Apply the write command mask.
-    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateLow);
-    HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), HAL_MAX_DELAY);
-    HAL_SPI_Transmit(&hspi1, data, size, HAL_MAX_DELAY);
-    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateHigh);
-}
-
-static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
-{
-    uint8_t regAddress = reg | READ_CMD_BIT; // Apply the read command mask.
-    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateLow);
-    HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), SPI_TX_RX_TIMEOUT);
-    HAL_SPI_Receive(&hspi1, data, size, SPI_TX_RX_TIMEOUT);
-    HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateHigh);
-}
-
 // Combines two bytes into a 16-bit integer.
 static uint16_t combineBytes(uint8_t msb, uint8_t lsb) {
     return ((uint16_t)msb << 8) | lsb;
@@ -63,11 +45,11 @@ static void BME280_CalibrationParams(void) {
     /* Read the first block of calibration data from the sensor, storing the data read from memory addresses 0x88 to 0xA1.
      * This block contains the calibration values for temperature and pressure, covering a 26-byte range.
      * Although the pressure values won't be used, they will be extracted anyways.*/
-    SPI_Read(BME280_CALIB_00_ADDR, calibDataBuffer1, BME280_CALIBDATA_BLOCK1_SIZE);
+    BME280_HAL_SPI_Read(BME280_CALIB_00_ADDR, calibDataBuffer1, BME280_CALIBDATA_BLOCK1_SIZE);
 
     /* Read the second block of calibration data from the sensor, storing the data read from memory addresses 0x88 to 0xA1.
     * This block contains the calibration values for humidity, covering a 7-byte range.*/
-    SPI_Read(BME280_CALIB_26_ADDR, calibDataBuffer2, BME280_CALIBDATA_BLOCK2_SIZE);
+    BME280_HAL_SPI_Read(BME280_CALIB_26_ADDR, calibDataBuffer2, BME280_CALIBDATA_BLOCK2_SIZE);
 
     // The next operations rely heavily on datasheet table 16: Compensation parameter storage, naming and data type.
 
@@ -124,17 +106,17 @@ void BME280_init(void)
     uint8_t CmdConfig = 0x18;
 
     // Write reset sequence to the reset register
-    SPI_Write(BME280_RESET_REG, &CmdReset, CMD_WRITE_SIZE);
+    BME280_HAL_SPI_Write(BME280_RESET_REG, &CmdReset, CMD_WRITE_SIZE);
     HAL_Delay(BME280_HAL_DELAY);
 
     // Write control settings to the control registers
-    SPI_Write(BME280_CTRL_HUM_REG, &CmdCtrlHum, CMD_WRITE_SIZE);
+    BME280_HAL_SPI_Write(BME280_CTRL_HUM_REG, &CmdCtrlHum, CMD_WRITE_SIZE);
     HAL_Delay(BME280_HAL_DELAY);
 
-    SPI_Write(BME280_CTRL_MEASR_REG, &CmdCtrlMeasr, CMD_WRITE_SIZE);
+    BME280_HAL_SPI_Write(BME280_CTRL_MEASR_REG, &CmdCtrlMeasr, CMD_WRITE_SIZE);
     HAL_Delay(BME280_HAL_DELAY);
 
-    SPI_Write(BME280_CTRL_CONFIG_REG, &CmdConfig, CMD_WRITE_SIZE);
+    BME280_HAL_SPI_Write(BME280_CTRL_CONFIG_REG, &CmdConfig, CMD_WRITE_SIZE);
     HAL_Delay(BME280_HAL_DELAY);
 }
 
@@ -172,7 +154,7 @@ uint8_t BME280_read(void)
     uint8_t sensorDataBuffer[8];
     uint8_t chip_Id;
 
-    SPI_Read(CHIP_ID_REG, &chip_Id, CHIP_ID_BLOCK_SIZE);
+    BME280_HAL_SPI_Read(CHIP_ID_REG, &chip_Id, CHIP_ID_BLOCK_SIZE);
 
     if (chip_Id == 0x60)
     {
@@ -200,7 +182,7 @@ uint8_t BME280_read(void)
          * H_LSB    H_MSB    T_XLSB   T_LSB    T_MSB    P_XLSB   P_LSB    P_MSB
          * */
 
-        SPI_Read(PRESSURE_MSB_REG, sensorDataBuffer, RAW_OUTPUT_DATA_SIZE);
+        BME280_HAL_SPI_Read(PRESSURE_MSB_REG, sensorDataBuffer, RAW_OUTPUT_DATA_SIZE);
 
         // The BME280 output consists of the ADC output values that have to be compensated afterwards.
 

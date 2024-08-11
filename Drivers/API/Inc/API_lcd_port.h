@@ -2,7 +2,6 @@
 #include <stdbool.h>
 
 #include "stm32f4xx_hal.h"
-
 #include "API_lcd.h"
 
 extern void Error_Handler(void);
