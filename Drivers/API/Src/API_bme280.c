@@ -71,16 +71,17 @@ static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
 #define DIG_H5_LSB_INDEX  5
 #define DIG_H6_INDEX      6
 
-// Combines two bytes into a 16-bit integer
+// Combines two bytes into a 16-bit integer.
 static uint16_t combineBytes(uint8_t msb, uint8_t lsb) {
     return ((uint16_t)msb << 8) | lsb;
 }
 
-// Extracts specific bits from a byte value
+// Extracts specific bits from a byte value.
 static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift) {
     return (value & mask) >> shift;
 }
 
+// 4.2.2 Trimming parameter readout.
 // Function to read the calibration parameters from the BME280 sensor. Each compensation word is a 16-bit signed or unsigned integer value stored in two’s complement.
 static void BME280_CalibrationParams(void) {
     uint8_t calibDataBuffer1[BME280_CALIBDATA_BLOCK1_SIZE];
@@ -94,6 +95,8 @@ static void BME280_CalibrationParams(void) {
     /* Read the second block of calibration data from the sensor, storing the data read from memory addresses 0x88 to 0xA1.
     * This block contains the calibration values for humidity, covering a 7-byte range.*/
     SPI_Read(BME280_CALIB_26_ADDR, calibDataBuffer2, BME280_CALIBDATA_BLOCK2_SIZE);
+
+    // The next operations rely heavily on datasheet table 16: Compensation parameter storage, naming and data type.
 
     // Combine the bytes read from the calibration memory into 16-bit integers for temperature
     dig_T1 = combineBytes(calibDataBuffer1[DIG_T1_MSB_INDEX], calibDataBuffer1[DIG_T1_LSB_INDEX]);
@@ -127,9 +130,21 @@ void BME280_init(void)
     The readout value is 0x00.
     */
     uint8_t resetSeq = 0xB6;
-    uint8_t ctrlHum = 0x01;
-    uint8_t ctrlMeas = 0xA3; // 0b10100011 in hexadecimal
-    uint8_t config = 0x10;   // 0b00010000 in hexadecimal
+
+    // Humidity at oversampling x 16.
+    uint8_t ctrlHum = 0x05;
+
+    /* Bit-map according to 5.4.5 Register 0xF4 “ctrl_meas”.
+     * bit-7, bit-6, bit-5, bit-4, bit-3, bit-2, bit-1, bit-0
+     * 10100011
+     * Temperature at oversampling x 16.
+     * Pressure is not necessary.
+     * Mode is Normal.
+     */
+    uint8_t ctrlMeas = 0xA3;
+
+    // Table 26: Register 0xF5 “config”.
+    uint8_t config = 0x10;
 
     // Write reset sequence to the reset register
     SPI_Write(RESET_REG, &resetSeq, CMDWRITESIZE);

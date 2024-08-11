@@ -39,11 +39,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_macro  000274e4  00000000  00000000  0001d70e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00014b4a  00000000  00000000  00044bf2  2**0
+ 18 .debug_line   00014b4c  00000000  00000000  00044bf2  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e534e  00000000  00000000  0005973c  2**0
+ 19 .debug_str    000e534e  00000000  00000000  0005973e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0013ea8a  2**0
+ 20 .comment      00000043  00000000  00000000  0013ea8c  2**0
                   CONTENTS, READONLY
  21 .debug_frame  00004038  00000000  00000000  0013ead0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -1404,10 +1404,10 @@ void MX_SPI1_Init(void)
 {
  8000f28:	b580      	push	{r7, lr}
  8000f2a:	af00      	add	r7, sp, #0
-
     /* USER CODE BEGIN SPI1_Init 1 */
 
     /* USER CODE END SPI1_Init 1 */
+
     /* SPI1 parameter configuration*/
     hspi1.Instance = SPI1;
  8000f2c:	4b17      	ldr	r3, [pc, #92]	@ (8000f8c <MX_SPI1_Init+0x64>)
@@ -2613,7 +2613,7 @@ static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
 #define DIG_H5_LSB_INDEX  5
 #define DIG_H6_INDEX      6
 
-// Combines two bytes into a 16-bit integer
+// Combines two bytes into a 16-bit integer.
 static uint16_t combineBytes(uint8_t msb, uint8_t lsb) {
  8001574:	b480      	push	{r7}
  8001576:	b083      	sub	sp, #12
@@ -2641,7 +2641,7 @@ static uint16_t combineBytes(uint8_t msb, uint8_t lsb) {
 
 080015a0 <extractBits>:
 
-// Extracts specific bits from a byte value
+// Extracts specific bits from a byte value.
 static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift) {
  80015a0:	b480      	push	{r7}
  80015a2:	b083      	sub	sp, #12
@@ -2670,6 +2670,7 @@ static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift) {
 
 080015d0 <BME280_CalibrationParams>:
 
+// 4.2.2 Trimming parameter readout.
 // Function to read the calibration parameters from the BME280 sensor. Each compensation word is a 16-bit signed or unsigned integer value stored in two’s complement.
 static void BME280_CalibrationParams(void) {
  80015d0:	b590      	push	{r4, r7, lr}
@@ -2695,6 +2696,8 @@ static void BME280_CalibrationParams(void) {
  80015e8:	4619      	mov	r1, r3
  80015ea:	20e1      	movs	r0, #225	@ 0xe1
  80015ec:	f7ff ff94 	bl	8001518 <SPI_Read>
+
+    // The next operations rely heavily on datasheet table 16: Compensation parameter storage, naming and data type.
 
     // Combine the bytes read from the calibration memory into 16-bit integers for temperature
     dig_T1 = combineBytes(calibDataBuffer1[DIG_T1_MSB_INDEX], calibDataBuffer1[DIG_T1_LSB_INDEX]);
@@ -2820,13 +2823,22 @@ void BME280_init(void)
     uint8_t resetSeq = 0xB6;
  80016c2:	23b6      	movs	r3, #182	@ 0xb6
  80016c4:	71fb      	strb	r3, [r7, #7]
-    uint8_t ctrlHum = 0x01;
- 80016c6:	2301      	movs	r3, #1
+
+    // Humidity at oversampling x 16.
+    uint8_t ctrlHum = 0x05;
+ 80016c6:	2305      	movs	r3, #5
  80016c8:	71bb      	strb	r3, [r7, #6]
-    uint8_t ctrlMeas = 0xA3; // 0b10100011 in hexadecimal
+     * 10100011
+     * Temperature at oversampling x 16.
+     * Pressure is not necessary.
+     * Mode is Normal.
+     */
+    uint8_t ctrlMeas = 0xA3;
  80016ca:	23a3      	movs	r3, #163	@ 0xa3
  80016cc:	717b      	strb	r3, [r7, #5]
-    uint8_t config = 0x10;   // 0b00010000 in hexadecimal
+
+    // Table 26: Register 0xF5 “config”.
+    uint8_t config = 0x10;
  80016ce:	2310      	movs	r3, #16
  80016d0:	713b      	strb	r3, [r7, #4]
 
