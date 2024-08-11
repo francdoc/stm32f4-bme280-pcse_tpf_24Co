@@ -25,6 +25,22 @@ static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift) {
     return (value & mask) >> shift;
 }
 
+static void BME280_error_led_signal(){
+    for (int i = 0; i <= NumErrorRxBlinks; i++)
+    {
+        BSP_LED_Toggle(LED3); // sensor ID ERROR
+        HAL_Delay(BME280_HAL_DELAY);
+    }
+}
+
+static void BME280_ok_rx_led_signal(){
+    for (int i = 0; i <= NumOkRxBlinks; i++)
+    {
+        BSP_LED_Toggle(LED2); // blink indicates sensor ID rx is OK
+        HAL_Delay(BME280_HAL_DELAY);
+    }
+}
+
 /**
  * @brief  This function is executed in case of error occurrence.
  * @retval None
@@ -156,15 +172,11 @@ uint8_t BME280_read(void)
 
     BME280_HAL_SPI_Read(CHIP_ID_REG, &chip_Id, CHIP_ID_BLOCK_SIZE);
 
-    if (chip_Id == 0x60)
+    if (chip_Id == BME280_CHIP_ID)
     {
 #ifdef DEBUG_BME280
         // blocking delays affect clock display performance negatively (time-lcd lag)
-        for (int i = 0; i <= NumOkRxBlinks; i++)
-        {
-            BSP_LED_Toggle(LED2); // blink indicates sensor ID rx is OK
-            HAL_Delay(BME280_HAL_DELAY);
-        }
+    	BME280_ok_rx_led_signal();
 #endif
         /* Data readout is done by starting a burst read from 0xF7 to 0xFE (temperature, pressure and humidity).
          * The data are read out in an unsigned 20-bit format both for pressure and for temperature and in an
@@ -205,12 +217,7 @@ uint8_t BME280_read(void)
     }
     else
     {
-        for (int i = 0; i <= NumErrorRxBlinks; i++)
-        {
-            BSP_LED_Toggle(LED3); // sensor ID ERROR
-            HAL_Delay(BME280_HAL_DELAY);
-        }
-
+    	BME280_error_led_signal();
         return 1;
     }
 }

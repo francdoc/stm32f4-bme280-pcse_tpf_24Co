@@ -1,8 +1,10 @@
 ../Drivers/API/Src/API_bme280.c:19:17:combineBytes	16	static
 ../Drivers/API/Src/API_bme280.c:24:16:extractBits	16	static
-../Drivers/API/Src/API_bme280.c:32:6:BME280_Error_Handler	4	static
-../Drivers/API/Src/API_bme280.c:41:13:BME280_CalibrationParams	56	static
-../Drivers/API/Src/API_bme280.c:78:6:BME280_init	16	static
-../Drivers/API/Src/API_bme280.c:128:21:BME280_compensate_T_int32	32	static
-../Drivers/API/Src/API_bme280.c:141:21:bme280_compensate_H_int32	24	static
-../Drivers/API/Src/API_bme280.c:152:9:BME280_read	24	static
+../Drivers/API/Src/API_bme280.c:28:13:BME280_error_led_signal	16	static
+../Drivers/API/Src/API_bme280.c:36:13:BME280_ok_rx_led_signal	16	static
+../Drivers/API/Src/API_bme280.c:48:6:BME280_Error_Handler	4	static
+../Drivers/API/Src/API_bme280.c:57:13:BME280_CalibrationParams	56	static
+../Drivers/API/Src/API_bme280.c:94:6:BME280_init	16	static
+../Drivers/API/Src/API_bme280.c:144:21:BME280_compensate_T_int32	32	static
+../Drivers/API/Src/API_bme280.c:157:21:bme280_compensate_H_int32	24	static
+../Drivers/API/Src/API_bme280.c:168:9:BME280_read	24	static

@@ -105,6 +105,9 @@ register only become effective after a write operation to “ctrl_meas”.*/
 #define TEMPERATURE_SCALE_FACTOR 100.0f // Scale factor to convert compensated temperature to degrees Celsius.
 #define HUMIDITY_SCALE_FACTOR 1024.0f  // Scale factor to convert compensated humidity to percentage RH.
 
+// BME280 chip ID
+#define BME280_CHIP_ID 0x60
+
 /* Exported types ------------------------------------------------------------*/
 
 // Type definitions for signed and unsigned 32-bit integers used in compensation calculations
@@ -132,7 +135,6 @@ void BME280_init(void);
   */
 extern uint8_t BME280_read(void);
 
-
 /**
   * @brief  Error handler for BME280 operations, enters an infinite loop in case of an error.
   * @param  None
@@ -141,4 +143,3 @@ extern uint8_t BME280_read(void);
 void BME280_Error_Handler(void);
 
 #endif /* API_INC_DRIVER_BME280_H_ */
-
