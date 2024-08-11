@@ -1,5 +1,7 @@
 #include "API_bme280.h"
 
+/* Global variables ----------------------------------------------------------*/
+
 // Declare global variables for temperature and humidity, we will use them later in the finite-state machine app code.
 float temp, hum;
 
@@ -13,36 +15,10 @@ uint8_t dig_H3;
 int16_t dig_H4, dig_H5;
 int8_t dig_H6;
 
-static BME280_S32_t tADC, hADC;
-
-// Combines two bytes into a 16-bit integer.
-static uint16_t combineBytes(uint8_t msb, uint8_t lsb) {
-    return ((uint16_t)msb << 8) | lsb;
-}
-
-// Extracts specific bits from a byte value.
-static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift) {
-    return (value & mask) >> shift;
-}
-
-static void BME280_error_led_signal(){
-    for (int i = 0; i <= NumErrorRxBlinks; i++)
-    {
-        BSP_LED_Toggle(LED3); // sensor ID ERROR
-        HAL_Delay(BME280_HAL_DELAY);
-    }
-}
-
-static void BME280_ok_rx_led_signal(){
-    for (int i = 0; i <= NumOkRxBlinks; i++)
-    {
-        BSP_LED_Toggle(LED2); // blink indicates sensor ID rx is OK
-        HAL_Delay(BME280_HAL_DELAY);
-    }
-}
+/* Public functions ----------------------------------------------------------*/
 
 /**
- * @brief  This function is executed in case of error occurrence.
+ * @brief  This function is executed in case of error occurrence. Program will get stuck in this part of the code. Indicating major BME280 error.
  * @retval None
  */
 void BME280_Error_Handler(void)
@@ -52,8 +28,65 @@ void BME280_Error_Handler(void)
     }
 }
 
-// 4.2.2 Trimming parameter readout.
-// Function to read the calibration parameters from the BME280 sensor. Each compensation word is a 16-bit signed or unsigned integer value stored in two’s complement.
+/* Private variables ----------------------------------------------------------*/
+
+static BME280_S32_t tADC, hADC;
+
+/* Private functions ----------------------------------------------------------*/
+
+/**
+  * @brief  Combines two bytes into a 16-bit integer.
+  * @param  uint8_t msb: Most significant byte.
+  * @param  uint8_t lsb: Least significant byte.
+  * @retval uint16_t: Combined 16-bit integer.
+  */
+static uint16_t combineBytes(uint8_t msb, uint8_t lsb) {
+    return ((uint16_t)msb << 8) | lsb;
+}
+
+/**
+  * @brief  Extracts specific bits from a byte value.
+  * @param  uint8_t value: Byte value to extract bits from.
+  * @param  uint8_t mask: Mask to apply for bit extraction.
+  * @param  uint8_t shift: Number of bits to shift after masking.
+  * @retval uint8_t: Extracted bits as a byte.
+  */
+static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift) {
+    return (value & mask) >> shift;
+}
+
+/**
+  * @brief  Flashes LED to signal an error in BME280 operations.
+  * @param  None
+  * @retval None
+  */
+static void BME280_error_led_signal(){
+    for (int i = 0; i <= NumErrorRxBlinks; i++)
+    {
+        BSP_LED_Toggle(LED3); // sensor ID ERROR
+        HAL_Delay(BME280_HAL_DELAY);
+    }
+}
+
+/**
+  * @brief  Flashes LED to signal a successful sensor data reception.
+  * @param  None
+  * @retval None
+  */
+static void BME280_ok_rx_led_signal(){
+    for (int i = 0; i <= NumOkRxBlinks; i++)
+    {
+        BSP_LED_Toggle(LED2); // blink indicates sensor ID rx is OK
+        HAL_Delay(BME280_HAL_DELAY);
+    }
+}
+
+/**
+  * @brief  Reads the calibration parameters from the BME280 sensor (4.2.2 Trimming parameter readout).
+  *         Each compensation word is a 16-bit signed or unsigned integer value stored in two’s complement.
+  * @param  None
+  * @retval None
+  */
 static void BME280_CalibrationParams(void) {
     uint8_t calibDataBuffer1[BME280_CALIBDATA_BLOCK1_SIZE];
     uint8_t calibDataBuffer2[BME280_CALIBDATA_BLOCK2_SIZE];
@@ -90,7 +123,11 @@ static void BME280_CalibrationParams(void) {
     dig_H6 = calibDataBuffer2[DIG_H6_INDEX];
 }
 
-// Function to initialize the BME280 sensor
+/**
+  * @brief  Initializes the BME280 sensor by configuring its control registers and reading calibration parameters.
+  * @param  None
+  * @retval None
+  */
 void BME280_init(void)
 {
 	BME280_CalibrationParams();
@@ -138,9 +175,13 @@ void BME280_init(void)
 
 static BME280_S32_t t_fine;
 
-// Temperature compensation formula taken from datasheet (please check page 25/60 for reference).
-// Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
-// t_fine carries fine temperature as global value for bme280_compensate_H_int32 to process its return humidity value.
+/**
+  * @brief  Temperature compensation formula taken from datasheet (please check page 25/60 for reference).
+  *         Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
+  *         t_fine carries fine temperature as global value for bme280_compensate_H_int32 to process its return humidity value.
+  * @param  BME280_S32_t adc_T: Raw ADC temperature value.
+  * @retval BME280_S32_t: Compensated temperature value.
+  */
 static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
 {
     BME280_S32_t var1, var2, T;
@@ -151,9 +192,13 @@ static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
     return T;
 }
 
-// Humidity compensation formula taken from datasheet (please check page 25/60 for reference).
-// Returns humidity in %RH as unsigned 32 bit integer in Q22.10 format (22 integer and 10 fractional bits).
-// - For example an output value of “47445” represents 47445/1024 = 46.333 %RH.
+/**
+  * @brief  Humidity compensation formula taken from datasheet (please check page 25/60 for reference).
+  *         Returns humidity in %RH as unsigned 32-bit integer in Q22.10 format (22 integer and 10 fractional bits).
+  *         For example, an output value of “47445” represents 47445/1024 = 46.333 %RH.
+  * @param  BME280_S32_t adc_H: Raw ADC humidity value.
+  * @retval BME280_U32_t: Compensated humidity value.
+  */
 static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
 {
     BME280_S32_t v_x1_u32r;
@@ -165,6 +210,11 @@ static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
     return (BME280_U32_t)(v_x1_u32r >> 12);
 }
 
+/**
+  * @brief  Reads raw temperature and humidity data from the BME280 sensor, applies compensation formulas, and converts the data to human readable units.
+  * @param  None
+  * @retval uint8_t: Returns 0 if the read operation is successful, 1 if an error occurs.
+  */
 uint8_t BME280_read(void)
 {
     uint8_t sensorDataBuffer[8];

@@ -29,25 +29,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  12 .ARM.attributes 00000030  00000000  00000000  00007018  2**0
                   CONTENTS, READONLY
- 13 .debug_info   00012138  00000000  00000000  00007048  2**0
+ 13 .debug_info   0001213b  00000000  00000000  00007048  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 00002c34  00000000  00000000  00019180  2**0
+ 14 .debug_abbrev 00002c1b  00000000  00000000  00019183  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00000f78  00000000  00000000  0001bdb8  2**3
+ 15 .debug_aranges 00000f78  00000000  00000000  0001bda0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 00000bed  00000000  00000000  0001cd30  2**0
+ 16 .debug_rnglists 00000bed  00000000  00000000  0001cd18  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  00027883  00000000  00000000  0001d91d  2**0
+ 17 .debug_macro  00027883  00000000  00000000  0001d905  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   000154df  00000000  00000000  000451a0  2**0
+ 18 .debug_line   000154e1  00000000  00000000  00045188  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e54bb  00000000  00000000  0005a67f  2**0
+ 19 .debug_str    000e54bb  00000000  00000000  0005a669  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0013fb3a  2**0
+ 20 .comment      00000043  00000000  00000000  0013fb24  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003f14  00000000  00000000  0013fb80  2**2
+ 21 .debug_frame  00003f14  00000000  00000000  0013fb68  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  00143a94  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  00143a7c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -790,7 +790,7 @@ void MX_SPI1_Init(void)
  8000746:	d001      	beq.n	800074c <MX_SPI1_Init+0x60>
     {
         BME280_Error_Handler();
- 8000748:	f000 fada 	bl	8000d00 <BME280_Error_Handler>
+ 8000748:	f000 fa95 	bl	8000c76 <BME280_Error_Handler>
     }
     /* USER CODE BEGIN SPI1_Init 2 */
 
@@ -1822,117 +1822,124 @@ Infinite_Loop:
   b  Infinite_Loop
  8000c74:	e7fe      	b.n	8000c74 <ADC_IRQHandler>
 
-08000c76 <combineBytes>:
-int8_t dig_H6;
-
-static BME280_S32_t tADC, hADC;
-
-// Combines two bytes into a 16-bit integer.
-static uint16_t combineBytes(uint8_t msb, uint8_t lsb) {
- 8000c76:	b480      	push	{r7}
- 8000c78:	b083      	sub	sp, #12
- 8000c7a:	af00      	add	r7, sp, #0
- 8000c7c:	4603      	mov	r3, r0
- 8000c7e:	460a      	mov	r2, r1
- 8000c80:	71fb      	strb	r3, [r7, #7]
- 8000c82:	4613      	mov	r3, r2
- 8000c84:	71bb      	strb	r3, [r7, #6]
-    return ((uint16_t)msb << 8) | lsb;
- 8000c86:	79fb      	ldrb	r3, [r7, #7]
- 8000c88:	021b      	lsls	r3, r3, #8
- 8000c8a:	b21a      	sxth	r2, r3
- 8000c8c:	79bb      	ldrb	r3, [r7, #6]
- 8000c8e:	b21b      	sxth	r3, r3
- 8000c90:	4313      	orrs	r3, r2
- 8000c92:	b21b      	sxth	r3, r3
- 8000c94:	b29b      	uxth	r3, r3
-}
- 8000c96:	4618      	mov	r0, r3
- 8000c98:	370c      	adds	r7, #12
- 8000c9a:	46bd      	mov	sp, r7
- 8000c9c:	f85d 7b04 	ldr.w	r7, [sp], #4
- 8000ca0:	4770      	bx	lr
-
-08000ca2 <extractBits>:
-
-// Extracts specific bits from a byte value.
-static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift) {
- 8000ca2:	b480      	push	{r7}
- 8000ca4:	b083      	sub	sp, #12
- 8000ca6:	af00      	add	r7, sp, #0
- 8000ca8:	4603      	mov	r3, r0
- 8000caa:	71fb      	strb	r3, [r7, #7]
- 8000cac:	460b      	mov	r3, r1
- 8000cae:	71bb      	strb	r3, [r7, #6]
- 8000cb0:	4613      	mov	r3, r2
- 8000cb2:	717b      	strb	r3, [r7, #5]
-    return (value & mask) >> shift;
- 8000cb4:	79fa      	ldrb	r2, [r7, #7]
- 8000cb6:	79bb      	ldrb	r3, [r7, #6]
- 8000cb8:	4013      	ands	r3, r2
- 8000cba:	b2db      	uxtb	r3, r3
- 8000cbc:	461a      	mov	r2, r3
- 8000cbe:	797b      	ldrb	r3, [r7, #5]
- 8000cc0:	fa42 f303 	asr.w	r3, r2, r3
- 8000cc4:	b2db      	uxtb	r3, r3
-}
- 8000cc6:	4618      	mov	r0, r3
- 8000cc8:	370c      	adds	r7, #12
- 8000cca:	46bd      	mov	sp, r7
- 8000ccc:	f85d 7b04 	ldr.w	r7, [sp], #4
- 8000cd0:	4770      	bx	lr
-
-08000cd2 <BME280_error_led_signal>:
-
-static void BME280_error_led_signal(){
- 8000cd2:	b580      	push	{r7, lr}
- 8000cd4:	b082      	sub	sp, #8
- 8000cd6:	af00      	add	r7, sp, #0
-    for (int i = 0; i <= NumErrorRxBlinks; i++)
- 8000cd8:	2300      	movs	r3, #0
- 8000cda:	607b      	str	r3, [r7, #4]
- 8000cdc:	e008      	b.n	8000cf0 <BME280_error_led_signal+0x1e>
-    {
-        BSP_LED_Toggle(LED3); // sensor ID ERROR
- 8000cde:	2002      	movs	r0, #2
- 8000ce0:	f000 fe96 	bl	8001a10 <BSP_LED_Toggle>
-        HAL_Delay(BME280_HAL_DELAY);
- 8000ce4:	2064      	movs	r0, #100	@ 0x64
- 8000ce6:	f000 ff1f 	bl	8001b28 <HAL_Delay>
-    for (int i = 0; i <= NumErrorRxBlinks; i++)
- 8000cea:	687b      	ldr	r3, [r7, #4]
- 8000cec:	3301      	adds	r3, #1
- 8000cee:	607b      	str	r3, [r7, #4]
- 8000cf0:	687b      	ldr	r3, [r7, #4]
- 8000cf2:	2b02      	cmp	r3, #2
- 8000cf4:	ddf3      	ble.n	8000cde <BME280_error_led_signal+0xc>
-    }
-}
- 8000cf6:	bf00      	nop
- 8000cf8:	bf00      	nop
- 8000cfa:	3708      	adds	r7, #8
- 8000cfc:	46bd      	mov	sp, r7
- 8000cfe:	bd80      	pop	{r7, pc}
-
-08000d00 <BME280_Error_Handler>:
+08000c76 <BME280_Error_Handler>:
 /**
- * @brief  This function is executed in case of error occurrence.
+ * @brief  This function is executed in case of error occurrence. Program will get stuck in this part of the code. Indicating major BME280 error.
  * @retval None
  */
 void BME280_Error_Handler(void)
 {
- 8000d00:	b480      	push	{r7}
- 8000d02:	af00      	add	r7, sp, #0
+ 8000c76:	b480      	push	{r7}
+ 8000c78:	af00      	add	r7, sp, #0
     while (1)
- 8000d04:	bf00      	nop
- 8000d06:	e7fd      	b.n	8000d04 <BME280_Error_Handler+0x4>
+ 8000c7a:	bf00      	nop
+ 8000c7c:	e7fd      	b.n	8000c7a <BME280_Error_Handler+0x4>
 
-08000d08 <BME280_CalibrationParams>:
+08000c7e <combineBytes>:
+  * @brief  Combines two bytes into a 16-bit integer.
+  * @param  uint8_t msb: Most significant byte.
+  * @param  uint8_t lsb: Least significant byte.
+  * @retval uint16_t: Combined 16-bit integer.
+  */
+static uint16_t combineBytes(uint8_t msb, uint8_t lsb) {
+ 8000c7e:	b480      	push	{r7}
+ 8000c80:	b083      	sub	sp, #12
+ 8000c82:	af00      	add	r7, sp, #0
+ 8000c84:	4603      	mov	r3, r0
+ 8000c86:	460a      	mov	r2, r1
+ 8000c88:	71fb      	strb	r3, [r7, #7]
+ 8000c8a:	4613      	mov	r3, r2
+ 8000c8c:	71bb      	strb	r3, [r7, #6]
+    return ((uint16_t)msb << 8) | lsb;
+ 8000c8e:	79fb      	ldrb	r3, [r7, #7]
+ 8000c90:	021b      	lsls	r3, r3, #8
+ 8000c92:	b21a      	sxth	r2, r3
+ 8000c94:	79bb      	ldrb	r3, [r7, #6]
+ 8000c96:	b21b      	sxth	r3, r3
+ 8000c98:	4313      	orrs	r3, r2
+ 8000c9a:	b21b      	sxth	r3, r3
+ 8000c9c:	b29b      	uxth	r3, r3
+}
+ 8000c9e:	4618      	mov	r0, r3
+ 8000ca0:	370c      	adds	r7, #12
+ 8000ca2:	46bd      	mov	sp, r7
+ 8000ca4:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000ca8:	4770      	bx	lr
+
+08000caa <extractBits>:
+  * @param  uint8_t value: Byte value to extract bits from.
+  * @param  uint8_t mask: Mask to apply for bit extraction.
+  * @param  uint8_t shift: Number of bits to shift after masking.
+  * @retval uint8_t: Extracted bits as a byte.
+  */
+static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift) {
+ 8000caa:	b480      	push	{r7}
+ 8000cac:	b083      	sub	sp, #12
+ 8000cae:	af00      	add	r7, sp, #0
+ 8000cb0:	4603      	mov	r3, r0
+ 8000cb2:	71fb      	strb	r3, [r7, #7]
+ 8000cb4:	460b      	mov	r3, r1
+ 8000cb6:	71bb      	strb	r3, [r7, #6]
+ 8000cb8:	4613      	mov	r3, r2
+ 8000cba:	717b      	strb	r3, [r7, #5]
+    return (value & mask) >> shift;
+ 8000cbc:	79fa      	ldrb	r2, [r7, #7]
+ 8000cbe:	79bb      	ldrb	r3, [r7, #6]
+ 8000cc0:	4013      	ands	r3, r2
+ 8000cc2:	b2db      	uxtb	r3, r3
+ 8000cc4:	461a      	mov	r2, r3
+ 8000cc6:	797b      	ldrb	r3, [r7, #5]
+ 8000cc8:	fa42 f303 	asr.w	r3, r2, r3
+ 8000ccc:	b2db      	uxtb	r3, r3
+}
+ 8000cce:	4618      	mov	r0, r3
+ 8000cd0:	370c      	adds	r7, #12
+ 8000cd2:	46bd      	mov	sp, r7
+ 8000cd4:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8000cd8:	4770      	bx	lr
+
+08000cda <BME280_error_led_signal>:
+/**
+  * @brief  Flashes LED to signal an error in BME280 operations.
+  * @param  None
+  * @retval None
+  */
+static void BME280_error_led_signal(){
+ 8000cda:	b580      	push	{r7, lr}
+ 8000cdc:	b082      	sub	sp, #8
+ 8000cde:	af00      	add	r7, sp, #0
+    for (int i = 0; i <= NumErrorRxBlinks; i++)
+ 8000ce0:	2300      	movs	r3, #0
+ 8000ce2:	607b      	str	r3, [r7, #4]
+ 8000ce4:	e008      	b.n	8000cf8 <BME280_error_led_signal+0x1e>
+    {
+        BSP_LED_Toggle(LED3); // sensor ID ERROR
+ 8000ce6:	2002      	movs	r0, #2
+ 8000ce8:	f000 fe92 	bl	8001a10 <BSP_LED_Toggle>
+        HAL_Delay(BME280_HAL_DELAY);
+ 8000cec:	2064      	movs	r0, #100	@ 0x64
+ 8000cee:	f000 ff1b 	bl	8001b28 <HAL_Delay>
+    for (int i = 0; i <= NumErrorRxBlinks; i++)
+ 8000cf2:	687b      	ldr	r3, [r7, #4]
+ 8000cf4:	3301      	adds	r3, #1
+ 8000cf6:	607b      	str	r3, [r7, #4]
+ 8000cf8:	687b      	ldr	r3, [r7, #4]
+ 8000cfa:	2b02      	cmp	r3, #2
+ 8000cfc:	ddf3      	ble.n	8000ce6 <BME280_error_led_signal+0xc>
     }
 }
+ 8000cfe:	bf00      	nop
+ 8000d00:	bf00      	nop
+ 8000d02:	3708      	adds	r7, #8
+ 8000d04:	46bd      	mov	sp, r7
+ 8000d06:	bd80      	pop	{r7, pc}
 
-// 4.2.2 Trimming parameter readout.
-// Function to read the calibration parameters from the BME280 sensor. Each compensation word is a 16-bit signed or unsigned integer value stored in two’s complement.
+08000d08 <BME280_CalibrationParams>:
+  * @brief  Reads the calibration parameters from the BME280 sensor (4.2.2 Trimming parameter readout).
+  *         Each compensation word is a 16-bit signed or unsigned integer value stored in two’s complement.
+  * @param  None
+  * @retval None
+  */
 static void BME280_CalibrationParams(void) {
  8000d08:	b590      	push	{r4, r7, lr}
  8000d0a:	b08b      	sub	sp, #44	@ 0x2c
@@ -1966,7 +1973,7 @@ static void BME280_CalibrationParams(void) {
  8000d2a:	7b3a      	ldrb	r2, [r7, #12]
  8000d2c:	4611      	mov	r1, r2
  8000d2e:	4618      	mov	r0, r3
- 8000d30:	f7ff ffa1 	bl	8000c76 <combineBytes>
+ 8000d30:	f7ff ffa5 	bl	8000c7e <combineBytes>
  8000d34:	4603      	mov	r3, r0
  8000d36:	461a      	mov	r2, r3
  8000d38:	4b24      	ldr	r3, [pc, #144]	@ (8000dcc <BME280_CalibrationParams+0xc4>)
@@ -1976,7 +1983,7 @@ static void BME280_CalibrationParams(void) {
  8000d3e:	7bba      	ldrb	r2, [r7, #14]
  8000d40:	4611      	mov	r1, r2
  8000d42:	4618      	mov	r0, r3
- 8000d44:	f7ff ff97 	bl	8000c76 <combineBytes>
+ 8000d44:	f7ff ff9b 	bl	8000c7e <combineBytes>
  8000d48:	4603      	mov	r3, r0
  8000d4a:	b21a      	sxth	r2, r3
  8000d4c:	4b20      	ldr	r3, [pc, #128]	@ (8000dd0 <BME280_CalibrationParams+0xc8>)
@@ -1986,7 +1993,7 @@ static void BME280_CalibrationParams(void) {
  8000d52:	7c3a      	ldrb	r2, [r7, #16]
  8000d54:	4611      	mov	r1, r2
  8000d56:	4618      	mov	r0, r3
- 8000d58:	f7ff ff8d 	bl	8000c76 <combineBytes>
+ 8000d58:	f7ff ff91 	bl	8000c7e <combineBytes>
  8000d5c:	4603      	mov	r3, r0
  8000d5e:	b21a      	sxth	r2, r3
  8000d60:	4b1c      	ldr	r3, [pc, #112]	@ (8000dd4 <BME280_CalibrationParams+0xcc>)
@@ -2003,7 +2010,7 @@ static void BME280_CalibrationParams(void) {
  8000d6e:	793a      	ldrb	r2, [r7, #4]
  8000d70:	4611      	mov	r1, r2
  8000d72:	4618      	mov	r0, r3
- 8000d74:	f7ff ff7f 	bl	8000c76 <combineBytes>
+ 8000d74:	f7ff ff83 	bl	8000c7e <combineBytes>
  8000d78:	4603      	mov	r3, r0
  8000d7a:	b21a      	sxth	r2, r3
  8000d7c:	4b17      	ldr	r3, [pc, #92]	@ (8000ddc <BME280_CalibrationParams+0xd4>)
@@ -2022,7 +2029,7 @@ static void BME280_CalibrationParams(void) {
  8000d8e:	2200      	movs	r2, #0
  8000d90:	210f      	movs	r1, #15
  8000d92:	4618      	mov	r0, r3
- 8000d94:	f7ff ff85 	bl	8000ca2 <extractBits>
+ 8000d94:	f7ff ff89 	bl	8000caa <extractBits>
  8000d98:	4603      	mov	r3, r0
  8000d9a:	b21b      	sxth	r3, r3
  8000d9c:	4323      	orrs	r3, r4
@@ -2067,8 +2074,10 @@ static void BME280_CalibrationParams(void) {
  8000dec:	20000118 	.word	0x20000118
 
 08000df0 <BME280_init>:
-
-// Function to initialize the BME280 sensor
+  * @brief  Initializes the BME280 sensor by configuring its control registers and reading calibration parameters.
+  * @param  None
+  * @retval None
+  */
 void BME280_init(void)
 {
  8000df0:	b580      	push	{r7, lr}
@@ -2155,10 +2164,10 @@ void BME280_init(void)
 	...
 
 08000e5c <BME280_compensate_T_int32>:
-
-// Temperature compensation formula taken from datasheet (please check page 25/60 for reference).
-// Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
-// t_fine carries fine temperature as global value for bme280_compensate_H_int32 to process its return humidity value.
+  *         t_fine carries fine temperature as global value for bme280_compensate_H_int32 to process its return humidity value.
+  * @param  BME280_S32_t adc_T: Raw ADC temperature value.
+  * @retval BME280_S32_t: Compensated temperature value.
+  */
 static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
 {
  8000e5c:	b480      	push	{r7}
@@ -2226,10 +2235,10 @@ static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
  8000edc:	20000124 	.word	0x20000124
 
 08000ee0 <bme280_compensate_H_int32>:
-
-// Humidity compensation formula taken from datasheet (please check page 25/60 for reference).
-// Returns humidity in %RH as unsigned 32 bit integer in Q22.10 format (22 integer and 10 fractional bits).
-// - For example an output value of “47445” represents 47445/1024 = 46.333 %RH.
+  *         For example, an output value of “47445” represents 47445/1024 = 46.333 %RH.
+  * @param  BME280_S32_t adc_H: Raw ADC humidity value.
+  * @retval BME280_U32_t: Compensated humidity value.
+  */
 static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
 {
  8000ee0:	b480      	push	{r7}
@@ -2322,7 +2331,10 @@ static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
  8000fb4:	2000010e 	.word	0x2000010e
 
 08000fb8 <BME280_read>:
-
+  * @brief  Reads raw temperature and humidity data from the BME280 sensor, applies compensation formulas, and converts the data to human readable units.
+  * @param  None
+  * @retval uint8_t: Returns 0 if the read operation is successful, 1 if an error occurs.
+  */
 uint8_t BME280_read(void)
 {
  8000fb8:	b580      	push	{r7, lr}
@@ -2419,7 +2431,7 @@ uint8_t BME280_read(void)
     else
     {
     	BME280_error_led_signal();
- 8001044:	f7ff fe45 	bl	8000cd2 <BME280_error_led_signal>
+ 8001044:	f7ff fe49 	bl	8000cda <BME280_error_led_signal>
         return 1;
  8001048:	2301      	movs	r3, #1
     }
