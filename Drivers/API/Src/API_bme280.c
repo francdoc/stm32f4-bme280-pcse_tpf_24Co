@@ -167,12 +167,12 @@ static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
 
 uint8_t BME280_read(void)
 {
-    uint8_t sensorData[8];
-    uint8_t chipID;
+    uint8_t sensorDataBuffer[8];
+    uint8_t chip_Id;
 
-    SPI_Read(CHIP_ID_REG, &chipID, CHIP_ID_BLOCK_SIZE);
+    SPI_Read(CHIP_ID_REG, &chip_Id, CHIP_ID_BLOCK_SIZE);
 
-    if (chipID == 0x60)
+    if (chip_Id == 0x60)
     {
 #ifdef DEBUG_BME280
         // blocking delays affect clock display performance negatively (time-lcd lag)
@@ -191,13 +191,24 @@ uint8_t BME280_read(void)
          * - 0xFA to 0xFC: Raw temperature data (20 bits) -> Section 5.4.8.
          * - 0xFD to 0xFE: Raw humidity data (16 bits) -> Section 5.4.9.
          *
-         * This means that with 46 bits (8 bytes) we can hold all the sampled data in 1 burst read.*/
+         * This means that with 46 bits (8 bytes) we can hold all the sampled data in 1 burst read.
+         * See Table 18: Memory map for more context.
+         *
+         * BYTE 7 | BYTE 6 | BYTE 5 | BYTE 4 | BYTE 3 | BYTE 2 | BYTE 1 | BYTE 0
+         * H_LSB    H_MSB    T_XLSB   T_LSB    T_MSB    P_XLSB   P_LSB    P_MSB
+         * */
 
-        SPI_Read(PRESSURE_MSB_REG, sensorData, RAW_OUTPUT_DATA_SIZE);
+        SPI_Read(PRESSURE_MSB_REG, sensorDataBuffer, RAW_OUTPUT_DATA_SIZE);
 
-        tADC = (sensorData[3] << 12) | (sensorData[4] << 4) | (sensorData[5] >> 4);
-        hADC = (sensorData[6] << 8) | sensorData[7];
+        // Combine the bytes to form the 20-bit temperature value (tADC)
+        tADC = (sensorDataBuffer[TEMP_MSB_INDEX] << 12) |
+        		(sensorDataBuffer[TEMP_LSB_INDEX] << 4) |
+				(sensorDataBuffer[TEMP_XLSB_INDEX] >> 4);
 
+        hADC = (sensorDataBuffer[HUM_MSB_INDEX] << 8) |
+        		sensorDataBuffer[HUM_LSB_INDEX];
+
+        // Combine the bytes to form the 16-bit humidity value (hADC)
         temp = ((float)BME280_compensate_T_int32(tADC)) / 100.0;
         hum = ((float)bme280_compensate_H_int32(hADC)) / 1024.0;
 

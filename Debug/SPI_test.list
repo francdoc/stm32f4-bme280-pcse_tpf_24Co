@@ -37,17 +37,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_rnglists 00000bd4  00000000  00000000  0001cab0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  000274c6  00000000  00000000  0001d684  2**0
+ 17 .debug_macro  000274e4  00000000  00000000  0001d684  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00014b02  00000000  00000000  00044b4a  2**0
+ 18 .debug_line   00014b02  00000000  00000000  00044b68  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e532f  00000000  00000000  0005964c  2**0
+ 19 .debug_str    000e538a  00000000  00000000  0005966a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0013e97b  2**0
+ 20 .comment      00000043  00000000  00000000  0013e9f4  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003fdc  00000000  00000000  0013e9c0  2**2
+ 21 .debug_frame  00003fdc  00000000  00000000  0013ea38  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  0014299c  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  00142a14  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -3066,52 +3066,62 @@ uint8_t BME280_read(void)
  8001880:	b580      	push	{r7, lr}
  8001882:	b084      	sub	sp, #16
  8001884:	af00      	add	r7, sp, #0
-    uint8_t sensorData[8];
-    uint8_t chipID;
+    uint8_t sensorDataBuffer[8];
+    uint8_t chip_Id;
 
-    SPI_Read(CHIP_ID_REG, &chipID, CHIP_ID_BLOCK_SIZE);
+    SPI_Read(CHIP_ID_REG, &chip_Id, CHIP_ID_BLOCK_SIZE);
  8001886:	1cfb      	adds	r3, r7, #3
  8001888:	2201      	movs	r2, #1
  800188a:	4619      	mov	r1, r3
  800188c:	20d0      	movs	r0, #208	@ 0xd0
  800188e:	f7ff fe3f 	bl	8001510 <SPI_Read>
 
-    if (chipID == 0x60)
+    if (chip_Id == 0x60)
  8001892:	78fb      	ldrb	r3, [r7, #3]
  8001894:	2b60      	cmp	r3, #96	@ 0x60
  8001896:	d14e      	bne.n	8001936 <BME280_read+0xb6>
-         * - 0xFA to 0xFC: Raw temperature data (20 bits) -> Section 5.4.8.
-         * - 0xFD to 0xFE: Raw humidity data (16 bits) -> Section 5.4.9.
          *
-         * This means that with 46 bits (8 bytes) we can hold all the sampled data in 1 burst read.*/
+         * BYTE 7 | BYTE 6 | BYTE 5 | BYTE 4 | BYTE 3 | BYTE 2 | BYTE 1 | BYTE 0
+         * H_LSB    H_MSB    T_XLSB   T_LSB    T_MSB    P_XLSB   P_LSB    P_MSB
+         * */
 
-        SPI_Read(PRESSURE_MSB_REG, sensorData, RAW_OUTPUT_DATA_SIZE);
+        SPI_Read(PRESSURE_MSB_REG, sensorDataBuffer, RAW_OUTPUT_DATA_SIZE);
  8001898:	1d3b      	adds	r3, r7, #4
  800189a:	2208      	movs	r2, #8
  800189c:	4619      	mov	r1, r3
  800189e:	20f7      	movs	r0, #247	@ 0xf7
  80018a0:	f7ff fe36 	bl	8001510 <SPI_Read>
 
-        tADC = (sensorData[3] << 12) | (sensorData[4] << 4) | (sensorData[5] >> 4);
+        // Combine the bytes to form the 20-bit temperature value (tADC)
+        tADC = (sensorDataBuffer[TEMP_MSB_INDEX] << 12) |
  80018a4:	79fb      	ldrb	r3, [r7, #7]
  80018a6:	031a      	lsls	r2, r3, #12
+        		(sensorDataBuffer[TEMP_LSB_INDEX] << 4) |
  80018a8:	7a3b      	ldrb	r3, [r7, #8]
  80018aa:	011b      	lsls	r3, r3, #4
+        tADC = (sensorDataBuffer[TEMP_MSB_INDEX] << 12) |
  80018ac:	4313      	orrs	r3, r2
+				(sensorDataBuffer[TEMP_XLSB_INDEX] >> 4);
  80018ae:	7a7a      	ldrb	r2, [r7, #9]
  80018b0:	0912      	lsrs	r2, r2, #4
  80018b2:	b2d2      	uxtb	r2, r2
+        		(sensorDataBuffer[TEMP_LSB_INDEX] << 4) |
  80018b4:	4313      	orrs	r3, r2
+        tADC = (sensorDataBuffer[TEMP_MSB_INDEX] << 12) |
  80018b6:	4a2a      	ldr	r2, [pc, #168]	@ (8001960 <BME280_read+0xe0>)
  80018b8:	6013      	str	r3, [r2, #0]
-        hADC = (sensorData[6] << 8) | sensorData[7];
+
+        hADC = (sensorDataBuffer[HUM_MSB_INDEX] << 8) |
  80018ba:	7abb      	ldrb	r3, [r7, #10]
  80018bc:	021b      	lsls	r3, r3, #8
+        		sensorDataBuffer[HUM_LSB_INDEX];
  80018be:	7afa      	ldrb	r2, [r7, #11]
+        hADC = (sensorDataBuffer[HUM_MSB_INDEX] << 8) |
  80018c0:	4313      	orrs	r3, r2
  80018c2:	4a28      	ldr	r2, [pc, #160]	@ (8001964 <BME280_read+0xe4>)
  80018c4:	6013      	str	r3, [r2, #0]
 
+        // Combine the bytes to form the 16-bit humidity value (hADC)
         temp = ((float)BME280_compensate_T_int32(tADC)) / 100.0;
  80018c6:	4b26      	ldr	r3, [pc, #152]	@ (8001960 <BME280_read+0xe0>)
  80018c8:	681b      	ldr	r3, [r3, #0]

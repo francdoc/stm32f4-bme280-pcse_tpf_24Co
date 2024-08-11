@@ -87,6 +87,13 @@ register in normal mode may be ignored. In sleep mode writes are not ignored.
 #define DIG_H5_LSB_INDEX  5
 #define DIG_H6_INDEX      6
 
+#define TEMP_MSB_INDEX 3
+#define TEMP_LSB_INDEX 4
+#define TEMP_XLSB_INDEX 5 // X" stands for "extra", it refers to the additional bits beyond the least significant byte that help complete the 20-bit resolution.
+
+#define HUM_MSB_INDEX 6
+#define HUM_LSB_INDEX 7
+
 typedef int32_t BME280_S32_t;  // global type
 typedef uint32_t BME280_U32_t; // global type
 
