@@ -37,17 +37,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_rnglists 00000bd4  00000000  00000000  0001cab0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  000274e4  00000000  00000000  0001d684  2**0
+ 17 .debug_macro  000274c6  00000000  00000000  0001d684  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00014b02  00000000  00000000  00044b68  2**0
+ 18 .debug_line   00014b02  00000000  00000000  00044b4a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e534c  00000000  00000000  0005966a  2**0
+ 19 .debug_str    000e532f  00000000  00000000  0005964c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0013e9b6  2**0
+ 20 .comment      00000043  00000000  00000000  0013e97b  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003fdc  00000000  00000000  0013e9fc  2**2
+ 21 .debug_frame  00003fdc  00000000  00000000  0013e9c0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  001429d8  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  0014299c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2818,13 +2818,13 @@ void BME280_init(void)
     /* 5.4.2 The "reset" register contains the soft reset word reset[7:0].
     If the value 0xB6 is written to the register, the device is reset using the complete power-on-reset procedure.
     The readout value is 0x00.*/
-    uint8_t resetSeq = 0xB6;
+    uint8_t CmdReset = 0xB6;
  80016c2:	23b6      	movs	r3, #182	@ 0xb6
  80016c4:	71fb      	strb	r3, [r7, #7]
 
     /* 4.3. Register 0xF2 “ctrl_hum”. The “ctrl_hum” register sets the humidity data acquisition options of the device.
      * For this system I chose humidity at oversampling x 16.*/
-    uint8_t ctrlHum = 0x05;
+    uint8_t CmdCtrlHum = 0x05;
  80016c6:	2305      	movs	r3, #5
  80016c8:	71bb      	strb	r3, [r7, #6]
      * bit-7, bit-6, bit-5, bit-4, bit-3, bit-2, bit-1, bit-0
@@ -2832,7 +2832,7 @@ void BME280_init(void)
      * Temperature at oversampling x 16.
      * Pressure is not necessary since we will not use it in this system.
      * Mode is Normal.*/
-    uint8_t ctrlMeas = 0xA3;
+    uint8_t CmdCtrlMeasr = 0xA3;
  80016ca:	23a3      	movs	r3, #163	@ 0xa3
  80016cc:	717b      	strb	r3, [r7, #5]
 	 * 0b00011000
@@ -2840,12 +2840,12 @@ void BME280_init(void)
 	 * See in datasheet section 3.3.4 Normal mode (figure 5: Normal mode timing diagram).
 	 * For this system I chose a filter coefficient of 8 (bits 4->2 = 011. When the IIR filter is enabled, the temperature resolution is 20 bit (see section 3.4.3 for more info on temperature measurement).
 	 * For this system we disable 3-wire SPI interface when bit-0 set to ‘0’. Please check section 6.3 for more information on this.*/
-    uint8_t config = 0x18;
+    uint8_t CmdConfig = 0x18;
  80016ce:	2318      	movs	r3, #24
  80016d0:	713b      	strb	r3, [r7, #4]
 
     // Write reset sequence to the reset register
-    SPI_Write(BME280_RESET_REG, &resetSeq, CMDWRITESIZE);
+    SPI_Write(BME280_RESET_REG, &CmdReset, CMD_WRITE_SIZE);
  80016d2:	1dfb      	adds	r3, r7, #7
  80016d4:	2201      	movs	r2, #1
  80016d6:	4619      	mov	r1, r3
@@ -2856,7 +2856,7 @@ void BME280_init(void)
  80016e0:	f000 fe52 	bl	8002388 <HAL_Delay>
 
     // Write control settings to the control registers
-    SPI_Write(CTRL_HUM, &ctrlHum, CMDWRITESIZE);
+    SPI_Write(BME280_CTRL_HUM_REG, &CmdCtrlHum, CMD_WRITE_SIZE);
  80016e4:	1dbb      	adds	r3, r7, #6
  80016e6:	2201      	movs	r2, #1
  80016e8:	4619      	mov	r1, r3
@@ -2866,7 +2866,7 @@ void BME280_init(void)
  80016f0:	2064      	movs	r0, #100	@ 0x64
  80016f2:	f000 fe49 	bl	8002388 <HAL_Delay>
 
-    SPI_Write(CTRL_MEAS, &ctrlMeas, CMDWRITESIZE);
+    SPI_Write(BME280_CTRL_MEASR_REG, &CmdCtrlMeasr, CMD_WRITE_SIZE);
  80016f6:	1d7b      	adds	r3, r7, #5
  80016f8:	2201      	movs	r2, #1
  80016fa:	4619      	mov	r1, r3
@@ -2876,7 +2876,7 @@ void BME280_init(void)
  8001702:	2064      	movs	r0, #100	@ 0x64
  8001704:	f000 fe40 	bl	8002388 <HAL_Delay>
 
-    SPI_Write(CONFIG_REG, &config, CMDWRITESIZE);
+    SPI_Write(BME280_CTRL_CONFIG_REG, &CmdConfig, CMD_WRITE_SIZE);
  8001708:	1d3b      	adds	r3, r7, #4
  800170a:	2201      	movs	r2, #1
  800170c:	4619      	mov	r1, r3
@@ -3080,10 +3080,10 @@ uint8_t BME280_read(void)
  8001892:	78fb      	ldrb	r3, [r7, #3]
  8001894:	2b60      	cmp	r3, #96	@ 0x60
  8001896:	d14e      	bne.n	8001936 <BME280_read+0xb6>
+         * - 0xFA to 0xFC: Raw temperature data (20 bits) -> Section 5.4.8.
          * - 0xFD to 0xFE: Raw humidity data (16 bits) -> Section 5.4.9.
          *
-         * This means that with 46 bits (8 bytes) we can hold all the sampled data in 1 burst read.
-         * */
+         * This means that with 46 bits (8 bytes) we can hold all the sampled data in 1 burst read.*/
 
         SPI_Read(PRESSURE_MSB_REG, sensorData, RAW_OUTPUT_DATA_SIZE);
  8001898:	1d3b      	adds	r3, r7, #4

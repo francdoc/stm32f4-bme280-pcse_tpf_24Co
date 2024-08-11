@@ -100,11 +100,11 @@ void BME280_init(void)
     /* 5.4.2 The "reset" register contains the soft reset word reset[7:0].
     If the value 0xB6 is written to the register, the device is reset using the complete power-on-reset procedure.
     The readout value is 0x00.*/
-    uint8_t resetSeq = 0xB6;
+    uint8_t CmdReset = 0xB6;
 
     /* 4.3. Register 0xF2 “ctrl_hum”. The “ctrl_hum” register sets the humidity data acquisition options of the device.
      * For this system I chose humidity at oversampling x 16.*/
-    uint8_t ctrlHum = 0x05;
+    uint8_t CmdCtrlHum = 0x05;
 
     /* Bit-map according to 5.4.5 Register 0xF4 “ctrl_meas”.
      * bit-7, bit-6, bit-5, bit-4, bit-3, bit-2, bit-1, bit-0
@@ -112,7 +112,7 @@ void BME280_init(void)
      * Temperature at oversampling x 16.
      * Pressure is not necessary since we will not use it in this system.
      * Mode is Normal.*/
-    uint8_t ctrlMeas = 0xA3;
+    uint8_t CmdCtrlMeasr = 0xA3;
 
     /* Bit-map according to 5.4.6 Register 0xF5 “config”.
 	 * bit-7, bit-6, bit-5, bit-4, bit-3, bit-2, bit-1, bit-0
@@ -121,20 +121,20 @@ void BME280_init(void)
 	 * See in datasheet section 3.3.4 Normal mode (figure 5: Normal mode timing diagram).
 	 * For this system I chose a filter coefficient of 8 (bits 4->2 = 011. When the IIR filter is enabled, the temperature resolution is 20 bit (see section 3.4.3 for more info on temperature measurement).
 	 * For this system we disable 3-wire SPI interface when bit-0 set to ‘0’. Please check section 6.3 for more information on this.*/
-    uint8_t config = 0x18;
+    uint8_t CmdConfig = 0x18;
 
     // Write reset sequence to the reset register
-    SPI_Write(BME280_RESET_REG, &resetSeq, CMDWRITESIZE);
+    SPI_Write(BME280_RESET_REG, &CmdReset, CMD_WRITE_SIZE);
     HAL_Delay(BME280_HAL_DELAY);
 
     // Write control settings to the control registers
-    SPI_Write(CTRL_HUM, &ctrlHum, CMDWRITESIZE);
+    SPI_Write(BME280_CTRL_HUM_REG, &CmdCtrlHum, CMD_WRITE_SIZE);
     HAL_Delay(BME280_HAL_DELAY);
 
-    SPI_Write(CTRL_MEAS, &ctrlMeas, CMDWRITESIZE);
+    SPI_Write(BME280_CTRL_MEASR_REG, &CmdCtrlMeasr, CMD_WRITE_SIZE);
     HAL_Delay(BME280_HAL_DELAY);
 
-    SPI_Write(CONFIG_REG, &config, CMDWRITESIZE);
+    SPI_Write(BME280_CTRL_CONFIG_REG, &CmdConfig, CMD_WRITE_SIZE);
     HAL_Delay(BME280_HAL_DELAY);
 }
 
@@ -191,8 +191,7 @@ uint8_t BME280_read(void)
          * - 0xFA to 0xFC: Raw temperature data (20 bits) -> Section 5.4.8.
          * - 0xFD to 0xFE: Raw humidity data (16 bits) -> Section 5.4.9.
          *
-         * This means that with 46 bits (8 bytes) we can hold all the sampled data in 1 burst read.
-         * */
+         * This means that with 46 bits (8 bytes) we can hold all the sampled data in 1 burst read.*/
 
         SPI_Read(PRESSURE_MSB_REG, sensorData, RAW_OUTPUT_DATA_SIZE);
 

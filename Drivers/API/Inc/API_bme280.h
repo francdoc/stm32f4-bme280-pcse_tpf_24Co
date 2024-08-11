@@ -32,11 +32,7 @@ extern SPI_HandleTypeDef hspi1;
 
 #define NumOkRxBlinks 2
 
-#define CALIBMEMADD1 0x88
-#define CALIBMEMADD2 0xE1
-#define CALIBDATASIZE1 25
-#define CALIBDATASIZE2 7
-#define CMDWRITESIZE 1
+#define CMD_WRITE_SIZE 1 // bytes
 
 /*
 5.4.2 Register 0xE0 “reset”
@@ -49,27 +45,21 @@ no effect. The readout value is always 0x00.*/
 5.4.3 Register 0xF2 “ctrl_hum”
 The “ctrl_hum” register sets the humidity data acquisition options of the device. Changes to this
 register only become effective after a write operation to “ctrl_meas”.*/
-#define CTRL_HUM 0xF2
-
-/*
-5.4.4 Register 0xF3 “status”
-The “status” register contains two bits which indicate the status of the device.
-*/
-#define STATUS 0xF3
+#define BME280_CTRL_HUM_REG 0xF2
 
 /*
 5.4.5 Register 0xF4 “ctrl_meas”
 The “ctrl_meas” register sets the pressure and temperature data acquisition options of the device. The
 register needs to be written after changing “ctrl_hum” for the changes to become effective.
 */
-#define CTRL_MEAS 0xF4
+#define BME280_CTRL_MEASR_REG 0xF4
 
 /*
 5.4.6 Register 0xF5 “config”
 The “config” register sets the rate, filter and interface options of the device. Writes to the “config”
 register in normal mode may be ignored. In sleep mode writes are not ignored.
 */
-#define CONFIG_REG 0xF5
+#define BME280_CTRL_CONFIG_REG 0xF5
 
 // Define the memory addresses for calibration data in the BME280 sensor
 #define BME280_CALIB_00_ADDR 0x88 // Starting address for the first block of calibration data (temperature and pressure)
