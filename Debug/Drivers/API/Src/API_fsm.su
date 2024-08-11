@@ -11,6 +11,6 @@
 ../Drivers/API/Src/API_fsm.c:141:6:APP_init	8	static
 ../Drivers/API/Src/API_fsm.c:150:6:APP_updateLCD	8	static
 ../Drivers/API/Src/API_fsm.c:156:6:APP_updateSensorData	8	static
-../Drivers/API/Src/API_fsm.c:162:6:APP_prepareAndDisplaySensorData	8	static
-../Drivers/API/Src/API_fsm.c:168:6:APP_prepareAndSendUARTData	112	static
-../Drivers/API/Src/API_fsm.c:176:6:APP_update	8	static
+../Drivers/API/Src/API_fsm.c:161:6:APP_prepareAndDisplaySensorData	8	static
+../Drivers/API/Src/API_fsm.c:167:6:APP_prepareAndSendUARTData	112	static
+../Drivers/API/Src/API_fsm.c:175:6:APP_update	8	static

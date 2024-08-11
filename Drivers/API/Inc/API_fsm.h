@@ -17,6 +17,12 @@
 
 #define THRESHOLD_TEMP 24
 
+typedef enum
+{
+  TEMP_NORMAL,
+  TEMP_ALARM,
+} tempState_t;
+
 void lcd_display_date(void);
 void lcd_display_clock(void);
 

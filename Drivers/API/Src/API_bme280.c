@@ -1,7 +1,6 @@
 #include "API_bme280.h"
 
-// Declare global variables for temperature and humidity,
-// we will use them later in the finite-state machine app code.
+// Declare global variables for temperature and humidity, we will use them later in the finite-state machine app code.
 float temp, hum;
 
 // Calibration variables
@@ -15,17 +14,6 @@ int16_t dig_H4, dig_H5;
 int8_t dig_H6;
 
 static BME280_S32_t tADC, hADC;
-
-/**
- * @brief  This function is executed in case of error occurrence.
- * @retval None
- */
-void BME280_Error_Handler(void)
-{
-    while (1)
-    {
-    }
-}
 
 static void SPI_Write(uint8_t reg, uint8_t *data, uint16_t size)
 {
@@ -45,32 +33,6 @@ static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
     HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateHigh);
 }
 
-// Define the memory addresses for calibration data in the BME280 sensor
-#define BME280_CALIB_00_ADDR 0x88 // Starting address for the first block of calibration data (temperature and pressure)
-#define BME280_CALIB_26_ADDR 0xE1 // Starting address for the second block of calibration data (humidity)
-
-// Define the sizes of the calibration data blocks
-#define BME280_CALIBDATA_BLOCK1_SIZE 26 // Size of the first block of calibration data (temperature and pressure)
-#define BME280_CALIBDATA_BLOCK2_SIZE 7  // Size of the second block of calibration data (humidity)
-
-// Define indices for calibration data bytes
-#define DIG_T1_LSB_INDEX  0
-#define DIG_T1_MSB_INDEX  1
-#define DIG_T2_LSB_INDEX  2
-#define DIG_T2_MSB_INDEX  3
-#define DIG_T3_LSB_INDEX  4
-#define DIG_T3_MSB_INDEX  5
-
-#define DIG_H1_INDEX      24
-#define DIG_H2_LSB_INDEX  0
-#define DIG_H2_MSB_INDEX  1
-#define DIG_H3_INDEX      2
-#define DIG_H4_MSB_INDEX  3
-#define DIG_H4_LSB_INDEX  4
-#define DIG_H5_MSB_INDEX  4
-#define DIG_H5_LSB_INDEX  5
-#define DIG_H6_INDEX      6
-
 // Combines two bytes into a 16-bit integer.
 static uint16_t combineBytes(uint8_t msb, uint8_t lsb) {
     return ((uint16_t)msb << 8) | lsb;
@@ -79,6 +41,17 @@ static uint16_t combineBytes(uint8_t msb, uint8_t lsb) {
 // Extracts specific bits from a byte value.
 static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift) {
     return (value & mask) >> shift;
+}
+
+/**
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
+void BME280_Error_Handler(void)
+{
+    while (1)
+    {
+    }
 }
 
 // 4.2.2 Trimming parameter readout.
@@ -124,11 +97,9 @@ void BME280_init(void)
 {
 	BME280_CalibrationParams();
 
-    /*
-    5.4.2 The "reset" register contains the soft reset word reset[7:0].
+    /* 5.4.2 The "reset" register contains the soft reset word reset[7:0].
     If the value 0xB6 is written to the register, the device is reset using the complete power-on-reset procedure.
-    The readout value is 0x00.
-    */
+    The readout value is 0x00.*/
     uint8_t resetSeq = 0xB6;
 
     // Humidity at oversampling x 16.
@@ -136,14 +107,20 @@ void BME280_init(void)
 
     /* Bit-map according to 5.4.5 Register 0xF4 “ctrl_meas”.
      * bit-7, bit-6, bit-5, bit-4, bit-3, bit-2, bit-1, bit-0
-     * 10100011
+     * 0b10100011
      * Temperature at oversampling x 16.
-     * Pressure is not necessary.
-     * Mode is Normal.
-     */
+     * Pressure is not necessary since we will not use it in this system.
+     * Mode is Normal.*/
     uint8_t ctrlMeas = 0xA3;
 
-    // Table 26: Register 0xF5 “config”.
+    /* Bit-map according to 5.4.6 Register 0xF5 “config”.
+	 * bit-7, bit-6, bit-5, bit-4, bit-3, bit-2, bit-1, bit-0
+	 * 0b00010000
+	 * ts_tandby [ms] = 0.5 ms -> chose this configuration so we have the smallest time interval between measurements. Making the system more reactive to changes in temperature.
+	 * See in datasheet section 3.3.4 Normal mode (figure 5: Normal mode timing diagram).
+	 * For this system I chose to disable the IIR filter, because it slows down the response to the sensor inputs.
+	 * For this system we disable 3-wire SPI interface when set to ‘0’. Please check section 6.3 for more information on this.
+	 * */
     uint8_t config = 0x10;
 
     // Write reset sequence to the reset register
@@ -188,16 +165,6 @@ static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
     return (BME280_U32_t)(v_x1_u32r >> 12);
 }
 
-float BME280_getTemp(void)
-{
-    return temp;
-}
-
-float BME280_getHum(void)
-{
-    return hum;
-}
-
 uint8_t BME280_read(void)
 {
     uint8_t sensorData[8];
@@ -219,10 +186,13 @@ uint8_t BME280_read(void)
 
         /* Data readout is done by starting a burst read from 0xF7 to 0xFC (temperature and pressure) or from 0xF7 to 0xFE
          * (temperature, pressure and humidity). The data are read out in an unsigned 20-bit format both for pressure and
-         * for temperature and in an unsigned 16-bit format for humidity. */
+         * for temperature and in an unsigned 16-bit format for humidity since the IIR filter is OFF. */
 
-        tADC = (sensorData[3] << 12) | (sensorData[4] << 4) | (sensorData[5] >> 4); // WE CAN RETURN THIS WITH * & in the function signature
+        tADC = (sensorData[3] << 12) | (sensorData[4] << 4) | (sensorData[5] >> 4);
         hADC = (sensorData[6] << 8) | sensorData[7];
+
+        temp = ((float)BME280_compensate_T_int32(tADC)) / 100.0;
+        hum = ((float)bme280_compensate_H_int32(hADC)) / 1024.0;
 
         return 0; // check state of the function return and pass the data with pointer * & for the return of tADC hADC
     }
@@ -237,10 +207,3 @@ uint8_t BME280_read(void)
         return 1;
     }
 }
-
-void BME280_calculate(void)
-{
-    temp = ((float)BME280_compensate_T_int32(tADC)) / 100.0;
-    hum = ((float)bme280_compensate_H_int32(hADC)) / 1024.0;
-}
-

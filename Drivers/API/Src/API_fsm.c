@@ -156,7 +156,6 @@ void APP_updateLCD(void)
 void APP_updateSensorData(void)
 {
     BME280_read();
-    BME280_calculate();
 }
 
 void APP_prepareAndDisplaySensorData(void)

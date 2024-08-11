@@ -70,6 +70,32 @@ register in normal mode may be ignored. In sleep mode writes are not ignored.
 */
 #define CONFIG_REG 0xF5
 
+// Define the memory addresses for calibration data in the BME280 sensor
+#define BME280_CALIB_00_ADDR 0x88 // Starting address for the first block of calibration data (temperature and pressure)
+#define BME280_CALIB_26_ADDR 0xE1 // Starting address for the second block of calibration data (humidity)
+
+// Define the sizes of the calibration data blocks
+#define BME280_CALIBDATA_BLOCK1_SIZE 26 // Size of the first block of calibration data (temperature and pressure)
+#define BME280_CALIBDATA_BLOCK2_SIZE 7  // Size of the second block of calibration data (humidity)
+
+// Define indices for calibration data bytes
+#define DIG_T1_LSB_INDEX  0
+#define DIG_T1_MSB_INDEX  1
+#define DIG_T2_LSB_INDEX  2
+#define DIG_T2_MSB_INDEX  3
+#define DIG_T3_LSB_INDEX  4
+#define DIG_T3_MSB_INDEX  5
+
+#define DIG_H1_INDEX      24
+#define DIG_H2_LSB_INDEX  0
+#define DIG_H2_MSB_INDEX  1
+#define DIG_H3_INDEX      2
+#define DIG_H4_MSB_INDEX  3
+#define DIG_H4_LSB_INDEX  4
+#define DIG_H5_MSB_INDEX  4
+#define DIG_H5_LSB_INDEX  5
+#define DIG_H6_INDEX      6
+
 typedef int32_t BME280_S32_t;  // global type
 typedef uint32_t BME280_U32_t; // global type
 
@@ -77,17 +103,7 @@ typedef uint32_t BME280_U32_t; // global type
 extern float temp, hum;
 
 void BME280_init(void);
-void BME280_calculate(void);
-float BME280_getTemp(void);
-float BME280_getHum(void);
 void BME280_Error_Handler(void);
-
-typedef enum
-{
-  TEMP_NORMAL,
-  TEMP_ALARM,
-} tempState_t;
-
 extern uint8_t BME280_read(void);
 
 #endif /* API_INC_DRIVER_BME280_H_ */
