@@ -142,8 +142,8 @@ void APP_init()
 {
 	clock_init_code();
 	tempFSM_init();
-    uartInit();
     BME280_init();
+    uartInit();
     Init_Lcd();
 }
 

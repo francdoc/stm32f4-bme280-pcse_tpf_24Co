@@ -15,7 +15,7 @@
 
 #include "API_clock_date.h"
 
-#define THRESHOLD_TEMP 24
+#define THRESHOLD_TEMP 22 // degrees celsius
 
 typedef enum
 {

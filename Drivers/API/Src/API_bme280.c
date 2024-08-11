@@ -28,8 +28,8 @@ static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
 {
     uint8_t regAddress = reg | READ_CMD_BIT; // Apply the read command mask.
     HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateLow);
-    HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), TIMEOUT);
-    HAL_SPI_Receive(&hspi1, data, size, TIMEOUT);
+    HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), SPI_TX_RX_TIMEOUT);
+    HAL_SPI_Receive(&hspi1, data, size, SPI_TX_RX_TIMEOUT);
     HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateHigh);
 }
 
@@ -102,7 +102,8 @@ void BME280_init(void)
     The readout value is 0x00.*/
     uint8_t resetSeq = 0xB6;
 
-    // Humidity at oversampling x 16.
+    /* 4.3. Register 0xF2 “ctrl_hum”. The “ctrl_hum” register sets the humidity data acquisition options of the device.
+     * For this system I chose humidity at oversampling x 16.*/
     uint8_t ctrlHum = 0x05;
 
     /* Bit-map according to 5.4.5 Register 0xF4 “ctrl_meas”.
@@ -115,27 +116,26 @@ void BME280_init(void)
 
     /* Bit-map according to 5.4.6 Register 0xF5 “config”.
 	 * bit-7, bit-6, bit-5, bit-4, bit-3, bit-2, bit-1, bit-0
-	 * 0b00010000
-	 * ts_tandby [ms] = 0.5 ms -> chose this configuration so we have the smallest time interval between measurements. Making the system more reactive to changes in temperature.
+	 * 0b00011000
+	 * For this system I chose ts_tandby [ms] = 0.5 ms (bits 7->5 = 000). Chose this configuration so we have the smallest time interval between measurements. Making the system more reactive to changes in temperature.
 	 * See in datasheet section 3.3.4 Normal mode (figure 5: Normal mode timing diagram).
-	 * For this system I chose to disable the IIR filter, because it slows down the response to the sensor inputs.
-	 * For this system we disable 3-wire SPI interface when set to ‘0’. Please check section 6.3 for more information on this.
-	 * */
-    uint8_t config = 0x10;
+	 * For this system I chose a filter coefficient of 8 (bits 4->2 = 011. When the IIR filter is enabled, the temperature resolution is 20 bit (see section 3.4.3 for more info on temperature measurement).
+	 * For this system we disable 3-wire SPI interface when bit-0 set to ‘0’. Please check section 6.3 for more information on this.*/
+    uint8_t config = 0x18;
 
     // Write reset sequence to the reset register
-    SPI_Write(RESET_REG, &resetSeq, CMDWRITESIZE);
-    HAL_Delay(BME_HAL_DELAY);
+    SPI_Write(BME280_RESET_REG, &resetSeq, CMDWRITESIZE);
+    HAL_Delay(BME280_HAL_DELAY);
 
     // Write control settings to the control registers
     SPI_Write(CTRL_HUM, &ctrlHum, CMDWRITESIZE);
-    HAL_Delay(BME_HAL_DELAY);
+    HAL_Delay(BME280_HAL_DELAY);
 
     SPI_Write(CTRL_MEAS, &ctrlMeas, CMDWRITESIZE);
-    HAL_Delay(BME_HAL_DELAY);
+    HAL_Delay(BME280_HAL_DELAY);
 
     SPI_Write(CONFIG_REG, &config, CMDWRITESIZE);
-    HAL_Delay(BME_HAL_DELAY);
+    HAL_Delay(BME280_HAL_DELAY);
 }
 
 static BME280_S32_t t_fine;
@@ -153,7 +153,7 @@ static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
 
 // Humidity compensation formula taken from datasheet (please check page 25/60 for reference).
 // Returns humidity in %RH as unsigned 32 bit integer in Q22.10 format (22 integer and 10 fractional bits).
-// Output value of “47445” represents 47445/1024 = 46.333 %RH.
+// For example an output value of “47445” represents 47445/1024 = 46.333 %RH.
 static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
 {
     BME280_S32_t v_x1_u32r;
@@ -170,23 +170,31 @@ uint8_t BME280_read(void)
     uint8_t sensorData[8];
     uint8_t chipID;
 
-    SPI_Read(CHIPIDREG, &chipID, MEMADDRESSSIZE);
+    SPI_Read(CHIP_ID_REG, &chipID, CHIP_ID_BLOCK_SIZE);
 
     if (chipID == 0x60)
     {
 #ifdef DEBUG_BME280
         // blocking delays affect clock display performance negatively (time-lcd lag)
-        for (int i = 0; i <= NumBlinks; i++)
+        for (int i = 0; i <= NumOkRxBlinks; i++)
         {
             BSP_LED_Toggle(LED2); // blink indicates sensor ID rx is OK
             HAL_Delay(100);
         }
 #endif
-        SPI_Read(RAWDATAREG1, sensorData, RAWDATASIZE);
+        /* Data readout is done by starting a burst read from 0xF7 to 0xFE (temperature, pressure and humidity).
+         * The data are read out in an unsigned 20-bit format both for pressure and for temperature and in an
+         * unsigned 16-bit format for humidity.
+         *
+         * The sensor output data is organized as follows:
+         * - 0xF7 to 0xF9: Raw pressure data (20 bits) -> Section 5.4.7.
+         * - 0xFA to 0xFC: Raw temperature data (20 bits) -> Section 5.4.8.
+         * - 0xFD to 0xFE: Raw humidity data (16 bits) -> Section 5.4.9.
+         *
+         * This means that with 46 bits (8 bytes) we can hold all the sampled data in 1 burst read.
+         * */
 
-        /* Data readout is done by starting a burst read from 0xF7 to 0xFC (temperature and pressure) or from 0xF7 to 0xFE
-         * (temperature, pressure and humidity). The data are read out in an unsigned 20-bit format both for pressure and
-         * for temperature and in an unsigned 16-bit format for humidity since the IIR filter is OFF. */
+        SPI_Read(PRESSURE_MSB_REG, sensorData, RAW_OUTPUT_DATA_SIZE);
 
         tADC = (sensorData[3] << 12) | (sensorData[4] << 4) | (sensorData[5] >> 4);
         hADC = (sensorData[6] << 8) | sensorData[7];

@@ -14,35 +14,36 @@ extern SPI_HandleTypeDef hspi1;
 #define CS_Pin GPIO_PIN_3
 #define CS_GPIO_Port GPIOB
 
-#define READ_CMD_BIT 0x80  // Command bit for read operation (Most Significant Bit = 1) | 6.3.1 SPI read | applies mask 0x80 = 0b10000000 -> Most Significant Bit (bit number 7) = 1
-#define WRITE_CMD_BIT 0x7F // Command bit for write operation (Most Significant Bit = 0) | 6.3.2 SPI write | applies mask 0x7F = 0b01111111 -> Most Significant Bit (bit number 7) = 0
+#define READ_CMD_BIT 0x80  // command bit for read operation (Most Significant Bit = 1) | 6.3.1 SPI read | applies mask 0x80 = 0b10000000 -> Most Significant Bit (bit number 7) = 1
+#define WRITE_CMD_BIT 0x7F // command bit for write operation (Most Significant Bit = 0) | 6.3.2 SPI write | applies mask 0x7F = 0b01111111 -> Most Significant Bit (bit number 7) = 0
 
-#define BME_HAL_DELAY 100 // ms
+#define BME280_HAL_DELAY 100 // ms
 
-#define MEMADDRESSSIZE 1  // bit
-#define TIMEOUT 1000 // ms
+#define SPI_TX_RX_TIMEOUT 1000 // ms
 
-#define CALIBMEMADD1 0x88
-#define CALIBMEMADD2 0xE1
+#define PRESSURE_MSB_REG 0XF7
+#define RAW_OUTPUT_DATA_SIZE 8 // bytes
 
-#define CALIBDATASIZE1 25
-#define CALIBDATASIZE2 7
-#define CMDWRITESIZE 1
-#define RAWDATASIZE 8
-#define RAWDATAREG1 0XF7
-#define CHIPIDREG 0xD0
+#define CHIP_ID_REG 0xD0
+#define CHIP_ID_BLOCK_SIZE 1 // bytes
 
 #define PinStateLow 0
 #define PinStateHigh 1
 
-#define NumBlinks 2
+#define NumOkRxBlinks 2
+
+#define CALIBMEMADD1 0x88
+#define CALIBMEMADD2 0xE1
+#define CALIBDATASIZE1 25
+#define CALIBDATASIZE2 7
+#define CMDWRITESIZE 1
 
 /*
 5.4.2 Register 0xE0 “reset”
 The “reset” register contains the soft reset word reset[7:0]. If the value 0xB6 is written to the register,
 the device is reset using the complete power-on-reset procedure. Writing other values than 0xB6 has
 no effect. The readout value is always 0x00.*/
-#define RESET_REG 0xE0
+#define BME280_RESET_REG 0xE0
 
 /*
 5.4.3 Register 0xF2 “ctrl_hum”
@@ -75,8 +76,8 @@ register in normal mode may be ignored. In sleep mode writes are not ignored.
 #define BME280_CALIB_26_ADDR 0xE1 // Starting address for the second block of calibration data (humidity)
 
 // Define the sizes of the calibration data blocks
-#define BME280_CALIBDATA_BLOCK1_SIZE 26 // Size of the first block of calibration data (temperature and pressure)
-#define BME280_CALIBDATA_BLOCK2_SIZE 7  // Size of the second block of calibration data (humidity)
+#define BME280_CALIBDATA_BLOCK1_SIZE 26 // Size in bytes of the first block of calibration data (temperature and pressure)
+#define BME280_CALIBDATA_BLOCK2_SIZE 7  // Size in bytes of the second block of calibration data (humidity)
 
 // Define indices for calibration data bytes
 #define DIG_T1_LSB_INDEX  0

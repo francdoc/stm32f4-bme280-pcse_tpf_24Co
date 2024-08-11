@@ -41,13 +41,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  18 .debug_line   00014b02  00000000  00000000  00044b68  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e5320  00000000  00000000  0005966a  2**0
+ 19 .debug_str    000e534c  00000000  00000000  0005966a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0013e98a  2**0
+ 20 .comment      00000043  00000000  00000000  0013e9b6  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003fdc  00000000  00000000  0013e9d0  2**2
+ 21 .debug_frame  00003fdc  00000000  00000000  0013e9fc  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  001429ac  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  001429d8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2570,13 +2570,13 @@ static void SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
  800152c:	2108      	movs	r1, #8
  800152e:	480d      	ldr	r0, [pc, #52]	@ (8001564 <SPI_Read+0x54>)
  8001530:	f001 f9e0 	bl	80028f4 <HAL_GPIO_WritePin>
-    HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), TIMEOUT);
+    HAL_SPI_Transmit(&hspi1, &regAddress, sizeof(regAddress), SPI_TX_RX_TIMEOUT);
  8001534:	f107 010f 	add.w	r1, r7, #15
  8001538:	f44f 737a 	mov.w	r3, #1000	@ 0x3e8
  800153c:	2201      	movs	r2, #1
  800153e:	480a      	ldr	r0, [pc, #40]	@ (8001568 <SPI_Read+0x58>)
  8001540:	f003 f911 	bl	8004766 <HAL_SPI_Transmit>
-    HAL_SPI_Receive(&hspi1, data, size, TIMEOUT);
+    HAL_SPI_Receive(&hspi1, data, size, SPI_TX_RX_TIMEOUT);
  8001544:	88ba      	ldrh	r2, [r7, #4]
  8001546:	f44f 737a 	mov.w	r3, #1000	@ 0x3e8
  800154a:	6839      	ldr	r1, [r7, #0]
@@ -2822,7 +2822,8 @@ void BME280_init(void)
  80016c2:	23b6      	movs	r3, #182	@ 0xb6
  80016c4:	71fb      	strb	r3, [r7, #7]
 
-    // Humidity at oversampling x 16.
+    /* 4.3. Register 0xF2 “ctrl_hum”. The “ctrl_hum” register sets the humidity data acquisition options of the device.
+     * For this system I chose humidity at oversampling x 16.*/
     uint8_t ctrlHum = 0x05;
  80016c6:	2305      	movs	r3, #5
  80016c8:	71bb      	strb	r3, [r7, #6]
@@ -2834,23 +2835,23 @@ void BME280_init(void)
     uint8_t ctrlMeas = 0xA3;
  80016ca:	23a3      	movs	r3, #163	@ 0xa3
  80016cc:	717b      	strb	r3, [r7, #5]
-	 * ts_tandby [ms] = 0.5 ms -> chose this configuration so we have the smallest time interval between measurements. Making the system more reactive to changes in temperature.
+	 * 0b00011000
+	 * For this system I chose ts_tandby [ms] = 0.5 ms (bits 7->5 = 000). Chose this configuration so we have the smallest time interval between measurements. Making the system more reactive to changes in temperature.
 	 * See in datasheet section 3.3.4 Normal mode (figure 5: Normal mode timing diagram).
-	 * For this system I chose to disable the IIR filter, because it slows down the response to the sensor inputs.
-	 * For this system we disable 3-wire SPI interface when set to ‘0’. Please check section 6.3 for more information on this.
-	 * */
-    uint8_t config = 0x10;
- 80016ce:	2310      	movs	r3, #16
+	 * For this system I chose a filter coefficient of 8 (bits 4->2 = 011. When the IIR filter is enabled, the temperature resolution is 20 bit (see section 3.4.3 for more info on temperature measurement).
+	 * For this system we disable 3-wire SPI interface when bit-0 set to ‘0’. Please check section 6.3 for more information on this.*/
+    uint8_t config = 0x18;
+ 80016ce:	2318      	movs	r3, #24
  80016d0:	713b      	strb	r3, [r7, #4]
 
     // Write reset sequence to the reset register
-    SPI_Write(RESET_REG, &resetSeq, CMDWRITESIZE);
+    SPI_Write(BME280_RESET_REG, &resetSeq, CMDWRITESIZE);
  80016d2:	1dfb      	adds	r3, r7, #7
  80016d4:	2201      	movs	r2, #1
  80016d6:	4619      	mov	r1, r3
  80016d8:	20e0      	movs	r0, #224	@ 0xe0
  80016da:	f7ff feeb 	bl	80014b4 <SPI_Write>
-    HAL_Delay(BME_HAL_DELAY);
+    HAL_Delay(BME280_HAL_DELAY);
  80016de:	2064      	movs	r0, #100	@ 0x64
  80016e0:	f000 fe52 	bl	8002388 <HAL_Delay>
 
@@ -2861,7 +2862,7 @@ void BME280_init(void)
  80016e8:	4619      	mov	r1, r3
  80016ea:	20f2      	movs	r0, #242	@ 0xf2
  80016ec:	f7ff fee2 	bl	80014b4 <SPI_Write>
-    HAL_Delay(BME_HAL_DELAY);
+    HAL_Delay(BME280_HAL_DELAY);
  80016f0:	2064      	movs	r0, #100	@ 0x64
  80016f2:	f000 fe49 	bl	8002388 <HAL_Delay>
 
@@ -2871,7 +2872,7 @@ void BME280_init(void)
  80016fa:	4619      	mov	r1, r3
  80016fc:	20f4      	movs	r0, #244	@ 0xf4
  80016fe:	f7ff fed9 	bl	80014b4 <SPI_Write>
-    HAL_Delay(BME_HAL_DELAY);
+    HAL_Delay(BME280_HAL_DELAY);
  8001702:	2064      	movs	r0, #100	@ 0x64
  8001704:	f000 fe40 	bl	8002388 <HAL_Delay>
 
@@ -2881,7 +2882,7 @@ void BME280_init(void)
  800170c:	4619      	mov	r1, r3
  800170e:	20f5      	movs	r0, #245	@ 0xf5
  8001710:	f7ff fed0 	bl	80014b4 <SPI_Write>
-    HAL_Delay(BME_HAL_DELAY);
+    HAL_Delay(BME280_HAL_DELAY);
  8001714:	2064      	movs	r0, #100	@ 0x64
  8001716:	f000 fe37 	bl	8002388 <HAL_Delay>
 }
@@ -2966,7 +2967,7 @@ static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
 
 // Humidity compensation formula taken from datasheet (please check page 25/60 for reference).
 // Returns humidity in %RH as unsigned 32 bit integer in Q22.10 format (22 integer and 10 fractional bits).
-// Output value of “47445” represents 47445/1024 = 46.333 %RH.
+// For example an output value of “47445” represents 47445/1024 = 46.333 %RH.
 static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
 {
  80017a8:	b480      	push	{r7}
@@ -3068,7 +3069,7 @@ uint8_t BME280_read(void)
     uint8_t sensorData[8];
     uint8_t chipID;
 
-    SPI_Read(CHIPIDREG, &chipID, MEMADDRESSSIZE);
+    SPI_Read(CHIP_ID_REG, &chipID, CHIP_ID_BLOCK_SIZE);
  8001886:	1cfb      	adds	r3, r7, #3
  8001888:	2201      	movs	r2, #1
  800188a:	4619      	mov	r1, r3
@@ -3079,23 +3080,19 @@ uint8_t BME280_read(void)
  8001892:	78fb      	ldrb	r3, [r7, #3]
  8001894:	2b60      	cmp	r3, #96	@ 0x60
  8001896:	d14e      	bne.n	8001936 <BME280_read+0xb6>
-        {
-            BSP_LED_Toggle(LED2); // blink indicates sensor ID rx is OK
-            HAL_Delay(100);
-        }
-#endif
-        SPI_Read(RAWDATAREG1, sensorData, RAWDATASIZE);
+         * - 0xFD to 0xFE: Raw humidity data (16 bits) -> Section 5.4.9.
+         *
+         * This means that with 46 bits (8 bytes) we can hold all the sampled data in 1 burst read.
+         * */
+
+        SPI_Read(PRESSURE_MSB_REG, sensorData, RAW_OUTPUT_DATA_SIZE);
  8001898:	1d3b      	adds	r3, r7, #4
  800189a:	2208      	movs	r2, #8
  800189c:	4619      	mov	r1, r3
  800189e:	20f7      	movs	r0, #247	@ 0xf7
  80018a0:	f7ff fe36 	bl	8001510 <SPI_Read>
 
-        /* Data readout is done by starting a burst read from 0xF7 to 0xFC (temperature and pressure) or from 0xF7 to 0xFE
-         * (temperature, pressure and humidity). The data are read out in an unsigned 20-bit format both for pressure and
-         * for temperature and in an unsigned 16-bit format for humidity since the IIR filter is OFF. */
-
-        tADC = (sensorData[3] << 12) | (sensorData[4] << 4) | (sensorData[5] >> 4); // WE CAN RETURN THIS WITH * & in the function signature
+        tADC = (sensorData[3] << 12) | (sensorData[4] << 4) | (sensorData[5] >> 4);
  80018a4:	79fb      	ldrb	r3, [r7, #7]
  80018a6:	031a      	lsls	r2, r3, #12
  80018a8:	7a3b      	ldrb	r3, [r7, #8]
@@ -3347,7 +3344,7 @@ void eval_data()
     if (temp > THRESHOLD_TEMP)
  8001a3a:	4b1a      	ldr	r3, [pc, #104]	@ (8001aa4 <eval_data+0x70>)
  8001a3c:	edd3 7a00 	vldr	s15, [r3]
- 8001a40:	eeb3 7a08 	vmov.f32	s14, #56	@ 0x41c00000  24.0
+ 8001a40:	eeb3 7a06 	vmov.f32	s14, #54	@ 0x41b00000  22.0
  8001a44:	eef4 7ac7 	vcmpe.f32	s15, s14
  8001a48:	eef1 fa10 	vmrs	APSR_nzcv, fpscr
  8001a4c:	dd14      	ble.n	8001a78 <eval_data+0x44>
@@ -3877,10 +3874,10 @@ void APP_init()
  8001e48:	f7ff fd9a 	bl	8001980 <clock_init_code>
 	tempFSM_init();
  8001e4c:	f7ff fde6 	bl	8001a1c <tempFSM_init>
-    uartInit();
- 8001e50:	f000 f962 	bl	8002118 <uartInit>
     BME280_init();
- 8001e54:	f7ff fc30 	bl	80016b8 <BME280_init>
+ 8001e50:	f7ff fc32 	bl	80016b8 <BME280_init>
+    uartInit();
+ 8001e54:	f000 f960 	bl	8002118 <uartInit>
     Init_Lcd();
  8001e58:	f000 f83c 	bl	8001ed4 <Init_Lcd>
 }
