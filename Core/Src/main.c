@@ -126,7 +126,7 @@ int main(void)
 
     APP_update();
 
-    BSP_LED_Toggle(LED1); // Looping signal
+    BSP_LED_Toggle(LED1); // Toggles LED1 to indicate system heartbeat, signaling the main event-loop is running.
   }
   /* USER CODE END 3 */
 }

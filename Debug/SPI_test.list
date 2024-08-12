@@ -29,25 +29,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  12 .ARM.attributes 00000030  00000000  00000000  00007018  2**0
                   CONTENTS, READONLY
- 13 .debug_info   00012281  00000000  00000000  00007048  2**0
+ 13 .debug_info   0001225a  00000000  00000000  00007048  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 00002c57  00000000  00000000  000192c9  2**0
+ 14 .debug_abbrev 00002c42  00000000  00000000  000192a2  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00000f98  00000000  00000000  0001bf20  2**3
+ 15 .debug_aranges 00000f90  00000000  00000000  0001bee8  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 00000c05  00000000  00000000  0001ceb8  2**0
+ 16 .debug_rnglists 00000bff  00000000  00000000  0001ce78  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  00027883  00000000  00000000  0001dabd  2**0
+ 17 .debug_macro  00027883  00000000  00000000  0001da77  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   00015552  00000000  00000000  00045340  2**0
+ 18 .debug_line   0001553a  00000000  00000000  000452fa  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e5518  00000000  00000000  0005a892  2**0
+ 19 .debug_str    000e5500  00000000  00000000  0005a834  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0013fdaa  2**0
+ 20 .comment      00000043  00000000  00000000  0013fd34  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003f9c  00000000  00000000  0013fdf0  2**2
+ 21 .debug_frame  00003f78  00000000  00000000  0013fd78  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  00143d8c  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  00143cf0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -417,7 +417,7 @@ int main(void)
     APP_update();
  800051e:	f001 f8cc 	bl	80016ba <APP_update>
 
-    BSP_LED_Toggle(LED1); // Looping signal
+    BSP_LED_Toggle(LED1); // Toggles LED1 to indicate system heartbeat, signaling the main event-loop is running.
  8000522:	2000      	movs	r0, #0
  8000524:	f001 faac 	bl	8001a80 <BSP_LED_Toggle>
     APP_update();
@@ -3150,24 +3150,24 @@ void lcd_display_sensor_data(void)
     // Display temperature on the LCD
     PosCaracLLcd(9); // Assuming position 0 on the upper line
  8001554:	2009      	movs	r0, #9
- 8001556:	f000 f9b6 	bl	80018c6 <PosCaracLLcd>
+ 8001556:	f000 f9ab 	bl	80018b0 <PosCaracLLcd>
     SacaTextoLcd((uint8_t *)"T:");
  800155a:	4808      	ldr	r0, [pc, #32]	@ (800157c <lcd_display_sensor_data+0x2c>)
- 800155c:	f000 f98e 	bl	800187c <SacaTextoLcd>
+ 800155c:	f000 f983 	bl	8001866 <SacaTextoLcd>
     SacaTextoLcd((uint8_t *)lcdTempStr);
  8001560:	4807      	ldr	r0, [pc, #28]	@ (8001580 <lcd_display_sensor_data+0x30>)
- 8001562:	f000 f98b 	bl	800187c <SacaTextoLcd>
+ 8001562:	f000 f980 	bl	8001866 <SacaTextoLcd>
 
     // Display humidity on the LCD
     PosCaracHLcd(9); // Assuming position 0 on the lower line
  8001566:	2009      	movs	r0, #9
- 8001568:	f000 f99d 	bl	80018a6 <PosCaracHLcd>
+ 8001568:	f000 f992 	bl	8001890 <PosCaracHLcd>
     SacaTextoLcd((uint8_t *)"H:");
  800156c:	4805      	ldr	r0, [pc, #20]	@ (8001584 <lcd_display_sensor_data+0x34>)
- 800156e:	f000 f985 	bl	800187c <SacaTextoLcd>
+ 800156e:	f000 f97a 	bl	8001866 <SacaTextoLcd>
     SacaTextoLcd((uint8_t *)lcdHumStr);
  8001572:	4805      	ldr	r0, [pc, #20]	@ (8001588 <lcd_display_sensor_data+0x38>)
- 8001574:	f000 f982 	bl	800187c <SacaTextoLcd>
+ 8001574:	f000 f977 	bl	8001866 <SacaTextoLcd>
 }
  8001578:	bf00      	nop
  800157a:	bd80      	pop	{r7, pc}
@@ -3184,10 +3184,10 @@ void lcd_alarm()
  800158e:	af00      	add	r7, sp, #0
     PosCaracLLcd(0);
  8001590:	2000      	movs	r0, #0
- 8001592:	f000 f998 	bl	80018c6 <PosCaracLLcd>
+ 8001592:	f000 f98d 	bl	80018b0 <PosCaracLLcd>
     SacaTextoLcd((uint8_t *)"ALARMA! ");
  8001596:	4802      	ldr	r0, [pc, #8]	@ (80015a0 <lcd_alarm+0x14>)
- 8001598:	f000 f970 	bl	800187c <SacaTextoLcd>
+ 8001598:	f000 f965 	bl	8001866 <SacaTextoLcd>
 }
  800159c:	bf00      	nop
  800159e:	bd80      	pop	{r7, pc}
@@ -3201,28 +3201,28 @@ void lcd_display_clock()
  80015a6:	af00      	add	r7, sp, #0
     PosCaracHLcd(0);
  80015a8:	2000      	movs	r0, #0
- 80015aa:	f000 f97c 	bl	80018a6 <PosCaracHLcd>
+ 80015aa:	f000 f971 	bl	8001890 <PosCaracHLcd>
     DatoBCD(sTime.Hours);
  80015ae:	4b0b      	ldr	r3, [pc, #44]	@ (80015dc <lcd_display_clock+0x38>)
  80015b0:	781b      	ldrb	r3, [r3, #0]
  80015b2:	4618      	mov	r0, r3
- 80015b4:	f000 f90b 	bl	80017ce <DatoBCD>
+ 80015b4:	f000 f900 	bl	80017b8 <DatoBCD>
     DatoLcd(':');
  80015b8:	203a      	movs	r0, #58	@ 0x3a
- 80015ba:	f000 f8ea 	bl	8001792 <DatoLcd>
+ 80015ba:	f000 f8df 	bl	800177c <DatoLcd>
     DatoBCD(sTime.Minutes);
  80015be:	4b07      	ldr	r3, [pc, #28]	@ (80015dc <lcd_display_clock+0x38>)
  80015c0:	785b      	ldrb	r3, [r3, #1]
  80015c2:	4618      	mov	r0, r3
- 80015c4:	f000 f903 	bl	80017ce <DatoBCD>
+ 80015c4:	f000 f8f8 	bl	80017b8 <DatoBCD>
     DatoLcd(':');
  80015c8:	203a      	movs	r0, #58	@ 0x3a
- 80015ca:	f000 f8e2 	bl	8001792 <DatoLcd>
+ 80015ca:	f000 f8d7 	bl	800177c <DatoLcd>
     DatoBCD(sTime.Seconds);
  80015ce:	4b03      	ldr	r3, [pc, #12]	@ (80015dc <lcd_display_clock+0x38>)
  80015d0:	789b      	ldrb	r3, [r3, #2]
  80015d2:	4618      	mov	r0, r3
- 80015d4:	f000 f8fb 	bl	80017ce <DatoBCD>
+ 80015d4:	f000 f8f0 	bl	80017b8 <DatoBCD>
 }
  80015d8:	bf00      	nop
  80015da:	bd80      	pop	{r7, pc}
@@ -3236,28 +3236,28 @@ void lcd_display_date()
  80015e2:	af00      	add	r7, sp, #0
     PosCaracLLcd(0);
  80015e4:	2000      	movs	r0, #0
- 80015e6:	f000 f96e 	bl	80018c6 <PosCaracLLcd>
+ 80015e6:	f000 f963 	bl	80018b0 <PosCaracLLcd>
     DatoBCD(sDate.Date);
  80015ea:	4b0b      	ldr	r3, [pc, #44]	@ (8001618 <lcd_display_date+0x38>)
  80015ec:	789b      	ldrb	r3, [r3, #2]
  80015ee:	4618      	mov	r0, r3
- 80015f0:	f000 f8ed 	bl	80017ce <DatoBCD>
+ 80015f0:	f000 f8e2 	bl	80017b8 <DatoBCD>
     DatoLcd('/');
  80015f4:	202f      	movs	r0, #47	@ 0x2f
- 80015f6:	f000 f8cc 	bl	8001792 <DatoLcd>
+ 80015f6:	f000 f8c1 	bl	800177c <DatoLcd>
     DatoBCD(sDate.Month);
  80015fa:	4b07      	ldr	r3, [pc, #28]	@ (8001618 <lcd_display_date+0x38>)
  80015fc:	785b      	ldrb	r3, [r3, #1]
  80015fe:	4618      	mov	r0, r3
- 8001600:	f000 f8e5 	bl	80017ce <DatoBCD>
+ 8001600:	f000 f8da 	bl	80017b8 <DatoBCD>
     DatoLcd('/');
  8001604:	202f      	movs	r0, #47	@ 0x2f
- 8001606:	f000 f8c4 	bl	8001792 <DatoLcd>
+ 8001606:	f000 f8b9 	bl	800177c <DatoLcd>
     DatoBCD(sDate.Year);
  800160a:	4b03      	ldr	r3, [pc, #12]	@ (8001618 <lcd_display_date+0x38>)
  800160c:	78db      	ldrb	r3, [r3, #3]
  800160e:	4618      	mov	r0, r3
- 8001610:	f000 f8dd 	bl	80017ce <DatoBCD>
+ 8001610:	f000 f8d2 	bl	80017b8 <DatoBCD>
 }
  8001614:	bf00      	nop
  8001616:	bd80      	pop	{r7, pc}
@@ -3418,32 +3418,32 @@ _Bool Init_Lcd(void)
  80016d8:	b580      	push	{r7, lr}
  80016da:	b082      	sub	sp, #8
  80016dc:	af00      	add	r7, sp, #0
-	SleepLcdBlocking(millisecond * 20);
+	LCD_HAL_Delay(millisecond * 20);
  80016de:	2014      	movs	r0, #20
- 80016e0:	f000 f83e 	bl	8001760 <SleepLcdBlocking>
+ 80016e0:	f000 f90a 	bl	80018f8 <LCD_HAL_Delay>
 	Envia4bitsLcd(COMANDO_INI1, CONTROL);
  80016e4:	2100      	movs	r1, #0
  80016e6:	2030      	movs	r0, #48	@ 0x30
- 80016e8:	f000 f8a4 	bl	8001834 <Envia4bitsLcd>
-	SleepLcdBlocking(millisecond * 10);
+ 80016e8:	f000 f899 	bl	800181e <Envia4bitsLcd>
+	LCD_HAL_Delay(millisecond * 10);
  80016ec:	200a      	movs	r0, #10
- 80016ee:	f000 f837 	bl	8001760 <SleepLcdBlocking>
+ 80016ee:	f000 f903 	bl	80018f8 <LCD_HAL_Delay>
 	Envia4bitsLcd(COMANDO_INI1, CONTROL);
  80016f2:	2100      	movs	r1, #0
  80016f4:	2030      	movs	r0, #48	@ 0x30
- 80016f6:	f000 f89d 	bl	8001834 <Envia4bitsLcd>
-	SleepLcdBlocking(millisecond * 1);
+ 80016f6:	f000 f892 	bl	800181e <Envia4bitsLcd>
+	LCD_HAL_Delay(millisecond * 1);
  80016fa:	2001      	movs	r0, #1
- 80016fc:	f000 f830 	bl	8001760 <SleepLcdBlocking>
+ 80016fc:	f000 f8fc 	bl	80018f8 <LCD_HAL_Delay>
 	Envia4bitsLcd(COMANDO_INI1, CONTROL);
  8001700:	2100      	movs	r1, #0
  8001702:	2030      	movs	r0, #48	@ 0x30
- 8001704:	f000 f896 	bl	8001834 <Envia4bitsLcd>
+ 8001704:	f000 f88b 	bl	800181e <Envia4bitsLcd>
 	Envia4bitsLcd(COMANDO_INI2, CONTROL);
  8001708:	2100      	movs	r1, #0
  800170a:	2020      	movs	r0, #32
- 800170c:	f000 f892 	bl	8001834 <Envia4bitsLcd>
-	for (uint8_t i = 0; i < sizeof(LCD_INIT_CMD); i++)
+ 800170c:	f000 f887 	bl	800181e <Envia4bitsLcd>
+	for (uint8_t i = 0; i < sizeof(LCD_INIT_CMD); i++) {
  8001710:	2300      	movs	r3, #0
  8001712:	71fb      	strb	r3, [r7, #7]
  8001714:	e008      	b.n	8001728 <Init_Lcd+0x50>
@@ -3452,29 +3452,32 @@ _Bool Init_Lcd(void)
  8001718:	4a10      	ldr	r2, [pc, #64]	@ (800175c <Init_Lcd+0x84>)
  800171a:	5cd3      	ldrb	r3, [r2, r3]
  800171c:	4618      	mov	r0, r3
- 800171e:	f000 f82a 	bl	8001776 <ControlLcd>
-	for (uint8_t i = 0; i < sizeof(LCD_INIT_CMD); i++)
+ 800171e:	f000 f81f 	bl	8001760 <ControlLcd>
+	for (uint8_t i = 0; i < sizeof(LCD_INIT_CMD); i++) {
  8001722:	79fb      	ldrb	r3, [r7, #7]
  8001724:	3301      	adds	r3, #1
  8001726:	71fb      	strb	r3, [r7, #7]
  8001728:	79fb      	ldrb	r3, [r7, #7]
  800172a:	2b05      	cmp	r3, #5
  800172c:	d9f3      	bls.n	8001716 <Init_Lcd+0x3e>
-	SleepLcdBlocking(millisecond * 2);
- 800172e:	2002      	movs	r0, #2
- 8001730:	f000 f816 	bl	8001760 <SleepLcdBlocking>
+	}
 
+	LCD_HAL_Delay(millisecond * 2);
+ 800172e:	2002      	movs	r0, #2
+ 8001730:	f000 f8e2 	bl	80018f8 <LCD_HAL_Delay>
+
+	// Signal that LCD initialization is OK.
 	for (int i = 0; i <= 4; i++)
  8001734:	2300      	movs	r3, #0
  8001736:	603b      	str	r3, [r7, #0]
  8001738:	e008      	b.n	800174c <Init_Lcd+0x74>
 	{
-		BSP_LED_Toggle(LED1); // init LCD OK
+		LCD_HAL_Blink(LED1); // Ini LCD OK.
  800173a:	2000      	movs	r0, #0
- 800173c:	f000 f9a0 	bl	8001a80 <BSP_LED_Toggle>
-		SleepLcdBlocking(millisecond * 1);
+ 800173c:	f000 f8e7 	bl	800190e <LCD_HAL_Blink>
+		LCD_HAL_Delay(millisecond * 1);
  8001740:	2001      	movs	r0, #1
- 8001742:	f000 f80d 	bl	8001760 <SleepLcdBlocking>
+ 8001742:	f000 f8d9 	bl	80018f8 <LCD_HAL_Delay>
 	for (int i = 0; i <= 4; i++)
  8001746:	683b      	ldr	r3, [r7, #0]
  8001748:	3301      	adds	r3, #1
@@ -3492,310 +3495,313 @@ _Bool Init_Lcd(void)
  800175a:	bd80      	pop	{r7, pc}
  800175c:	08005454 	.word	0x08005454
 
-08001760 <SleepLcdBlocking>:
+08001760 <ControlLcd>:
 
-static void SleepLcdBlocking(uint32_t demora)
+static void ControlLcd(uint8_t valor)
 {
  8001760:	b580      	push	{r7, lr}
  8001762:	b082      	sub	sp, #8
  8001764:	af00      	add	r7, sp, #0
- 8001766:	6078      	str	r0, [r7, #4]
-	LCD_HAL_Delay(demora);
- 8001768:	6878      	ldr	r0, [r7, #4]
- 800176a:	f000 f8d1 	bl	8001910 <LCD_HAL_Delay>
-}
- 800176e:	bf00      	nop
- 8001770:	3708      	adds	r7, #8
- 8001772:	46bd      	mov	sp, r7
- 8001774:	bd80      	pop	{r7, pc}
-
-08001776 <ControlLcd>:
-
-static void ControlLcd(uint8_t valor)
-{
- 8001776:	b580      	push	{r7, lr}
- 8001778:	b082      	sub	sp, #8
- 800177a:	af00      	add	r7, sp, #0
- 800177c:	4603      	mov	r3, r0
- 800177e:	71fb      	strb	r3, [r7, #7]
+ 8001766:	4603      	mov	r3, r0
+ 8001768:	71fb      	strb	r3, [r7, #7]
 	Envia8bitsLcd(valor, CONTROL);
- 8001780:	79fb      	ldrb	r3, [r7, #7]
- 8001782:	2100      	movs	r1, #0
- 8001784:	4618      	mov	r0, r3
- 8001786:	f000 f838 	bl	80017fa <Envia8bitsLcd>
+ 800176a:	79fb      	ldrb	r3, [r7, #7]
+ 800176c:	2100      	movs	r1, #0
+ 800176e:	4618      	mov	r0, r3
+ 8001770:	f000 f838 	bl	80017e4 <Envia8bitsLcd>
 }
- 800178a:	bf00      	nop
- 800178c:	3708      	adds	r7, #8
- 800178e:	46bd      	mov	sp, r7
- 8001790:	bd80      	pop	{r7, pc}
+ 8001774:	bf00      	nop
+ 8001776:	3708      	adds	r7, #8
+ 8001778:	46bd      	mov	sp, r7
+ 800177a:	bd80      	pop	{r7, pc}
 
-08001792 <DatoLcd>:
+0800177c <DatoLcd>:
 
 void DatoLcd(uint8_t dato)
 {
- 8001792:	b580      	push	{r7, lr}
- 8001794:	b082      	sub	sp, #8
- 8001796:	af00      	add	r7, sp, #0
- 8001798:	4603      	mov	r3, r0
- 800179a:	71fb      	strb	r3, [r7, #7]
+ 800177c:	b580      	push	{r7, lr}
+ 800177e:	b082      	sub	sp, #8
+ 8001780:	af00      	add	r7, sp, #0
+ 8001782:	4603      	mov	r3, r0
+ 8001784:	71fb      	strb	r3, [r7, #7]
 	Envia8bitsLcd(dato, DATOS);
- 800179c:	79fb      	ldrb	r3, [r7, #7]
- 800179e:	2101      	movs	r1, #1
- 80017a0:	4618      	mov	r0, r3
- 80017a2:	f000 f82a 	bl	80017fa <Envia8bitsLcd>
+ 8001786:	79fb      	ldrb	r3, [r7, #7]
+ 8001788:	2101      	movs	r1, #1
+ 800178a:	4618      	mov	r0, r3
+ 800178c:	f000 f82a 	bl	80017e4 <Envia8bitsLcd>
 }
- 80017a6:	bf00      	nop
- 80017a8:	3708      	adds	r7, #8
- 80017aa:	46bd      	mov	sp, r7
- 80017ac:	bd80      	pop	{r7, pc}
+ 8001790:	bf00      	nop
+ 8001792:	3708      	adds	r7, #8
+ 8001794:	46bd      	mov	sp, r7
+ 8001796:	bd80      	pop	{r7, pc}
 
-080017ae <DatoAsciiLcd>:
+08001798 <DatoAsciiLcd>:
 
 void DatoAsciiLcd(uint8_t dato)
 {
- 80017ae:	b580      	push	{r7, lr}
- 80017b0:	b082      	sub	sp, #8
- 80017b2:	af00      	add	r7, sp, #0
- 80017b4:	4603      	mov	r3, r0
- 80017b6:	71fb      	strb	r3, [r7, #7]
+ 8001798:	b580      	push	{r7, lr}
+ 800179a:	b082      	sub	sp, #8
+ 800179c:	af00      	add	r7, sp, #0
+ 800179e:	4603      	mov	r3, r0
+ 80017a0:	71fb      	strb	r3, [r7, #7]
 	Envia8bitsLcd(dato + '0', DATOS);
- 80017b8:	79fb      	ldrb	r3, [r7, #7]
- 80017ba:	3330      	adds	r3, #48	@ 0x30
- 80017bc:	b2db      	uxtb	r3, r3
- 80017be:	2101      	movs	r1, #1
- 80017c0:	4618      	mov	r0, r3
- 80017c2:	f000 f81a 	bl	80017fa <Envia8bitsLcd>
+ 80017a2:	79fb      	ldrb	r3, [r7, #7]
+ 80017a4:	3330      	adds	r3, #48	@ 0x30
+ 80017a6:	b2db      	uxtb	r3, r3
+ 80017a8:	2101      	movs	r1, #1
+ 80017aa:	4618      	mov	r0, r3
+ 80017ac:	f000 f81a 	bl	80017e4 <Envia8bitsLcd>
 }
- 80017c6:	bf00      	nop
- 80017c8:	3708      	adds	r7, #8
- 80017ca:	46bd      	mov	sp, r7
- 80017cc:	bd80      	pop	{r7, pc}
+ 80017b0:	bf00      	nop
+ 80017b2:	3708      	adds	r7, #8
+ 80017b4:	46bd      	mov	sp, r7
+ 80017b6:	bd80      	pop	{r7, pc}
 
-080017ce <DatoBCD>:
+080017b8 <DatoBCD>:
 
 void DatoBCD(uint8_t dato)
 {
- 80017ce:	b580      	push	{r7, lr}
- 80017d0:	b082      	sub	sp, #8
- 80017d2:	af00      	add	r7, sp, #0
- 80017d4:	4603      	mov	r3, r0
- 80017d6:	71fb      	strb	r3, [r7, #7]
+ 80017b8:	b580      	push	{r7, lr}
+ 80017ba:	b082      	sub	sp, #8
+ 80017bc:	af00      	add	r7, sp, #0
+ 80017be:	4603      	mov	r3, r0
+ 80017c0:	71fb      	strb	r3, [r7, #7]
 	DatoAsciiLcd((((dato) & 0xf0) >> 4));
- 80017d8:	79fb      	ldrb	r3, [r7, #7]
- 80017da:	091b      	lsrs	r3, r3, #4
- 80017dc:	b2db      	uxtb	r3, r3
- 80017de:	4618      	mov	r0, r3
- 80017e0:	f7ff ffe5 	bl	80017ae <DatoAsciiLcd>
+ 80017c2:	79fb      	ldrb	r3, [r7, #7]
+ 80017c4:	091b      	lsrs	r3, r3, #4
+ 80017c6:	b2db      	uxtb	r3, r3
+ 80017c8:	4618      	mov	r0, r3
+ 80017ca:	f7ff ffe5 	bl	8001798 <DatoAsciiLcd>
 	DatoAsciiLcd(((dato) & 0x0f));
- 80017e4:	79fb      	ldrb	r3, [r7, #7]
- 80017e6:	f003 030f 	and.w	r3, r3, #15
- 80017ea:	b2db      	uxtb	r3, r3
- 80017ec:	4618      	mov	r0, r3
- 80017ee:	f7ff ffde 	bl	80017ae <DatoAsciiLcd>
+ 80017ce:	79fb      	ldrb	r3, [r7, #7]
+ 80017d0:	f003 030f 	and.w	r3, r3, #15
+ 80017d4:	b2db      	uxtb	r3, r3
+ 80017d6:	4618      	mov	r0, r3
+ 80017d8:	f7ff ffde 	bl	8001798 <DatoAsciiLcd>
 }
- 80017f2:	bf00      	nop
- 80017f4:	3708      	adds	r7, #8
- 80017f6:	46bd      	mov	sp, r7
- 80017f8:	bd80      	pop	{r7, pc}
+ 80017dc:	bf00      	nop
+ 80017de:	3708      	adds	r7, #8
+ 80017e0:	46bd      	mov	sp, r7
+ 80017e2:	bd80      	pop	{r7, pc}
 
-080017fa <Envia8bitsLcd>:
+080017e4 <Envia8bitsLcd>:
 
 void Envia8bitsLcd(uint8_t valor, _Bool tipo)
 {
- 80017fa:	b580      	push	{r7, lr}
- 80017fc:	b082      	sub	sp, #8
- 80017fe:	af00      	add	r7, sp, #0
- 8001800:	4603      	mov	r3, r0
- 8001802:	460a      	mov	r2, r1
- 8001804:	71fb      	strb	r3, [r7, #7]
- 8001806:	4613      	mov	r3, r2
- 8001808:	71bb      	strb	r3, [r7, #6]
+ 80017e4:	b580      	push	{r7, lr}
+ 80017e6:	b082      	sub	sp, #8
+ 80017e8:	af00      	add	r7, sp, #0
+ 80017ea:	4603      	mov	r3, r0
+ 80017ec:	460a      	mov	r2, r1
+ 80017ee:	71fb      	strb	r3, [r7, #7]
+ 80017f0:	4613      	mov	r3, r2
+ 80017f2:	71bb      	strb	r3, [r7, #6]
 	Envia4bitsLcd(valor & HIGH_NIBBLE, tipo);
- 800180a:	79fb      	ldrb	r3, [r7, #7]
- 800180c:	f023 030f 	bic.w	r3, r3, #15
- 8001810:	b2db      	uxtb	r3, r3
- 8001812:	79ba      	ldrb	r2, [r7, #6]
- 8001814:	4611      	mov	r1, r2
- 8001816:	4618      	mov	r0, r3
- 8001818:	f000 f80c 	bl	8001834 <Envia4bitsLcd>
+ 80017f4:	79fb      	ldrb	r3, [r7, #7]
+ 80017f6:	f023 030f 	bic.w	r3, r3, #15
+ 80017fa:	b2db      	uxtb	r3, r3
+ 80017fc:	79ba      	ldrb	r2, [r7, #6]
+ 80017fe:	4611      	mov	r1, r2
+ 8001800:	4618      	mov	r0, r3
+ 8001802:	f000 f80c 	bl	800181e <Envia4bitsLcd>
 	Envia4bitsLcd(valor << LOW_NIBBLE, tipo);
- 800181c:	79fb      	ldrb	r3, [r7, #7]
- 800181e:	011b      	lsls	r3, r3, #4
- 8001820:	b2db      	uxtb	r3, r3
- 8001822:	79ba      	ldrb	r2, [r7, #6]
- 8001824:	4611      	mov	r1, r2
- 8001826:	4618      	mov	r0, r3
- 8001828:	f000 f804 	bl	8001834 <Envia4bitsLcd>
+ 8001806:	79fb      	ldrb	r3, [r7, #7]
+ 8001808:	011b      	lsls	r3, r3, #4
+ 800180a:	b2db      	uxtb	r3, r3
+ 800180c:	79ba      	ldrb	r2, [r7, #6]
+ 800180e:	4611      	mov	r1, r2
+ 8001810:	4618      	mov	r0, r3
+ 8001812:	f000 f804 	bl	800181e <Envia4bitsLcd>
 }
- 800182c:	bf00      	nop
- 800182e:	3708      	adds	r7, #8
- 8001830:	46bd      	mov	sp, r7
- 8001832:	bd80      	pop	{r7, pc}
+ 8001816:	bf00      	nop
+ 8001818:	3708      	adds	r7, #8
+ 800181a:	46bd      	mov	sp, r7
+ 800181c:	bd80      	pop	{r7, pc}
 
-08001834 <Envia4bitsLcd>:
+0800181e <Envia4bitsLcd>:
 
 static void Envia4bitsLcd(uint8_t valor, _Bool tipo)
 {
- 8001834:	b580      	push	{r7, lr}
- 8001836:	b082      	sub	sp, #8
- 8001838:	af00      	add	r7, sp, #0
- 800183a:	4603      	mov	r3, r0
- 800183c:	460a      	mov	r2, r1
- 800183e:	71fb      	strb	r3, [r7, #7]
- 8001840:	4613      	mov	r3, r2
- 8001842:	71bb      	strb	r3, [r7, #6]
+ 800181e:	b580      	push	{r7, lr}
+ 8001820:	b082      	sub	sp, #8
+ 8001822:	af00      	add	r7, sp, #0
+ 8001824:	4603      	mov	r3, r0
+ 8001826:	460a      	mov	r2, r1
+ 8001828:	71fb      	strb	r3, [r7, #7]
+ 800182a:	4613      	mov	r3, r2
+ 800182c:	71bb      	strb	r3, [r7, #6]
 	LCD_HAL_I2C_Write(valor + tipo + EN + BL);
- 8001844:	79ba      	ldrb	r2, [r7, #6]
- 8001846:	79fb      	ldrb	r3, [r7, #7]
- 8001848:	4413      	add	r3, r2
- 800184a:	b2db      	uxtb	r3, r3
- 800184c:	330c      	adds	r3, #12
- 800184e:	b2db      	uxtb	r3, r3
- 8001850:	4618      	mov	r0, r3
- 8001852:	f000 f849 	bl	80018e8 <LCD_HAL_I2C_Write>
-	SleepLcdBlocking(millisecond);
- 8001856:	2001      	movs	r0, #1
- 8001858:	f7ff ff82 	bl	8001760 <SleepLcdBlocking>
+ 800182e:	79ba      	ldrb	r2, [r7, #6]
+ 8001830:	79fb      	ldrb	r3, [r7, #7]
+ 8001832:	4413      	add	r3, r2
+ 8001834:	b2db      	uxtb	r3, r3
+ 8001836:	330c      	adds	r3, #12
+ 8001838:	b2db      	uxtb	r3, r3
+ 800183a:	4618      	mov	r0, r3
+ 800183c:	f000 f848 	bl	80018d0 <LCD_HAL_I2C_Write>
+	LCD_HAL_Delay(millisecond);
+ 8001840:	2001      	movs	r0, #1
+ 8001842:	f000 f859 	bl	80018f8 <LCD_HAL_Delay>
 	LCD_HAL_I2C_Write(valor + tipo + BL);
- 800185c:	79ba      	ldrb	r2, [r7, #6]
- 800185e:	79fb      	ldrb	r3, [r7, #7]
- 8001860:	4413      	add	r3, r2
- 8001862:	b2db      	uxtb	r3, r3
- 8001864:	3308      	adds	r3, #8
- 8001866:	b2db      	uxtb	r3, r3
- 8001868:	4618      	mov	r0, r3
- 800186a:	f000 f83d 	bl	80018e8 <LCD_HAL_I2C_Write>
-	SleepLcdBlocking(millisecond);
- 800186e:	2001      	movs	r0, #1
- 8001870:	f7ff ff76 	bl	8001760 <SleepLcdBlocking>
+ 8001846:	79ba      	ldrb	r2, [r7, #6]
+ 8001848:	79fb      	ldrb	r3, [r7, #7]
+ 800184a:	4413      	add	r3, r2
+ 800184c:	b2db      	uxtb	r3, r3
+ 800184e:	3308      	adds	r3, #8
+ 8001850:	b2db      	uxtb	r3, r3
+ 8001852:	4618      	mov	r0, r3
+ 8001854:	f000 f83c 	bl	80018d0 <LCD_HAL_I2C_Write>
+	LCD_HAL_Delay(millisecond);
+ 8001858:	2001      	movs	r0, #1
+ 800185a:	f000 f84d 	bl	80018f8 <LCD_HAL_Delay>
 }
- 8001874:	bf00      	nop
- 8001876:	3708      	adds	r7, #8
- 8001878:	46bd      	mov	sp, r7
- 800187a:	bd80      	pop	{r7, pc}
+ 800185e:	bf00      	nop
+ 8001860:	3708      	adds	r7, #8
+ 8001862:	46bd      	mov	sp, r7
+ 8001864:	bd80      	pop	{r7, pc}
 
-0800187c <SacaTextoLcd>:
+08001866 <SacaTextoLcd>:
 
 void SacaTextoLcd(uint8_t *texto)
 {
- 800187c:	b580      	push	{r7, lr}
- 800187e:	b082      	sub	sp, #8
- 8001880:	af00      	add	r7, sp, #0
- 8001882:	6078      	str	r0, [r7, #4]
+ 8001866:	b580      	push	{r7, lr}
+ 8001868:	b082      	sub	sp, #8
+ 800186a:	af00      	add	r7, sp, #0
+ 800186c:	6078      	str	r0, [r7, #4]
 	while (*texto)
- 8001884:	e006      	b.n	8001894 <SacaTextoLcd+0x18>
+ 800186e:	e006      	b.n	800187e <SacaTextoLcd+0x18>
 		DatoLcd(*texto++);
- 8001886:	687b      	ldr	r3, [r7, #4]
- 8001888:	1c5a      	adds	r2, r3, #1
- 800188a:	607a      	str	r2, [r7, #4]
- 800188c:	781b      	ldrb	r3, [r3, #0]
- 800188e:	4618      	mov	r0, r3
- 8001890:	f7ff ff7f 	bl	8001792 <DatoLcd>
+ 8001870:	687b      	ldr	r3, [r7, #4]
+ 8001872:	1c5a      	adds	r2, r3, #1
+ 8001874:	607a      	str	r2, [r7, #4]
+ 8001876:	781b      	ldrb	r3, [r3, #0]
+ 8001878:	4618      	mov	r0, r3
+ 800187a:	f7ff ff7f 	bl	800177c <DatoLcd>
 	while (*texto)
- 8001894:	687b      	ldr	r3, [r7, #4]
- 8001896:	781b      	ldrb	r3, [r3, #0]
- 8001898:	2b00      	cmp	r3, #0
- 800189a:	d1f4      	bne.n	8001886 <SacaTextoLcd+0xa>
+ 800187e:	687b      	ldr	r3, [r7, #4]
+ 8001880:	781b      	ldrb	r3, [r3, #0]
+ 8001882:	2b00      	cmp	r3, #0
+ 8001884:	d1f4      	bne.n	8001870 <SacaTextoLcd+0xa>
 }
- 800189c:	bf00      	nop
- 800189e:	bf00      	nop
- 80018a0:	3708      	adds	r7, #8
- 80018a2:	46bd      	mov	sp, r7
- 80018a4:	bd80      	pop	{r7, pc}
+ 8001886:	bf00      	nop
+ 8001888:	bf00      	nop
+ 800188a:	3708      	adds	r7, #8
+ 800188c:	46bd      	mov	sp, r7
+ 800188e:	bd80      	pop	{r7, pc}
 
-080018a6 <PosCaracHLcd>:
+08001890 <PosCaracHLcd>:
 	ControlLcd(CLR_LCD);
-	SleepLcdBlocking(millisecond * 2);
+	LCD_HAL_Delay(millisecond * 2);
 }
 
 void PosCaracHLcd(uint8_t posH)
 {
- 80018a6:	b580      	push	{r7, lr}
- 80018a8:	b082      	sub	sp, #8
- 80018aa:	af00      	add	r7, sp, #0
- 80018ac:	4603      	mov	r3, r0
- 80018ae:	71fb      	strb	r3, [r7, #7]
+ 8001890:	b580      	push	{r7, lr}
+ 8001892:	b082      	sub	sp, #8
+ 8001894:	af00      	add	r7, sp, #0
+ 8001896:	4603      	mov	r3, r0
+ 8001898:	71fb      	strb	r3, [r7, #7]
 	ControlLcd(posH | LINEA1);
- 80018b0:	79fb      	ldrb	r3, [r7, #7]
- 80018b2:	f063 037f 	orn	r3, r3, #127	@ 0x7f
- 80018b6:	b2db      	uxtb	r3, r3
- 80018b8:	4618      	mov	r0, r3
- 80018ba:	f7ff ff5c 	bl	8001776 <ControlLcd>
+ 800189a:	79fb      	ldrb	r3, [r7, #7]
+ 800189c:	f063 037f 	orn	r3, r3, #127	@ 0x7f
+ 80018a0:	b2db      	uxtb	r3, r3
+ 80018a2:	4618      	mov	r0, r3
+ 80018a4:	f7ff ff5c 	bl	8001760 <ControlLcd>
 }
- 80018be:	bf00      	nop
- 80018c0:	3708      	adds	r7, #8
- 80018c2:	46bd      	mov	sp, r7
- 80018c4:	bd80      	pop	{r7, pc}
+ 80018a8:	bf00      	nop
+ 80018aa:	3708      	adds	r7, #8
+ 80018ac:	46bd      	mov	sp, r7
+ 80018ae:	bd80      	pop	{r7, pc}
 
-080018c6 <PosCaracLLcd>:
+080018b0 <PosCaracLLcd>:
 
 void PosCaracLLcd(uint8_t posL)
 {
- 80018c6:	b580      	push	{r7, lr}
- 80018c8:	b082      	sub	sp, #8
- 80018ca:	af00      	add	r7, sp, #0
- 80018cc:	4603      	mov	r3, r0
- 80018ce:	71fb      	strb	r3, [r7, #7]
+ 80018b0:	b580      	push	{r7, lr}
+ 80018b2:	b082      	sub	sp, #8
+ 80018b4:	af00      	add	r7, sp, #0
+ 80018b6:	4603      	mov	r3, r0
+ 80018b8:	71fb      	strb	r3, [r7, #7]
 	ControlLcd(posL | LINEA2);
- 80018d0:	79fb      	ldrb	r3, [r7, #7]
- 80018d2:	f063 033f 	orn	r3, r3, #63	@ 0x3f
- 80018d6:	b2db      	uxtb	r3, r3
- 80018d8:	4618      	mov	r0, r3
- 80018da:	f7ff ff4c 	bl	8001776 <ControlLcd>
+ 80018ba:	79fb      	ldrb	r3, [r7, #7]
+ 80018bc:	f063 033f 	orn	r3, r3, #63	@ 0x3f
+ 80018c0:	b2db      	uxtb	r3, r3
+ 80018c2:	4618      	mov	r0, r3
+ 80018c4:	f7ff ff4c 	bl	8001760 <ControlLcd>
 }
- 80018de:	bf00      	nop
- 80018e0:	3708      	adds	r7, #8
- 80018e2:	46bd      	mov	sp, r7
- 80018e4:	bd80      	pop	{r7, pc}
-	...
+ 80018c8:	bf00      	nop
+ 80018ca:	3708      	adds	r7, #8
+ 80018cc:	46bd      	mov	sp, r7
+ 80018ce:	bd80      	pop	{r7, pc}
 
-080018e8 <LCD_HAL_I2C_Write>:
+080018d0 <LCD_HAL_I2C_Write>:
 #include "API_lcd_port.h"
 
 /* Public functions ----------------------------------------------------------*/
 
 void LCD_HAL_I2C_Write(uint8_t valor)
 {
- 80018e8:	b580      	push	{r7, lr}
- 80018ea:	b084      	sub	sp, #16
- 80018ec:	af02      	add	r7, sp, #8
- 80018ee:	4603      	mov	r3, r0
- 80018f0:	71fb      	strb	r3, [r7, #7]
+ 80018d0:	b580      	push	{r7, lr}
+ 80018d2:	b084      	sub	sp, #16
+ 80018d4:	af02      	add	r7, sp, #8
+ 80018d6:	4603      	mov	r3, r0
+ 80018d8:	71fb      	strb	r3, [r7, #7]
   HAL_I2C_Master_Transmit(&hi2c1, LCD_DIR << 1, &valor, sizeof(valor), HAL_MAX_DELAY);
- 80018f2:	1dfa      	adds	r2, r7, #7
- 80018f4:	f04f 33ff 	mov.w	r3, #4294967295	@ 0xffffffff
- 80018f8:	9300      	str	r3, [sp, #0]
- 80018fa:	2301      	movs	r3, #1
- 80018fc:	214e      	movs	r1, #78	@ 0x4e
- 80018fe:	4803      	ldr	r0, [pc, #12]	@ (800190c <LCD_HAL_I2C_Write+0x24>)
- 8001900:	f000 fd78 	bl	80023f4 <HAL_I2C_Master_Transmit>
+ 80018da:	1dfa      	adds	r2, r7, #7
+ 80018dc:	f04f 33ff 	mov.w	r3, #4294967295	@ 0xffffffff
+ 80018e0:	9300      	str	r3, [sp, #0]
+ 80018e2:	2301      	movs	r3, #1
+ 80018e4:	214e      	movs	r1, #78	@ 0x4e
+ 80018e6:	4803      	ldr	r0, [pc, #12]	@ (80018f4 <LCD_HAL_I2C_Write+0x24>)
+ 80018e8:	f000 fd84 	bl	80023f4 <HAL_I2C_Master_Transmit>
 }
- 8001904:	bf00      	nop
- 8001906:	3708      	adds	r7, #8
- 8001908:	46bd      	mov	sp, r7
- 800190a:	bd80      	pop	{r7, pc}
- 800190c:	20000034 	.word	0x20000034
+ 80018ec:	bf00      	nop
+ 80018ee:	3708      	adds	r7, #8
+ 80018f0:	46bd      	mov	sp, r7
+ 80018f2:	bd80      	pop	{r7, pc}
+ 80018f4:	20000034 	.word	0x20000034
 
-08001910 <LCD_HAL_Delay>:
+080018f8 <LCD_HAL_Delay>:
  *  @brief  Provides a delay for a specified number of milliseconds.
  * @param  delay: The amount of time, in milliseconds, to delay.
  * @retval None
  */
 void LCD_HAL_Delay(uint32_t delay)
 {
- 8001910:	b580      	push	{r7, lr}
- 8001912:	b082      	sub	sp, #8
- 8001914:	af00      	add	r7, sp, #0
- 8001916:	6078      	str	r0, [r7, #4]
+ 80018f8:	b580      	push	{r7, lr}
+ 80018fa:	b082      	sub	sp, #8
+ 80018fc:	af00      	add	r7, sp, #0
+ 80018fe:	6078      	str	r0, [r7, #4]
   HAL_Delay(delay);
- 8001918:	6878      	ldr	r0, [r7, #4]
- 800191a:	f000 f93d 	bl	8001b98 <HAL_Delay>
+ 8001900:	6878      	ldr	r0, [r7, #4]
+ 8001902:	f000 f949 	bl	8001b98 <HAL_Delay>
 }
- 800191e:	bf00      	nop
- 8001920:	3708      	adds	r7, #8
- 8001922:	46bd      	mov	sp, r7
- 8001924:	bd80      	pop	{r7, pc}
-	...
+ 8001906:	bf00      	nop
+ 8001908:	3708      	adds	r7, #8
+ 800190a:	46bd      	mov	sp, r7
+ 800190c:	bd80      	pop	{r7, pc}
+
+0800190e <LCD_HAL_Blink>:
+ * @brief  Toggles the state of the specified LED.
+ * @param  Led: Specifies the LED to be toggled. This parameter can be one of the LED identifiers defined in the board support package (BSP), such as `LED2`, `LED3`, etc.
+ * @retval None
+ */
+void LCD_HAL_Blink(Led_TypeDef Led)
+{
+ 800190e:	b580      	push	{r7, lr}
+ 8001910:	b082      	sub	sp, #8
+ 8001912:	af00      	add	r7, sp, #0
+ 8001914:	4603      	mov	r3, r0
+ 8001916:	71fb      	strb	r3, [r7, #7]
+  BSP_LED_Toggle(Led);
+ 8001918:	79fb      	ldrb	r3, [r7, #7]
+ 800191a:	4618      	mov	r0, r3
+ 800191c:	f000 f8b0 	bl	8001a80 <BSP_LED_Toggle>
+}
+ 8001920:	bf00      	nop
+ 8001922:	3708      	adds	r7, #8
+ 8001924:	46bd      	mov	sp, r7
+ 8001926:	bd80      	pop	{r7, pc}
 
 08001928 <uartInit>:
   * @param  None.
