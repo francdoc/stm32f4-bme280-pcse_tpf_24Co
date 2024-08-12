@@ -1,8 +1,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include"API_lcd_port.h"
 
-extern I2C_HandleTypeDef hi2c1;
-
 /* Public functions ----------------------------------------------------------*/
 
 void LCD_HAL_I2C_Write(uint8_t valor){

@@ -6,6 +6,10 @@
 #include "stm32f4xx_nucleo_144.h" /* <- BSP include */
 #include "API_bme280.h"    /* <- BME280 driver include */
 
+/* SPI handler declaration */
+
+extern SPI_HandleTypeDef hspi1;
+
 /* Exported functions ------------------------------------------------------- */
 
 /**

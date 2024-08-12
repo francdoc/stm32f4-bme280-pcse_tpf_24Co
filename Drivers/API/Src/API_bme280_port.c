@@ -3,10 +3,6 @@
 
 /* Private variable ----------------------------------------------------------*/
 
-/* SPI handler declaration */
-
-extern SPI_HandleTypeDef hspi1;
-
 /* Public functions ----------------------------------------------------------*/
 
 /**
