@@ -274,7 +274,7 @@ void MX_SPI1_Init(void)
 
     if (HAL_SPI_Init(&hspi1) != HAL_OK)
     {
-        BME280_Error_Handler();
+    	API_BME280_ErrorHandler();
     }
     /* USER CODE BEGIN SPI1_Init 2 */
 

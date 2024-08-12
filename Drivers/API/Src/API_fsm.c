@@ -142,7 +142,7 @@ void APP_init()
 {
 	clock_init_code();
 	tempFSM_init();
-    BME280_init();
+	API_BME280_Init();
     uartInit();
     Init_Lcd();
 }
@@ -155,7 +155,7 @@ void APP_updateLCD(void)
 
 void APP_updateSensorData(void)
 {
-    BME280_read();
+	API_BME280_Read();
 }
 
 void APP_prepareAndDisplaySensorData(void)

@@ -41,13 +41,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  18 .debug_line   000154e2  00000000  00000000  00045170  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e54c2  00000000  00000000  0005a652  2**0
+ 19 .debug_str    000e54b1  00000000  00000000  0005a652  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0013fb14  2**0
+ 20 .comment      00000043  00000000  00000000  0013fb03  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003f14  00000000  00000000  0013fb58  2**2
+ 21 .debug_frame  00003f14  00000000  00000000  0013fb48  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  00143a6c  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  00143a5c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -789,8 +789,8 @@ void MX_SPI1_Init(void)
  8000744:	2b00      	cmp	r3, #0
  8000746:	d001      	beq.n	800074c <MX_SPI1_Init+0x60>
     {
-        BME280_Error_Handler();
- 8000748:	f000 fc8c 	bl	8001064 <BME280_Error_Handler>
+    	API_BME280_ErrorHandler();
+ 8000748:	f000 fc8c 	bl	8001064 <API_BME280_ErrorHandler>
     }
     /* USER CODE BEGIN SPI1_Init 2 */
 
@@ -1885,20 +1885,20 @@ static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift) {
  8000ccc:	f85d 7b04 	ldr.w	r7, [sp], #4
  8000cd0:	4770      	bx	lr
 
-08000cd2 <BME280_error_led_signal>:
+08000cd2 <errorLedSignal>:
 /**
   * @brief  Flashes LED to signal an error in BME280 operations.
   * @param  None
   * @retval None
   */
-static void BME280_error_led_signal(void){
+static void errorLedSignal(void){
  8000cd2:	b580      	push	{r7, lr}
  8000cd4:	b082      	sub	sp, #8
  8000cd6:	af00      	add	r7, sp, #0
     for (int i = 0; i <= NumErrorRxBlinks; i++)
  8000cd8:	2300      	movs	r3, #0
  8000cda:	607b      	str	r3, [r7, #4]
- 8000cdc:	e008      	b.n	8000cf0 <BME280_error_led_signal+0x1e>
+ 8000cdc:	e008      	b.n	8000cf0 <errorLedSignal+0x1e>
     {
         BSP_LED_Toggle(LED3); // sensor ID ERROR
  8000cde:	2002      	movs	r0, #2
@@ -1912,7 +1912,7 @@ static void BME280_error_led_signal(void){
  8000cee:	607b      	str	r3, [r7, #4]
  8000cf0:	687b      	ldr	r3, [r7, #4]
  8000cf2:	2b02      	cmp	r3, #2
- 8000cf4:	ddf3      	ble.n	8000cde <BME280_error_led_signal+0xc>
+ 8000cf4:	ddf3      	ble.n	8000cde <errorLedSignal+0xc>
     }
 }
  8000cf6:	bf00      	nop
@@ -1921,13 +1921,13 @@ static void BME280_error_led_signal(void){
  8000cfc:	46bd      	mov	sp, r7
  8000cfe:	bd80      	pop	{r7, pc}
 
-08000d00 <BME280_CalibrationParams>:
+08000d00 <calibrationParams>:
   * @brief  Reads the calibration parameters from the BME280 sensor (4.2.2 Trimming parameter readout).
   *         Each compensation word is a 16-bit signed or unsigned integer value stored in two’s complement.
   * @param  None
   * @retval None
   */
-static void BME280_CalibrationParams(void) {
+static void calibrationParams(void) {
  8000d00:	b590      	push	{r4, r7, lr}
  8000d02:	b08b      	sub	sp, #44	@ 0x2c
  8000d04:	af00      	add	r7, sp, #0
@@ -1963,7 +1963,7 @@ static void BME280_CalibrationParams(void) {
  8000d28:	f7ff ffa5 	bl	8000c76 <combineBytes>
  8000d2c:	4603      	mov	r3, r0
  8000d2e:	461a      	mov	r2, r3
- 8000d30:	4b24      	ldr	r3, [pc, #144]	@ (8000dc4 <BME280_CalibrationParams+0xc4>)
+ 8000d30:	4b24      	ldr	r3, [pc, #144]	@ (8000dc4 <calibrationParams+0xc4>)
  8000d32:	801a      	strh	r2, [r3, #0]
     dig_T2 = combineBytes(calibDataBuffer1[DIG_T2_MSB_INDEX], calibDataBuffer1[DIG_T2_LSB_INDEX]);
  8000d34:	7bfb      	ldrb	r3, [r7, #15]
@@ -1973,7 +1973,7 @@ static void BME280_CalibrationParams(void) {
  8000d3c:	f7ff ff9b 	bl	8000c76 <combineBytes>
  8000d40:	4603      	mov	r3, r0
  8000d42:	b21a      	sxth	r2, r3
- 8000d44:	4b20      	ldr	r3, [pc, #128]	@ (8000dc8 <BME280_CalibrationParams+0xc8>)
+ 8000d44:	4b20      	ldr	r3, [pc, #128]	@ (8000dc8 <calibrationParams+0xc8>)
  8000d46:	801a      	strh	r2, [r3, #0]
     dig_T3 = combineBytes(calibDataBuffer1[DIG_T3_MSB_INDEX], calibDataBuffer1[DIG_T3_LSB_INDEX]);
  8000d48:	7c7b      	ldrb	r3, [r7, #17]
@@ -1983,13 +1983,13 @@ static void BME280_CalibrationParams(void) {
  8000d50:	f7ff ff91 	bl	8000c76 <combineBytes>
  8000d54:	4603      	mov	r3, r0
  8000d56:	b21a      	sxth	r2, r3
- 8000d58:	4b1c      	ldr	r3, [pc, #112]	@ (8000dcc <BME280_CalibrationParams+0xcc>)
+ 8000d58:	4b1c      	ldr	r3, [pc, #112]	@ (8000dcc <calibrationParams+0xcc>)
  8000d5a:	801a      	strh	r2, [r3, #0]
 
     // Extract data for first trimming humidity value (dig_H1)
     dig_H1 = calibDataBuffer1[DIG_H1_INDEX];
  8000d5c:	f897 2024 	ldrb.w	r2, [r7, #36]	@ 0x24
- 8000d60:	4b1b      	ldr	r3, [pc, #108]	@ (8000dd0 <BME280_CalibrationParams+0xd0>)
+ 8000d60:	4b1b      	ldr	r3, [pc, #108]	@ (8000dd0 <calibrationParams+0xd0>)
  8000d62:	701a      	strb	r2, [r3, #0]
 
     dig_H2 = combineBytes(calibDataBuffer2[DIG_H2_MSB_INDEX], calibDataBuffer2[DIG_H2_LSB_INDEX]);
@@ -2000,11 +2000,11 @@ static void BME280_CalibrationParams(void) {
  8000d6c:	f7ff ff83 	bl	8000c76 <combineBytes>
  8000d70:	4603      	mov	r3, r0
  8000d72:	b21a      	sxth	r2, r3
- 8000d74:	4b17      	ldr	r3, [pc, #92]	@ (8000dd4 <BME280_CalibrationParams+0xd4>)
+ 8000d74:	4b17      	ldr	r3, [pc, #92]	@ (8000dd4 <calibrationParams+0xd4>)
  8000d76:	801a      	strh	r2, [r3, #0]
     dig_H3 = calibDataBuffer2[DIG_H3_INDEX];
  8000d78:	79ba      	ldrb	r2, [r7, #6]
- 8000d7a:	4b17      	ldr	r3, [pc, #92]	@ (8000dd8 <BME280_CalibrationParams+0xd8>)
+ 8000d7a:	4b17      	ldr	r3, [pc, #92]	@ (8000dd8 <calibrationParams+0xd8>)
  8000d7c:	701a      	strb	r2, [r3, #0]
 
     // For dig_H4, special bit manipulations are required to combine parts of two different bytes
@@ -2021,7 +2021,7 @@ static void BME280_CalibrationParams(void) {
  8000d92:	b21b      	sxth	r3, r3
  8000d94:	4323      	orrs	r3, r4
  8000d96:	b21a      	sxth	r2, r3
- 8000d98:	4b10      	ldr	r3, [pc, #64]	@ (8000ddc <BME280_CalibrationParams+0xdc>)
+ 8000d98:	4b10      	ldr	r3, [pc, #64]	@ (8000ddc <calibrationParams+0xdc>)
  8000d9a:	801a      	strh	r2, [r3, #0]
 
     // For dig_H5, special bit manipulations are required to combine parts of two different bytes
@@ -2035,14 +2035,14 @@ static void BME280_CalibrationParams(void) {
  8000da8:	b21b      	sxth	r3, r3
  8000daa:	4313      	orrs	r3, r2
  8000dac:	b21a      	sxth	r2, r3
- 8000dae:	4b0c      	ldr	r3, [pc, #48]	@ (8000de0 <BME280_CalibrationParams+0xe0>)
+ 8000dae:	4b0c      	ldr	r3, [pc, #48]	@ (8000de0 <calibrationParams+0xe0>)
  8000db0:	801a      	strh	r2, [r3, #0]
 
     // Store the final humidity calibration value directly from the corresponding byte
     dig_H6 = calibDataBuffer2[DIG_H6_INDEX];
  8000db2:	7abb      	ldrb	r3, [r7, #10]
  8000db4:	b25a      	sxtb	r2, r3
- 8000db6:	4b0b      	ldr	r3, [pc, #44]	@ (8000de4 <BME280_CalibrationParams+0xe4>)
+ 8000db6:	4b0b      	ldr	r3, [pc, #44]	@ (8000de4 <calibrationParams+0xe4>)
  8000db8:	701a      	strb	r2, [r3, #0]
 }
  8000dba:	bf00      	nop
@@ -2061,7 +2061,7 @@ static void BME280_CalibrationParams(void) {
  8000de4:	20000118 	.word	0x20000118
 
 08000de8 <BME280_compensate_T_int32>:
-  *         t_fine carries fine temperature as global value for bme280_compensate_H_int32 to process its return humidity value.
+  *         t_fine carries fine temperature as global value for BME280_compensate_H_int32 function to process its return humidity value.
   * @param  BME280_S32_t adc_T: Raw ADC temperature value.
   * @retval BME280_S32_t: Compensated temperature value.
   */
@@ -2131,12 +2131,12 @@ static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
  8000e64:	2000010c 	.word	0x2000010c
  8000e68:	20000124 	.word	0x20000124
 
-08000e6c <bme280_compensate_H_int32>:
+08000e6c <BME280_compensate_H_int32>:
   *         For example, an output value of “47445” represents 47445/1024 = 46.333 %RH.
   * @param  BME280_S32_t adc_H: Raw ADC humidity value.
   * @retval BME280_U32_t: Compensated humidity value.
   */
-static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
+static BME280_U32_t BME280_compensate_H_int32(BME280_S32_t adc_H)
 {
  8000e6c:	b480      	push	{r7}
  8000e6e:	b085      	sub	sp, #20
@@ -2144,18 +2144,18 @@ static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
  8000e72:	6078      	str	r0, [r7, #4]
     BME280_S32_t v_x1_u32r;
     v_x1_u32r = (t_fine - ((BME280_S32_t)76800));
- 8000e74:	4b2c      	ldr	r3, [pc, #176]	@ (8000f28 <bme280_compensate_H_int32+0xbc>)
+ 8000e74:	4b2c      	ldr	r3, [pc, #176]	@ (8000f28 <BME280_compensate_H_int32+0xbc>)
  8000e76:	681b      	ldr	r3, [r3, #0]
  8000e78:	f5a3 3396 	sub.w	r3, r3, #76800	@ 0x12c00
  8000e7c:	60fb      	str	r3, [r7, #12]
     v_x1_u32r = (((((adc_H << 14) - (((BME280_S32_t)dig_H4) << 20) - (((BME280_S32_t)dig_H5) * v_x1_u32r)) + ((BME280_S32_t)16384)) >> 15) * (((((((v_x1_u32r * ((BME280_S32_t)dig_H6)) >> 10) * (((v_x1_u32r * ((BME280_S32_t)dig_H3)) >> 11) + ((BME280_S32_t)32768))) >> 10) + ((BME280_S32_t)2097152)) * ((BME280_S32_t)dig_H2) + 8192) >> 14));
  8000e7e:	687b      	ldr	r3, [r7, #4]
  8000e80:	039a      	lsls	r2, r3, #14
- 8000e82:	4b2a      	ldr	r3, [pc, #168]	@ (8000f2c <bme280_compensate_H_int32+0xc0>)
+ 8000e82:	4b2a      	ldr	r3, [pc, #168]	@ (8000f2c <BME280_compensate_H_int32+0xc0>)
  8000e84:	f9b3 3000 	ldrsh.w	r3, [r3]
  8000e88:	051b      	lsls	r3, r3, #20
  8000e8a:	1ad2      	subs	r2, r2, r3
- 8000e8c:	4b28      	ldr	r3, [pc, #160]	@ (8000f30 <bme280_compensate_H_int32+0xc4>)
+ 8000e8c:	4b28      	ldr	r3, [pc, #160]	@ (8000f30 <BME280_compensate_H_int32+0xc4>)
  8000e8e:	f9b3 3000 	ldrsh.w	r3, [r3]
  8000e92:	4619      	mov	r1, r3
  8000e94:	68fb      	ldr	r3, [r7, #12]
@@ -2163,13 +2163,13 @@ static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
  8000e9a:	1ad3      	subs	r3, r2, r3
  8000e9c:	f503 4380 	add.w	r3, r3, #16384	@ 0x4000
  8000ea0:	13db      	asrs	r3, r3, #15
- 8000ea2:	4a24      	ldr	r2, [pc, #144]	@ (8000f34 <bme280_compensate_H_int32+0xc8>)
+ 8000ea2:	4a24      	ldr	r2, [pc, #144]	@ (8000f34 <BME280_compensate_H_int32+0xc8>)
  8000ea4:	f992 2000 	ldrsb.w	r2, [r2]
  8000ea8:	4611      	mov	r1, r2
  8000eaa:	68fa      	ldr	r2, [r7, #12]
  8000eac:	fb01 f202 	mul.w	r2, r1, r2
  8000eb0:	1292      	asrs	r2, r2, #10
- 8000eb2:	4921      	ldr	r1, [pc, #132]	@ (8000f38 <bme280_compensate_H_int32+0xcc>)
+ 8000eb2:	4921      	ldr	r1, [pc, #132]	@ (8000f38 <BME280_compensate_H_int32+0xcc>)
  8000eb4:	7809      	ldrb	r1, [r1, #0]
  8000eb6:	4608      	mov	r0, r1
  8000eb8:	68f9      	ldr	r1, [r7, #12]
@@ -2179,7 +2179,7 @@ static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
  8000ec4:	fb01 f202 	mul.w	r2, r1, r2
  8000ec8:	1292      	asrs	r2, r2, #10
  8000eca:	f502 1200 	add.w	r2, r2, #2097152	@ 0x200000
- 8000ece:	491b      	ldr	r1, [pc, #108]	@ (8000f3c <bme280_compensate_H_int32+0xd0>)
+ 8000ece:	491b      	ldr	r1, [pc, #108]	@ (8000f3c <BME280_compensate_H_int32+0xd0>)
  8000ed0:	f9b1 1000 	ldrsh.w	r1, [r1]
  8000ed4:	fb01 f202 	mul.w	r2, r1, r2
  8000ed8:	f502 5200 	add.w	r2, r2, #8192	@ 0x2000
@@ -2193,7 +2193,7 @@ static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
  8000eea:	13d2      	asrs	r2, r2, #15
  8000eec:	fb02 f303 	mul.w	r3, r2, r3
  8000ef0:	11db      	asrs	r3, r3, #7
- 8000ef2:	4a13      	ldr	r2, [pc, #76]	@ (8000f40 <bme280_compensate_H_int32+0xd4>)
+ 8000ef2:	4a13      	ldr	r2, [pc, #76]	@ (8000f40 <BME280_compensate_H_int32+0xd4>)
  8000ef4:	7812      	ldrb	r2, [r2, #0]
  8000ef6:	fb02 f303 	mul.w	r3, r2, r3
  8000efa:	111b      	asrs	r3, r3, #4
@@ -2227,18 +2227,18 @@ static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
  8000f3c:	20000110 	.word	0x20000110
  8000f40:	2000010e 	.word	0x2000010e
 
-08000f44 <BME280_init>:
+08000f44 <API_BME280_Init>:
   * @brief  Initializes the BME280 sensor by configuring its control registers and reading calibration parameters.
   * @param  None
   * @retval None
   */
-void BME280_init(void)
+void API_BME280_Init(void)
 {
  8000f44:	b580      	push	{r7, lr}
  8000f46:	b082      	sub	sp, #8
  8000f48:	af00      	add	r7, sp, #0
-	BME280_CalibrationParams();
- 8000f4a:	f7ff fed9 	bl	8000d00 <BME280_CalibrationParams>
+	calibrationParams();
+ 8000f4a:	f7ff fed9 	bl	8000d00 <calibrationParams>
 
     /* 5.4.2 The "reset" register contains the soft reset word reset[7:0].
     If the value 0xB6 is written to the register, the device is reset using the complete power-on-reset procedure.
@@ -2317,12 +2317,12 @@ void BME280_init(void)
  8000fac:	bd80      	pop	{r7, pc}
 	...
 
-08000fb0 <BME280_read>:
+08000fb0 <API_BME280_Read>:
   * @brief  Reads raw temperature and humidity data from the BME280 sensor, applies compensation formulas, and converts the data to human readable units.
   * @param  None
   * @retval uint8_t: Returns 0 if the read operation is successful, 1 if an error occurs.
   */
-uint8_t BME280_read(void)
+uint8_t API_BME280_Read(void)
 {
  8000fb0:	b580      	push	{r7, lr}
  8000fb2:	b084      	sub	sp, #16
@@ -2340,7 +2340,7 @@ uint8_t BME280_read(void)
     if (chip_Id == BME280_CHIP_ID)
  8000fc2:	79fb      	ldrb	r3, [r7, #7]
  8000fc4:	2b60      	cmp	r3, #96	@ 0x60
- 8000fc6:	d139      	bne.n	800103c <BME280_read+0x8c>
+ 8000fc6:	d139      	bne.n	800103c <API_BME280_Read+0x8c>
          *
          * BYTE 7 | BYTE 6 | BYTE 5 | BYTE 4 | BYTE 3 | BYTE 2 | BYTE 1 | BYTE 0
          * H_LSB    H_MSB    T_XLSB   T_LSB    T_MSB    P_XLSB   P_LSB    P_MSB
@@ -2371,20 +2371,20 @@ uint8_t BME280_read(void)
         		(sensorDataBuffer[TEMP_LSB_INDEX] << TEMP_LSB_SHIFT) |
  8000fe6:	4313      	orrs	r3, r2
         temp_adc = (sensorDataBuffer[TEMP_MSB_INDEX] << TEMP_MSB_SHIFT) |
- 8000fe8:	4a18      	ldr	r2, [pc, #96]	@ (800104c <BME280_read+0x9c>)
+ 8000fe8:	4a18      	ldr	r2, [pc, #96]	@ (800104c <API_BME280_Read+0x9c>)
  8000fea:	6013      	str	r3, [r2, #0]
 
         // Apply compensation formula to temperature ADC value.
         temp = ((float)BME280_compensate_T_int32(temp_adc)) / TEMPERATURE_SCALE_FACTOR;
- 8000fec:	4b17      	ldr	r3, [pc, #92]	@ (800104c <BME280_read+0x9c>)
+ 8000fec:	4b17      	ldr	r3, [pc, #92]	@ (800104c <API_BME280_Read+0x9c>)
  8000fee:	681b      	ldr	r3, [r3, #0]
  8000ff0:	4618      	mov	r0, r3
  8000ff2:	f7ff fef9 	bl	8000de8 <BME280_compensate_T_int32>
  8000ff6:	ee07 0a90 	vmov	s15, r0
  8000ffa:	eeb8 7ae7 	vcvt.f32.s32	s14, s15
- 8000ffe:	eddf 6a14 	vldr	s13, [pc, #80]	@ 8001050 <BME280_read+0xa0>
+ 8000ffe:	eddf 6a14 	vldr	s13, [pc, #80]	@ 8001050 <API_BME280_Read+0xa0>
  8001002:	eec7 7a26 	vdiv.f32	s15, s14, s13
- 8001006:	4b13      	ldr	r3, [pc, #76]	@ (8001054 <BME280_read+0xa4>)
+ 8001006:	4b13      	ldr	r3, [pc, #76]	@ (8001054 <API_BME280_Read+0xa4>)
  8001008:	edc3 7a00 	vstr	s15, [r3]
 
         // Combine the bytes to form the 16-bit humidity value (hum_adc).
@@ -2395,31 +2395,30 @@ uint8_t BME280_read(void)
  8001010:	7bfa      	ldrb	r2, [r7, #15]
         hum_adc = (sensorDataBuffer[HUM_MSB_INDEX] << HUM_MSB_SHIFT) |
  8001012:	4313      	orrs	r3, r2
- 8001014:	4a10      	ldr	r2, [pc, #64]	@ (8001058 <BME280_read+0xa8>)
+ 8001014:	4a10      	ldr	r2, [pc, #64]	@ (8001058 <API_BME280_Read+0xa8>)
  8001016:	6013      	str	r3, [r2, #0]
 
         // Apply compensation formula to humidity ADC value.
-        hum = ((float)bme280_compensate_H_int32(hum_adc)) / HUMIDITY_SCALE_FACTOR;
- 8001018:	4b0f      	ldr	r3, [pc, #60]	@ (8001058 <BME280_read+0xa8>)
+        hum = ((float)BME280_compensate_H_int32(hum_adc)) / HUMIDITY_SCALE_FACTOR;
+ 8001018:	4b0f      	ldr	r3, [pc, #60]	@ (8001058 <API_BME280_Read+0xa8>)
  800101a:	681b      	ldr	r3, [r3, #0]
  800101c:	4618      	mov	r0, r3
- 800101e:	f7ff ff25 	bl	8000e6c <bme280_compensate_H_int32>
+ 800101e:	f7ff ff25 	bl	8000e6c <BME280_compensate_H_int32>
  8001022:	ee07 0a90 	vmov	s15, r0
  8001026:	eeb8 7a67 	vcvt.f32.u32	s14, s15
- 800102a:	eddf 6a0c 	vldr	s13, [pc, #48]	@ 800105c <BME280_read+0xac>
+ 800102a:	eddf 6a0c 	vldr	s13, [pc, #48]	@ 800105c <API_BME280_Read+0xac>
  800102e:	eec7 7a26 	vdiv.f32	s15, s14, s13
- 8001032:	4b0b      	ldr	r3, [pc, #44]	@ (8001060 <BME280_read+0xb0>)
+ 8001032:	4b0b      	ldr	r3, [pc, #44]	@ (8001060 <API_BME280_Read+0xb0>)
  8001034:	edc3 7a00 	vstr	s15, [r3]
 
         return 0;
  8001038:	2300      	movs	r3, #0
- 800103a:	e002      	b.n	8001042 <BME280_read+0x92>
+ 800103a:	e002      	b.n	8001042 <API_BME280_Read+0x92>
     }
     else
     {
-    	BME280_error_led_signal();
- 800103c:	f7ff fe49 	bl	8000cd2 <BME280_error_led_signal>
-
+    	errorLedSignal();
+ 800103c:	f7ff fe49 	bl	8000cd2 <errorLedSignal>
         return 1;
  8001040:	2301      	movs	r3, #1
     }
@@ -2436,18 +2435,18 @@ uint8_t BME280_read(void)
  800105c:	44800000 	.word	0x44800000
  8001060:	20000104 	.word	0x20000104
 
-08001064 <BME280_Error_Handler>:
+08001064 <API_BME280_ErrorHandler>:
 /**
  * @brief  This function is executed in case of error occurrence. Program will get stuck in this part of the code. Indicating major BME280 error.
  * @retval None
  */
-void BME280_Error_Handler(void)
+void API_BME280_ErrorHandler(void)
 {
  8001064:	b480      	push	{r7}
  8001066:	af00      	add	r7, sp, #0
     while (1)
  8001068:	bf00      	nop
- 800106a:	e7fd      	b.n	8001068 <BME280_Error_Handler+0x4>
+ 800106a:	e7fd      	b.n	8001068 <API_BME280_ErrorHandler+0x4>
 
 0800106c <BME280_HAL_SPI_Write>:
   * @param  uint8_t *data: Pointer to the data buffer that holds the data to be written.
@@ -3228,8 +3227,8 @@ void APP_init()
  80015f4:	f7ff fd9a 	bl	800112c <clock_init_code>
 	tempFSM_init();
  80015f8:	f7ff fde6 	bl	80011c8 <tempFSM_init>
-    BME280_init();
- 80015fc:	f7ff fca2 	bl	8000f44 <BME280_init>
+	API_BME280_Init();
+ 80015fc:	f7ff fca2 	bl	8000f44 <API_BME280_Init>
     uartInit();
  8001600:	f000 f95a 	bl	80018b8 <uartInit>
     Init_Lcd();
@@ -3258,8 +3257,8 @@ void APP_updateSensorData(void)
 {
  800161c:	b580      	push	{r7, lr}
  800161e:	af00      	add	r7, sp, #0
-    BME280_read();
- 8001620:	f7ff fcc6 	bl	8000fb0 <BME280_read>
+	API_BME280_Read();
+ 8001620:	f7ff fcc6 	bl	8000fb0 <API_BME280_Read>
 }
  8001624:	bf00      	nop
  8001626:	bd80      	pop	{r7, pc}

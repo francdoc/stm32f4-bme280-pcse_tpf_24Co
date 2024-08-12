@@ -122,20 +122,20 @@ extern float temp, hum;
   * @param  None
   * @retval None
   */
-void BME280_init(void);
+void API_BME280_Init(void);
 
 /**
   * @brief  Reads raw temperature and humidity data from the BME280 sensor and applies compensation formulas.
   * @param  None
   * @retval uint8_t: Returns 0 if the read operation is successful, 1 if an error occurs.
   */
-extern uint8_t BME280_read(void);
+extern uint8_t API_BME280_Read(void);
 
 /**
   * @brief  Error handler for BME280 operations, enters an infinite loop in case of an error.
   * @param  None
   * @retval None
   */
-void BME280_Error_Handler(void);
+void API_BME280_ErrorHandler(void);
 
 #endif /* API_INC_DRIVER_BME280_H_ */
