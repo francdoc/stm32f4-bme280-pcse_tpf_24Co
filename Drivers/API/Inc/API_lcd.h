@@ -39,14 +39,10 @@
 #define millisecond 1
 
 _Bool Init_Lcd(void);
-void SacaTextoLcd(uint8_t *texto);
 void DatoLcd(uint8_t dato);
-void DatoAsciiLcd(uint8_t dato);
 void DatoBCD(uint8_t dato);
-void ClrLcd(void);
+void SacaTextoLcd(uint8_t *texto);
 void PosCaracHLcd(uint8_t posH);
 void PosCaracLLcd(uint8_t posL);
-void CursorOffLcd(void);
-void CursorOnLcd(void);
 
 #endif
