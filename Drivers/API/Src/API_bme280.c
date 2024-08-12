@@ -1,38 +1,38 @@
 #include "API_bme280.h"
 
-/* Global variables ----------------------------------------------------------*/
+/* Global public variables ----------------------------------------------------------*/
 
 // Declare global variables for temperature and humidity, we will use them later in the finite-state machine app code.
 float temp, hum;
 
+/* Private variables ----------------------------------------------------------*/
+
 // Calibration variables
 static uint16_t dig_T1;
 static int16_t dig_T2, dig_T3;
-
 static uint8_t dig_H1;
 static int16_t dig_H2;
 static uint8_t dig_H3;
 static int16_t dig_H4, dig_H5;
 static int8_t dig_H6;
 
-/* Public functions ----------------------------------------------------------*/
+// Type definitions for signed and unsigned 32-bit integers used in compensation calculations
+typedef int32_t BME280_S32_t;
+typedef uint32_t BME280_U32_t;
 
-/**
- * @brief  This function is executed in case of error occurrence. Program will get stuck in this part of the code. Indicating major BME280 error.
- * @retval None
- */
-void BME280_Error_Handler(void)
-{
-    while (1)
-    {
-    }
-}
+static BME280_S32_t temp_adc, hum_adc;
+static BME280_S32_t t_fine;
 
-/* Private variables ----------------------------------------------------------*/
+/* Private Function Prototypes ---------------------------------------------- */
+static uint16_t combineBytes(uint8_t msb, uint8_t lsb);
+static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift);
+static void BME280_error_led_signal(void);
+static void BME280_ok_rx_led_signal(void);
+static void BME280_CalibrationParams(void);
+static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T);
+static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H);
 
-static BME280_S32_t tADC, hADC;
-
-/* Private functions ----------------------------------------------------------*/
+/* Private Function Definitions --------------------------------------------- */
 
 /**
   * @brief  Combines two bytes into a 16-bit integer.
@@ -124,6 +124,43 @@ static void BME280_CalibrationParams(void) {
 }
 
 /**
+  * @brief  Temperature compensation formula & function taken from datasheet (please check page 25/60 for reference).
+  *         Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
+  *         t_fine carries fine temperature as global value for bme280_compensate_H_int32 to process its return humidity value.
+  * @param  BME280_S32_t adc_T: Raw ADC temperature value.
+  * @retval BME280_S32_t: Compensated temperature value.
+  */
+static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
+{
+    BME280_S32_t var1, var2, T;
+    var1 = ((((adc_T >> 3) - ((BME280_S32_t)dig_T1 << 1))) * ((BME280_S32_t)dig_T2)) >> 11;
+    var2 = (((((adc_T >> 4) - ((BME280_S32_t)dig_T1)) * ((adc_T >> 4) - ((BME280_S32_t)dig_T1))) >> 12) * ((BME280_S32_t)dig_T3)) >> 14;
+    t_fine = var1 + var2;
+    T = (t_fine * 5 + 128) >> 8;
+    return T;
+}
+
+/**
+  * @brief  Humidity compensation formula & function taken from datasheet (please check page 25/60 for reference).
+  *         Returns humidity in %RH as unsigned 32-bit integer in Q22.10 format (22 integer and 10 fractional bits).
+  *         For example, an output value of “47445” represents 47445/1024 = 46.333 %RH.
+  * @param  BME280_S32_t adc_H: Raw ADC humidity value.
+  * @retval BME280_U32_t: Compensated humidity value.
+  */
+static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
+{
+    BME280_S32_t v_x1_u32r;
+    v_x1_u32r = (t_fine - ((BME280_S32_t)76800));
+    v_x1_u32r = (((((adc_H << 14) - (((BME280_S32_t)dig_H4) << 20) - (((BME280_S32_t)dig_H5) * v_x1_u32r)) + ((BME280_S32_t)16384)) >> 15) * (((((((v_x1_u32r * ((BME280_S32_t)dig_H6)) >> 10) * (((v_x1_u32r * ((BME280_S32_t)dig_H3)) >> 11) + ((BME280_S32_t)32768))) >> 10) + ((BME280_S32_t)2097152)) * ((BME280_S32_t)dig_H2) + 8192) >> 14));
+    v_x1_u32r = (v_x1_u32r - (((((v_x1_u32r >> 15) * (v_x1_u32r >> 15)) >> 7) * ((BME280_S32_t)dig_H1)) >> 4));
+    v_x1_u32r = (v_x1_u32r < 0 ? 0 : v_x1_u32r);
+    v_x1_u32r = (v_x1_u32r > 419430400 ? 419430400 : v_x1_u32r);
+    return (BME280_U32_t)(v_x1_u32r >> 12);
+}
+
+/* Public Function Definitions ----------------------------------------------- */
+
+/**
   * @brief  Initializes the BME280 sensor by configuring its control registers and reading calibration parameters.
   * @param  None
   * @retval None
@@ -173,43 +210,6 @@ void BME280_init(void)
     HAL_Delay(BME280_HAL_DELAY);
 }
 
-static BME280_S32_t t_fine;
-
-/**
-  * @brief  Temperature compensation formula & function taken from datasheet (please check page 25/60 for reference).
-  *         Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
-  *         t_fine carries fine temperature as global value for bme280_compensate_H_int32 to process its return humidity value.
-  * @param  BME280_S32_t adc_T: Raw ADC temperature value.
-  * @retval BME280_S32_t: Compensated temperature value.
-  */
-static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
-{
-    BME280_S32_t var1, var2, T;
-    var1 = ((((adc_T >> 3) - ((BME280_S32_t)dig_T1 << 1))) * ((BME280_S32_t)dig_T2)) >> 11;
-    var2 = (((((adc_T >> 4) - ((BME280_S32_t)dig_T1)) * ((adc_T >> 4) - ((BME280_S32_t)dig_T1))) >> 12) * ((BME280_S32_t)dig_T3)) >> 14;
-    t_fine = var1 + var2;
-    T = (t_fine * 5 + 128) >> 8;
-    return T;
-}
-
-/**
-  * @brief  Humidity compensation formula & function taken from datasheet (please check page 25/60 for reference).
-  *         Returns humidity in %RH as unsigned 32-bit integer in Q22.10 format (22 integer and 10 fractional bits).
-  *         For example, an output value of “47445” represents 47445/1024 = 46.333 %RH.
-  * @param  BME280_S32_t adc_H: Raw ADC humidity value.
-  * @retval BME280_U32_t: Compensated humidity value.
-  */
-static BME280_U32_t bme280_compensate_H_int32(BME280_S32_t adc_H)
-{
-    BME280_S32_t v_x1_u32r;
-    v_x1_u32r = (t_fine - ((BME280_S32_t)76800));
-    v_x1_u32r = (((((adc_H << 14) - (((BME280_S32_t)dig_H4) << 20) - (((BME280_S32_t)dig_H5) * v_x1_u32r)) + ((BME280_S32_t)16384)) >> 15) * (((((((v_x1_u32r * ((BME280_S32_t)dig_H6)) >> 10) * (((v_x1_u32r * ((BME280_S32_t)dig_H3)) >> 11) + ((BME280_S32_t)32768))) >> 10) + ((BME280_S32_t)2097152)) * ((BME280_S32_t)dig_H2) + 8192) >> 14));
-    v_x1_u32r = (v_x1_u32r - (((((v_x1_u32r >> 15) * (v_x1_u32r >> 15)) >> 7) * ((BME280_S32_t)dig_H1)) >> 4));
-    v_x1_u32r = (v_x1_u32r < 0 ? 0 : v_x1_u32r);
-    v_x1_u32r = (v_x1_u32r > 419430400 ? 419430400 : v_x1_u32r);
-    return (BME280_U32_t)(v_x1_u32r >> 12);
-}
-
 /**
   * @brief  Reads raw temperature and humidity data from the BME280 sensor, applies compensation formulas, and converts the data to human readable units.
   * @param  None
@@ -248,20 +248,20 @@ uint8_t BME280_read(void)
 
         // The BME280 output consists of the ADC output values that have to be compensated afterwards.
 
-        // Combine the bytes to form the 20-bit temperature value (tADC).
-        tADC = (sensorDataBuffer[TEMP_MSB_INDEX] << TEMP_MSB_SHIFT) |
+        // Combine the bytes to form the 20-bit temperature value (temp_adc).
+        temp_adc = (sensorDataBuffer[TEMP_MSB_INDEX] << TEMP_MSB_SHIFT) |
         		(sensorDataBuffer[TEMP_LSB_INDEX] << TEMP_LSB_SHIFT) |
 				(sensorDataBuffer[TEMP_XLSB_INDEX] >> TEMP_XLSB_SHIFT);
 
         // Apply compensation formula to temperature ADC value.
-        temp = ((float)BME280_compensate_T_int32(tADC)) / TEMPERATURE_SCALE_FACTOR;
+        temp = ((float)BME280_compensate_T_int32(temp_adc)) / TEMPERATURE_SCALE_FACTOR;
 
-        // Combine the bytes to form the 16-bit humidity value (hADC).
-        hADC = (sensorDataBuffer[HUM_MSB_INDEX] << HUM_MSB_SHIFT) |
+        // Combine the bytes to form the 16-bit humidity value (hum_adc).
+        hum_adc = (sensorDataBuffer[HUM_MSB_INDEX] << HUM_MSB_SHIFT) |
         		sensorDataBuffer[HUM_LSB_INDEX];
 
         // Apply compensation formula to humidity ADC value.
-        hum = ((float)bme280_compensate_H_int32(hADC)) / HUMIDITY_SCALE_FACTOR;
+        hum = ((float)bme280_compensate_H_int32(hum_adc)) / HUMIDITY_SCALE_FACTOR;
 
         return 0;
     }
@@ -270,5 +270,16 @@ uint8_t BME280_read(void)
     	BME280_error_led_signal();
 
         return 1;
+    }
+}
+
+/**
+ * @brief  This function is executed in case of error occurrence. Program will get stuck in this part of the code. Indicating major BME280 error.
+ * @retval None
+ */
+void BME280_Error_Handler(void)
+{
+    while (1)
+    {
     }
 }

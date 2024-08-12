@@ -36,7 +36,6 @@ typedef bool bool_t;
 #define USARTx_RX_AF                     GPIO_AF7_USART3
 
 /* Exported functions ------------------------------------------------------- */
-
 bool_t uartInit(void);
 void   uartSendString(uint8_t * pstring);
 void   uartSendStringSize(uint8_t * pstring, uint16_t size);

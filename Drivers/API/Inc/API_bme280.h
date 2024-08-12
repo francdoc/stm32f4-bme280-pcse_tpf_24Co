@@ -110,10 +110,6 @@ register only become effective after a write operation to “ctrl_meas”.*/
 
 /* Exported types ------------------------------------------------------------*/
 
-// Type definitions for signed and unsigned 32-bit integers used in compensation calculations
-typedef int32_t BME280_S32_t;  // global type
-typedef uint32_t BME280_U32_t; // global type
-
 /* Exported variables -------------------------------------------------------*/
 
 // Declare temperature and humidity as extern to make them accessible in other source files (API_fsm.c).
