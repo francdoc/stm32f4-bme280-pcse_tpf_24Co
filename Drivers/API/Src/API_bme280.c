@@ -35,6 +35,13 @@ static BME280_U32_t BME280_compensate_H_int32(BME280_S32_t adc_H);
 
 /* Private Function Definitions --------------------------------------------- */
 
+/* WARNING: If you try to pass a 64-bit variable (such as uint64_t) to the combineBytes  or extractBits functions,
+ * C will implicitly cast the 64-bit value to an 8-bit value (uint8_t) because the function parameters are explicitly
+ * defined as uint8_t. This casting truncates the higher bits, leading to unexpected results if the higher bits of 64-bit
+ * value contain critical data for the system.
+ * To avoid this potential problem, I added control input logic in combineBytes, extractBits, BME280_compensate_T_int32 and
+ * BME280_compensate_H_int32 functions.*/
+
 /**
  * @brief  Combines two bytes into a 16-bit integer.
  * @param  uint8_t msb: Most significant byte.
@@ -43,6 +50,11 @@ static BME280_U32_t BME280_compensate_H_int32(BME280_S32_t adc_H);
  */
 static uint16_t combineBytes(uint8_t msb, uint8_t lsb)
 {
+  // Safety check to ensure that inputs are 8 bits wide and are not being potentially truncated if they were bigger than uint8_t. .
+  if (msb > 0xFF || lsb > 0xFF)
+  {
+    API_BME280_ErrorHandler();
+  }
   return ((uint16_t)msb << 8) | lsb;
 }
 
@@ -55,6 +67,10 @@ static uint16_t combineBytes(uint8_t msb, uint8_t lsb)
  */
 static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift)
 {
+  if (value > 0xFF || mask > 0xFF || shift > 7)
+  {
+    API_BME280_ErrorHandler();
+  }
   return (value & mask) >> shift;
 }
 
@@ -67,7 +83,7 @@ static void errorLedSignal(void)
 {
   for (int i = 0; i <= NumErrorRxBlinks; i++)
   {
-    BSP_LED_Toggle(LED3); // sensor ID ERROR
+    BSP_LED_Toggle(LED3); // sensor error
     HAL_Delay(BME280_HAL_DELAY);
   }
 }
@@ -131,6 +147,7 @@ static void calibrationParams(void)
 
 /**
  * @brief  Temperature compensation formula & function taken from datasheet (please check page 25/60 for reference).
+ *         Added control input to avoid possible misuse of wider types as input.
  *         Returns temperature in DegC, resolution is 0.01 DegC. Output value of “5123” equals 51.23 DegC.
  *         t_fine carries fine temperature as global value for BME280_compensate_H_int32 function to process its return humidity value.
  * @param  BME280_S32_t adc_T: Raw ADC temperature value.
@@ -138,6 +155,12 @@ static void calibrationParams(void)
  */
 static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
 {
+  // Ensure that adc_T is within the valid 20-bit range (since temperature is typically represented by a 20-bit value).
+  if (adc_T < 0 || adc_T > 0xFFFFF) // 20-bit range check
+  {
+    API_BME280_ErrorHandler();
+  }
+
   BME280_S32_t var1, var2, T;
   var1 = ((((adc_T >> 3) - ((BME280_S32_t)dig_T1 << 1))) * ((BME280_S32_t)dig_T2)) >> 11;
   var2 = (((((adc_T >> 4) - ((BME280_S32_t)dig_T1)) * ((adc_T >> 4) - ((BME280_S32_t)dig_T1))) >> 12) * ((BME280_S32_t)dig_T3)) >> 14;
@@ -148,6 +171,7 @@ static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
 
 /**
  * @brief  Humidity compensation formula & function taken from datasheet (please check page 25/60 for reference).
+ * 		   Added control input to avoid possible misuse of wider types as input.
  *         Returns humidity in %RH as unsigned 32-bit integer in Q22.10 format (22 integer and 10 fractional bits).
  *         For example, an output value of “47445” represents 47445/1024 = 46.333 %RH.
  * @param  BME280_S32_t adc_H: Raw ADC humidity value.
@@ -155,6 +179,12 @@ static BME280_S32_t BME280_compensate_T_int32(BME280_S32_t adc_T)
  */
 static BME280_U32_t BME280_compensate_H_int32(BME280_S32_t adc_H)
 {
+  // Ensure that adc_H is within the valid 16-bit range.
+  if (adc_H < 0 || adc_H > 0xFFFF)
+  {
+    API_BME280_ErrorHandler();
+  }
+
   BME280_S32_t v_x1_u32r;
   v_x1_u32r = (t_fine - ((BME280_S32_t)76800));
   v_x1_u32r = (((((adc_H << 14) - (((BME280_S32_t)dig_H4) << 20) - (((BME280_S32_t)dig_H5) * v_x1_u32r)) + ((BME280_S32_t)16384)) >> 15) * (((((((v_x1_u32r * ((BME280_S32_t)dig_H6)) >> 10) * (((v_x1_u32r * ((BME280_S32_t)dig_H3)) >> 11) + ((BME280_S32_t)32768))) >> 10) + ((BME280_S32_t)2097152)) * ((BME280_S32_t)dig_H2) + 8192) >> 14));
@@ -221,7 +251,7 @@ void API_BME280_Init(void)
  * @param  None
  * @retval uint8_t: Returns 0 if the read operation is successful, 1 if an error occurs.
  */
-uint8_t API_BME280_Read(void)
+uint8_t API_BME280_ReadAndProcess(void)
 {
   uint8_t sensorDataBuffer[8];
   uint8_t chip_Id;
@@ -286,5 +316,6 @@ void API_BME280_ErrorHandler(void)
 {
   while (1)
   {
+    errorLedSignal();
   }
 }

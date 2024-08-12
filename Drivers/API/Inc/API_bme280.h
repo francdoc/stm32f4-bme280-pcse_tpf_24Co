@@ -129,7 +129,7 @@ void API_BME280_Init(void);
  * @param  None
  * @retval uint8_t: Returns 0 if the read operation is successful, 1 if an error occurs.
  */
-extern uint8_t API_BME280_Read(void);
+extern uint8_t API_BME280_ReadAndProcess(void);
 
 /**
  * @brief  Error handler for BME280 operations, enters an infinite loop in case of an error.

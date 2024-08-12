@@ -12,7 +12,7 @@ void FSM_update(void);
 void eval_data()
 {
     uint8_t message[50];
-    if (bme280_temperature> THRESHOLD_TEMP)
+    if (bme280_temperature > THRESHOLD_TEMP)
     {
         currentTempState = TEMP_ALARM;
         strcpy((char *)message, "Temperature Alarm State.\r\n");
@@ -40,7 +40,7 @@ char humStr[20];
 void prepare_sensor_data_for_uart(uint8_t *message_1, uint8_t *message_2)
 {
     int intPart = (int)bme280_temperature;
-    int fracPart = (int)((bme280_temperature- intPart) * 100);
+    int fracPart = (int)((bme280_temperature - intPart) * 100);
     strcpy((char *)message_1, "Temperature: ");
     itoa(intPart, tempStr, 10);
     strcat((char *)message_1, tempStr);
@@ -51,7 +51,7 @@ void prepare_sensor_data_for_uart(uint8_t *message_1, uint8_t *message_2)
 
     strcpy((char *)message_2, "Humidity: ");
     intPart = (int)bme280_humidity;
-    fracPart = (int)((bme280_humidity- intPart) * 100);
+    fracPart = (int)((bme280_humidity - intPart) * 100);
     itoa(intPart, humStr, 10);
     strcat((char *)message_2, humStr);
     strcat((char *)message_2, ".");
@@ -140,9 +140,9 @@ void FSM_update()
 
 void APP_init()
 {
-	clock_init_code();
-	tempFSM_init();
-	API_BME280_Init();
+    clock_init_code();
+    tempFSM_init();
+    API_BME280_Init();
     uartInit();
     Init_Lcd();
 }
@@ -155,7 +155,7 @@ void APP_updateLCD(void)
 
 void APP_updateSensorData(void)
 {
-	API_BME280_Read();
+    API_BME280_ReadAndProcess();
 }
 
 void APP_prepareAndDisplaySensorData(void)
@@ -174,7 +174,7 @@ void APP_prepareAndSendUARTData(void)
 
 void APP_update()
 {
-	APP_updateSensorData();
+    APP_updateSensorData();
     APP_updateLCD();
     APP_prepareAndDisplaySensorData();
     APP_prepareAndSendUARTData();
