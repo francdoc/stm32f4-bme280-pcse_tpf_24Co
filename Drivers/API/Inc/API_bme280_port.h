@@ -3,6 +3,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f4xx_hal.h" /* <- HAL include */
+#include "stm32f4xx_nucleo_144.h" /* <- BSP include */
 #include "API_bme280.h"    /* <- BME280 driver include */
 
 /* Exported functions ------------------------------------------------------- */
@@ -24,5 +25,19 @@ void BME280_HAL_SPI_Write(uint8_t reg, uint8_t *data, uint16_t size);
  * @retval None
  */
 void BME280_HAL_SPI_Read(uint8_t reg, uint8_t *data, uint16_t size);
+
+/**
+ *  @brief  Provides a delay for a specified number of milliseconds.
+ * @param  delay: The amount of time, in milliseconds, to delay.
+ * @retval None
+ */
+void BME280_HAL_Delay(uint32_t delay);
+
+/**
+ * @brief  Toggles the state of the specified LED.
+ * @param  Led: Specifies the LED to be toggled. This parameter can be one of the LED identifiers defined in the board support package (BSP), such as `LED2`, `LED3`, etc.
+ * @retval None
+ */
+void BME280_HAL_Blink(Led_TypeDef Led);
 
 #endif /* API_INC_API_BME280_PORT_H_ */

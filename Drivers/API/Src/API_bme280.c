@@ -67,6 +67,7 @@ static uint16_t combineBytes(uint8_t msb, uint8_t lsb)
  */
 static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift)
 {
+	// Safety check to ensure that inputs are 8 bits wide and are not being potentially truncated if they were bigger than uint8_t. .
   if (value > 0xFF || mask > 0xFF || shift > 7)
   {
     API_BME280_ErrorHandler();
@@ -83,8 +84,8 @@ static void errorLedSignal(void)
 {
   for (int i = 0; i <= NumErrorRxBlinks; i++)
   {
-    BSP_LED_Toggle(LED3); // sensor error
-    HAL_Delay(BME280_HAL_DELAY);
+    BME280_HAL_Blink(LED3); // Sensor error.
+    BME280_HAL_Delay(BME280_HAL_DELAY);
   }
 }
 
@@ -97,8 +98,8 @@ static void okLedSignal(void)
 {
   for (int i = 0; i <= NumOkRxBlinks; i++)
   {
-    BSP_LED_Toggle(LED2); // blink indicates sensor ID rx is OK
-    HAL_Delay(BME280_HAL_DELAY);
+	  BME280_HAL_Blink(LED2); // Blink indicates sensor ID rx is OK.
+    BME280_HAL_Delay(BME280_HAL_DELAY);
   }
 }
 
@@ -233,17 +234,17 @@ void API_BME280_Init(void)
 
   // Write reset sequence to the reset register
   BME280_HAL_SPI_Write(BME280_RESET_REG, &CmdReset, CMD_WRITE_SIZE);
-  HAL_Delay(BME280_HAL_DELAY);
+  BME280_HAL_Delay(BME280_HAL_DELAY);
 
   // Write control settings to the control registers
   BME280_HAL_SPI_Write(BME280_CTRL_HUM_REG, &CmdCtrlHum, CMD_WRITE_SIZE);
-  HAL_Delay(BME280_HAL_DELAY);
+  BME280_HAL_Delay(BME280_HAL_DELAY);
 
   BME280_HAL_SPI_Write(BME280_CTRL_MEASR_REG, &CmdCtrlMeasr, CMD_WRITE_SIZE);
-  HAL_Delay(BME280_HAL_DELAY);
+  BME280_HAL_Delay(BME280_HAL_DELAY);
 
   BME280_HAL_SPI_Write(BME280_CTRL_CONFIG_REG, &CmdConfig, CMD_WRITE_SIZE);
-  HAL_Delay(BME280_HAL_DELAY);
+  BME280_HAL_Delay(BME280_HAL_DELAY);
 }
 
 /**

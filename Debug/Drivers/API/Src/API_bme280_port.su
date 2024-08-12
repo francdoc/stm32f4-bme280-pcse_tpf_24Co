@@ -1,2 +1,4 @@
 ../Drivers/API/Src/API_bme280_port.c:19:6:BME280_HAL_SPI_Write	24	static
 ../Drivers/API/Src/API_bme280_port.c:35:6:BME280_HAL_SPI_Read	24	static
+../Drivers/API/Src/API_bme280_port.c:49:6:BME280_HAL_Delay	16	static
+../Drivers/API/Src/API_bme280_port.c:59:6:BME280_HAL_Blink	16	static

@@ -40,3 +40,22 @@ void BME280_HAL_SPI_Read(uint8_t reg, uint8_t *data, uint16_t size)
   HAL_SPI_Receive(&hspi1, data, size, SPI_TX_RX_TIMEOUT);
   HAL_GPIO_WritePin(CS_GPIO_Port, CS_Pin, PinStateHigh);
 }
+
+/**
+ *  @brief  Provides a delay for a specified number of milliseconds.
+ * @param  delay: The amount of time, in milliseconds, to delay.
+ * @retval None
+ */
+void BME280_HAL_Delay(uint32_t delay)
+{
+  HAL_Delay(delay);
+}
+
+/**
+ * @brief  Toggles the state of the specified LED.
+ * @param  Led: Specifies the LED to be toggled. This parameter can be one of the LED identifiers defined in the board support package (BSP), such as `LED2`, `LED3`, etc.
+ * @retval None
+ */
+void BME280_HAL_Blink(Led_TypeDef Led){
+    BSP_LED_Toggle(Led);
+}
