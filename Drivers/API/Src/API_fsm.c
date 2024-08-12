@@ -12,7 +12,7 @@ void FSM_update(void);
 void eval_data()
 {
     uint8_t message[50];
-    if (temp > THRESHOLD_TEMP)
+    if (bme280_temperature> THRESHOLD_TEMP)
     {
         currentTempState = TEMP_ALARM;
         strcpy((char *)message, "Temperature Alarm State.\r\n");
@@ -39,8 +39,8 @@ char humStr[20];
 
 void prepare_sensor_data_for_uart(uint8_t *message_1, uint8_t *message_2)
 {
-    int intPart = (int)temp;
-    int fracPart = (int)((temp - intPart) * 100);
+    int intPart = (int)bme280_temperature;
+    int fracPart = (int)((bme280_temperature- intPart) * 100);
     strcpy((char *)message_1, "Temperature: ");
     itoa(intPart, tempStr, 10);
     strcat((char *)message_1, tempStr);
@@ -50,8 +50,8 @@ void prepare_sensor_data_for_uart(uint8_t *message_1, uint8_t *message_2)
     strcat((char *)message_1, " C\r\n");
 
     strcpy((char *)message_2, "Humidity: ");
-    intPart = (int)hum;
-    fracPart = (int)((hum - intPart) * 100);
+    intPart = (int)bme280_humidity;
+    fracPart = (int)((bme280_humidity- intPart) * 100);
     itoa(intPart, humStr, 10);
     strcat((char *)message_2, humStr);
     strcat((char *)message_2, ".");
@@ -72,14 +72,14 @@ char lcdHumStr[20];
 void prepare_sensor_data_for_lcd(void)
 {
     // Prepare temperature string for LCD
-    itoa((int)temp, lcdTempStr, 10);
+    itoa((int)bme280_temperature, lcdTempStr, 10);
     strcat(lcdTempStr, ".");
-    itoa((int)((temp - (int)temp) * 100), lcdTempStr + strlen(lcdTempStr), 10);
+    itoa((int)((bme280_temperature - (int)bme280_temperature) * 100), lcdTempStr + strlen(lcdTempStr), 10);
 
     // Prepare humidity string for LCD
-    itoa((int)hum, lcdHumStr, 10);
+    itoa((int)bme280_humidity, lcdHumStr, 10);
     strcat(lcdHumStr, ".");
-    itoa((int)((hum - (int)hum) * 100), lcdHumStr + strlen(lcdHumStr), 10);
+    itoa((int)((bme280_humidity - (int)bme280_humidity) * 100), lcdHumStr + strlen(lcdHumStr), 10);
 }
 
 void lcd_display_sensor_data(void)

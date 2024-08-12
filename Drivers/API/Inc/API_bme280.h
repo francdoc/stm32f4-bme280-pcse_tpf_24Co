@@ -112,8 +112,8 @@ register only become effective after a write operation to “ctrl_meas”.*/
 
 /* Exported variables -------------------------------------------------------*/
 
-// Declare temperature and humidity as extern to make them accessible in other source files (API_fsm.c).
-extern float temp, hum;
+// Here we declare temperature and humidity as extern to make them accessible in other source files (API_fsm.c).
+extern float bme280_temperature, bme280_humidity;
 
 /* Exported functions ------------------------------------------------------- */
 

@@ -3,7 +3,8 @@
 /* Global public variables ----------------------------------------------------------*/
 
 // Declare global variables for temperature and humidity, we will use them later in the finite-state machine app code.
-float temp, hum;
+float bme280_temperature;
+float bme280_humidity;
 
 /* Private variables ----------------------------------------------------------*/
 
@@ -254,14 +255,14 @@ uint8_t API_BME280_Read(void)
 				(sensorDataBuffer[TEMP_XLSB_INDEX] >> TEMP_XLSB_SHIFT);
 
         // Apply compensation formula to temperature ADC value.
-        temp = ((float)BME280_compensate_T_int32(temp_adc)) / TEMPERATURE_SCALE_FACTOR;
+        bme280_temperature = ((float)BME280_compensate_T_int32(temp_adc)) / TEMPERATURE_SCALE_FACTOR;
 
         // Combine the bytes to form the 16-bit humidity value (hum_adc).
         hum_adc = (sensorDataBuffer[HUM_MSB_INDEX] << HUM_MSB_SHIFT) |
         		sensorDataBuffer[HUM_LSB_INDEX];
 
         // Apply compensation formula to humidity ADC value.
-        hum = ((float)BME280_compensate_H_int32(hum_adc)) / HUMIDITY_SCALE_FACTOR;
+        bme280_humidity= ((float)BME280_compensate_H_int32(hum_adc)) / HUMIDITY_SCALE_FACTOR;
 
         return 0;
     }

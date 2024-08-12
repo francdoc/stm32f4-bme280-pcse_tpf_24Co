@@ -29,25 +29,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  12 .ARM.attributes 00000030  00000000  00000000  00007018  2**0
                   CONTENTS, READONLY
- 13 .debug_info   00012137  00000000  00000000  00007048  2**0
+ 13 .debug_info   00012135  00000000  00000000  00007048  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 00002c09  00000000  00000000  0001917f  2**0
+ 14 .debug_abbrev 00002be4  00000000  00000000  0001917d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00000f78  00000000  00000000  0001bd88  2**3
+ 15 .debug_aranges 00000f78  00000000  00000000  0001bd68  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 00000bed  00000000  00000000  0001cd00  2**0
+ 16 .debug_rnglists 00000bed  00000000  00000000  0001cce0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  00027883  00000000  00000000  0001d8ed  2**0
+ 17 .debug_macro  00027883  00000000  00000000  0001d8cd  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   000154e2  00000000  00000000  00045170  2**0
+ 18 .debug_line   000154e2  00000000  00000000  00045150  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e54b1  00000000  00000000  0005a652  2**0
+ 19 .debug_str    000e54d4  00000000  00000000  0005a632  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0013fb03  2**0
+ 20 .comment      00000043  00000000  00000000  0013fb06  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003f14  00000000  00000000  0013fb48  2**2
+ 21 .debug_frame  00003f14  00000000  00000000  0013fb4c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  00143a5c  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  00143a60  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2375,7 +2375,7 @@ uint8_t API_BME280_Read(void)
  8000fea:	6013      	str	r3, [r2, #0]
 
         // Apply compensation formula to temperature ADC value.
-        temp = ((float)BME280_compensate_T_int32(temp_adc)) / TEMPERATURE_SCALE_FACTOR;
+        bme280_temperature = ((float)BME280_compensate_T_int32(temp_adc)) / TEMPERATURE_SCALE_FACTOR;
  8000fec:	4b17      	ldr	r3, [pc, #92]	@ (800104c <API_BME280_Read+0x9c>)
  8000fee:	681b      	ldr	r3, [r3, #0]
  8000ff0:	4618      	mov	r0, r3
@@ -2399,7 +2399,7 @@ uint8_t API_BME280_Read(void)
  8001016:	6013      	str	r3, [r2, #0]
 
         // Apply compensation formula to humidity ADC value.
-        hum = ((float)BME280_compensate_H_int32(hum_adc)) / HUMIDITY_SCALE_FACTOR;
+        bme280_humidity= ((float)BME280_compensate_H_int32(hum_adc)) / HUMIDITY_SCALE_FACTOR;
  8001018:	4b0f      	ldr	r3, [pc, #60]	@ (8001058 <API_BME280_Read+0xa8>)
  800101a:	681b      	ldr	r3, [r3, #0]
  800101c:	4618      	mov	r0, r3
@@ -2694,7 +2694,7 @@ void eval_data()
  80011e2:	b08e      	sub	sp, #56	@ 0x38
  80011e4:	af00      	add	r7, sp, #0
     uint8_t message[50];
-    if (temp > THRESHOLD_TEMP)
+    if (bme280_temperature> THRESHOLD_TEMP)
  80011e6:	4b1a      	ldr	r3, [pc, #104]	@ (8001250 <eval_data+0x70>)
  80011e8:	edd3 7a00 	vldr	s15, [r3]
  80011ec:	eeb3 7a06 	vmov.f32	s14, #54	@ 0x41b00000  22.0
@@ -2770,13 +2770,13 @@ void prepare_sensor_data_for_uart(uint8_t *message_1, uint8_t *message_2)
  8001264:	af00      	add	r7, sp, #0
  8001266:	6078      	str	r0, [r7, #4]
  8001268:	6039      	str	r1, [r7, #0]
-    int intPart = (int)temp;
+    int intPart = (int)bme280_temperature;
  800126a:	4b51      	ldr	r3, [pc, #324]	@ (80013b0 <prepare_sensor_data_for_uart+0x150>)
  800126c:	edd3 7a00 	vldr	s15, [r3]
  8001270:	eefd 7ae7 	vcvt.s32.f32	s15, s15
  8001274:	ee17 3a90 	vmov	r3, s15
  8001278:	60fb      	str	r3, [r7, #12]
-    int fracPart = (int)((temp - intPart) * 100);
+    int fracPart = (int)((bme280_temperature- intPart) * 100);
  800127a:	4b4d      	ldr	r3, [pc, #308]	@ (80013b0 <prepare_sensor_data_for_uart+0x150>)
  800127c:	ed93 7a00 	vldr	s14, [r3]
  8001280:	68fb      	ldr	r3, [r7, #12]
@@ -2854,13 +2854,13 @@ void prepare_sensor_data_for_uart(uint8_t *message_1, uint8_t *message_2)
  8001318:	789b      	ldrb	r3, [r3, #2]
  800131a:	8111      	strh	r1, [r2, #8]
  800131c:	7293      	strb	r3, [r2, #10]
-    intPart = (int)hum;
+    intPart = (int)bme280_humidity;
  800131e:	4b2b      	ldr	r3, [pc, #172]	@ (80013cc <prepare_sensor_data_for_uart+0x16c>)
  8001320:	edd3 7a00 	vldr	s15, [r3]
  8001324:	eefd 7ae7 	vcvt.s32.f32	s15, s15
  8001328:	ee17 3a90 	vmov	r3, s15
  800132c:	60fb      	str	r3, [r7, #12]
-    fracPart = (int)((hum - intPart) * 100);
+    fracPart = (int)((bme280_humidity- intPart) * 100);
  800132e:	4b27      	ldr	r3, [pc, #156]	@ (80013cc <prepare_sensor_data_for_uart+0x16c>)
  8001330:	ed93 7a00 	vldr	s14, [r3]
  8001334:	68fb      	ldr	r3, [r7, #12]
@@ -2963,7 +2963,7 @@ void prepare_sensor_data_for_lcd(void)
  80013fa:	ed2d 8b02 	vpush	{d8}
  80013fe:	af00      	add	r7, sp, #0
     // Prepare temperature string for LCD
-    itoa((int)temp, lcdTempStr, 10);
+    itoa((int)bme280_temperature, lcdTempStr, 10);
  8001400:	4b37      	ldr	r3, [pc, #220]	@ (80014e0 <prepare_sensor_data_for_lcd+0xe8>)
  8001402:	edd3 7a00 	vldr	s15, [r3]
  8001406:	eefd 7ae7 	vcvt.s32.f32	s15, s15
@@ -2983,7 +2983,7 @@ void prepare_sensor_data_for_lcd(void)
  8001428:	460b      	mov	r3, r1
  800142a:	881b      	ldrh	r3, [r3, #0]
  800142c:	8013      	strh	r3, [r2, #0]
-    itoa((int)((temp - (int)temp) * 100), lcdTempStr + strlen(lcdTempStr), 10);
+    itoa((int)((bme280_temperature - (int)bme280_temperature) * 100), lcdTempStr + strlen(lcdTempStr), 10);
  800142e:	4b2c      	ldr	r3, [pc, #176]	@ (80014e0 <prepare_sensor_data_for_lcd+0xe8>)
  8001430:	ed93 7a00 	vldr	s14, [r3]
  8001434:	4b2a      	ldr	r3, [pc, #168]	@ (80014e0 <prepare_sensor_data_for_lcd+0xe8>)
@@ -3005,7 +3005,7 @@ void prepare_sensor_data_for_lcd(void)
  8001466:	f003 febf 	bl	80051e8 <itoa>
 
     // Prepare humidity string for LCD
-    itoa((int)hum, lcdHumStr, 10);
+    itoa((int)bme280_humidity, lcdHumStr, 10);
  800146a:	4b21      	ldr	r3, [pc, #132]	@ (80014f0 <prepare_sensor_data_for_lcd+0xf8>)
  800146c:	edd3 7a00 	vldr	s15, [r3]
  8001470:	eefd 7ae7 	vcvt.s32.f32	s15, s15
@@ -3025,7 +3025,7 @@ void prepare_sensor_data_for_lcd(void)
  8001492:	460b      	mov	r3, r1
  8001494:	881b      	ldrh	r3, [r3, #0]
  8001496:	8013      	strh	r3, [r2, #0]
-    itoa((int)((hum - (int)hum) * 100), lcdHumStr + strlen(lcdHumStr), 10);
+    itoa((int)((bme280_humidity - (int)bme280_humidity) * 100), lcdHumStr + strlen(lcdHumStr), 10);
  8001498:	4b15      	ldr	r3, [pc, #84]	@ (80014f0 <prepare_sensor_data_for_lcd+0xf8>)
  800149a:	ed93 7a00 	vldr	s14, [r3]
  800149e:	4b14      	ldr	r3, [pc, #80]	@ (80014f0 <prepare_sensor_data_for_lcd+0xf8>)
