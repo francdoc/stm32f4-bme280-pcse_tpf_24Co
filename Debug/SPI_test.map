@@ -7111,30 +7111,30 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .debug_macro   0x0002742b      0x233 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
  .debug_macro   0x0002765e      0x225 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
 
-.debug_line     0x00000000    0x15530
+.debug_line     0x00000000    0x1552e
  .debug_line    0x00000000      0xbbe ./Core/Src/main.o
  .debug_line    0x00000bbe      0xc39 ./Core/Src/stm32f4xx_hal_msp.o
  .debug_line    0x000017f7      0xad3 ./Core/Src/stm32f4xx_it.o
  .debug_line    0x000022ca      0x7be ./Core/Src/system_stm32f4xx.o
  .debug_line    0x00002a88       0x7a ./Core/Startup/startup_stm32f429zitx.o
- .debug_line    0x00002b02      0xbf9 ./Drivers/API/Src/API_bme280.o
- .debug_line    0x000036fb      0x99e ./Drivers/API/Src/API_bme280_port.o
- .debug_line    0x00004099      0x83f ./Drivers/API/Src/API_clock_date.o
- .debug_line    0x000048d8      0xbf9 ./Drivers/API/Src/API_fsm.o
- .debug_line    0x000054d1      0xae7 ./Drivers/API/Src/API_lcd.o
- .debug_line    0x00005fb8      0x942 ./Drivers/API/Src/API_lcd_port.o
- .debug_line    0x000068fa      0x9bf ./Drivers/API/Src/API_uart.o
- .debug_line    0x000072b9      0xb77 ./Drivers/BSP/STM32F4xx_Nucleo_144/stm32f4xx_nucleo_144.o
- .debug_line    0x00007e30      0xa5d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_line    0x0000888d      0xcef ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_line    0x0000957c      0xbdb ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_line    0x0000a157     0x3b6d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
- .debug_line    0x0000dcc4      0x7b4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.o
- .debug_line    0x0000e478      0xd9a ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_line    0x0000f212      0xbf8 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
- .debug_line    0x0000fe0a     0x110b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc.o
- .debug_line    0x00010f15     0x1d22 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
- .debug_line    0x00012c37     0x28f9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+ .debug_line    0x00002b02      0xbf7 ./Drivers/API/Src/API_bme280.o
+ .debug_line    0x000036f9      0x99e ./Drivers/API/Src/API_bme280_port.o
+ .debug_line    0x00004097      0x83f ./Drivers/API/Src/API_clock_date.o
+ .debug_line    0x000048d6      0xbf9 ./Drivers/API/Src/API_fsm.o
+ .debug_line    0x000054cf      0xae7 ./Drivers/API/Src/API_lcd.o
+ .debug_line    0x00005fb6      0x942 ./Drivers/API/Src/API_lcd_port.o
+ .debug_line    0x000068f8      0x9bf ./Drivers/API/Src/API_uart.o
+ .debug_line    0x000072b7      0xb77 ./Drivers/BSP/STM32F4xx_Nucleo_144/stm32f4xx_nucleo_144.o
+ .debug_line    0x00007e2e      0xa5d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_line    0x0000888b      0xcef ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_line    0x0000957a      0xbdb ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_line    0x0000a155     0x3b6d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
+ .debug_line    0x0000dcc2      0x7b4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.o
+ .debug_line    0x0000e476      0xd9a ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_line    0x0000f210      0xbf8 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
+ .debug_line    0x0000fe08     0x110b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc.o
+ .debug_line    0x00010f13     0x1d22 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
+ .debug_line    0x00012c35     0x28f9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
 
 .debug_str      0x00000000    0xe54fc
  .debug_str     0x00000000    0xe0f0e ./Core/Src/main.o

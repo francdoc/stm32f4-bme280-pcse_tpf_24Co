@@ -2,9 +2,9 @@
 #define API_INC_API_BME280_PORT_H_
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_hal.h" /* <- HAL include */
+#include "stm32f4xx_hal.h"        /* <- HAL include */
 #include "stm32f4xx_nucleo_144.h" /* <- BSP include */
-#include "API_bme280.h"    /* <- BME280 driver include */
+#include "API_bme280.h"           /* <- BME280 driver include */
 
 /* SPI handler declaration */
 

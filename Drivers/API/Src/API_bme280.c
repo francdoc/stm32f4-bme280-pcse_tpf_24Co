@@ -67,7 +67,7 @@ static uint16_t combineBytes(uint8_t msb, uint8_t lsb)
  */
 static uint8_t extractBits(uint8_t value, uint8_t mask, uint8_t shift)
 {
-	// Safety check to ensure that inputs are 8 bits wide and are not being potentially truncated if they were bigger than uint8_t. .
+  // Safety check to ensure that inputs are 8 bits wide and are not being potentially truncated if they were bigger than uint8_t. .
   if (value > 0xFF || mask > 0xFF || shift > 7)
   {
     API_BME280_ErrorHandler();
@@ -98,7 +98,7 @@ static void okLedSignal(void)
 {
   for (int i = 0; i <= NumOkRxBlinks; i++)
   {
-	  BME280_HAL_Blink(LED2); // Blink indicates sensor ID rx is OK.
+    BME280_HAL_Blink(LED2); // Blink indicates sensor ID rx is OK.
     BME280_HAL_Delay(BME280_HAL_DELAY);
   }
 }

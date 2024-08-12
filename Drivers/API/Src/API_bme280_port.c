@@ -52,6 +52,7 @@ void BME280_HAL_Delay(uint32_t delay)
  * @param  Led: Specifies the LED to be toggled. This parameter can be one of the LED identifiers defined in the board support package (BSP), such as `LED2`, `LED3`, etc.
  * @retval None
  */
-void BME280_HAL_Blink(Led_TypeDef Led){
-    BSP_LED_Toggle(Led);
+void BME280_HAL_Blink(Led_TypeDef Led)
+{
+  BSP_LED_Toggle(Led);
 }
