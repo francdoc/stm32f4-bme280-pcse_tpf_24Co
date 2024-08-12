@@ -8,9 +8,9 @@
 ../Drivers/API/Src/API_fsm.c:104:6:lcd_display_clock	1
 ../Drivers/API/Src/API_fsm.c:114:6:lcd_display_date	1
 ../Drivers/API/Src/API_fsm.c:124:6:FSM_update	3
-../Drivers/API/Src/API_fsm.c:141:6:APP_init	1
-../Drivers/API/Src/API_fsm.c:150:6:APP_updateLCD	1
-../Drivers/API/Src/API_fsm.c:156:6:APP_updateSensorData	1
-../Drivers/API/Src/API_fsm.c:161:6:APP_prepareAndDisplaySensorData	1
-../Drivers/API/Src/API_fsm.c:167:6:APP_prepareAndSendUARTData	1
-../Drivers/API/Src/API_fsm.c:175:6:APP_update	1
+../Drivers/API/Src/API_fsm.c:140:6:APP_init	1
+../Drivers/API/Src/API_fsm.c:149:6:APP_updateLCD	1
+../Drivers/API/Src/API_fsm.c:155:6:APP_updateSensorData	1
+../Drivers/API/Src/API_fsm.c:160:6:APP_prepareAndDisplaySensorData	1
+../Drivers/API/Src/API_fsm.c:166:6:APP_prepareAndSendUARTData	1
+../Drivers/API/Src/API_fsm.c:174:6:APP_update	1

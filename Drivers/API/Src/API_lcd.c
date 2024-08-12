@@ -1,91 +1,153 @@
 #include "API_lcd.h"
 
-static void ControlLcd(uint8_t valor);
-static void Envia4bitsLcd(uint8_t valor, _Bool tipo);
-static void Envia8bitsLcd(uint8_t valor, _Bool tipo);
-static void DatoAsciiLcd(uint8_t dato);
+/* Private Function Prototypes ---------------------------------------------- */
+static void ExecuteLCDCommand(uint8_t command);
+static void SendNibbleToLCD(uint8_t data, bool mode);
+static void WriteDataToLCD(uint8_t data, bool mode);
+static void SendAsciiCharToLCD(uint8_t asciiChar);
 
-static const uint8_t LCD_INIT_CMD[] = {
-	_4BIT_MODE, DISPLAY_CONTROL, RETURN_HOME, ENTRY_MODE + AUTOINCREMENT, DISPLAY_CONTROL + DISPLAY_ON, CLR_LCD};
+// Initialization sequence commands
+static const uint8_t LCD_INIT_COMMANDS[] = {
+	LCD_4BIT_MODE_CMD,
+	LCD_DISPLAY_CONTROL_CMD,
+	LCD_RETURN_HOME_CMD,
+	LCD_ENTRY_MODE_CMD + LCD_INCREMENT_MODE,
+	LCD_DISPLAY_CONTROL_CMD + LCD_DISPLAY_ON,
+	LCD_CLEAR_CMD};
 
+/* Private Function Definitions --------------------------------------------- */
 
-static void ControlLcd(uint8_t valor)
+/**
+ * @brief Executes a command on the LCD.
+ * @param command: The command to be sent.
+ * @retval None.
+ */
+static void ExecuteLCDCommand(uint8_t command)
 {
-	Envia8bitsLcd(valor, CONTROL);
+	WriteDataToLCD(command, LCD_CMD_CONTROL_MODE);
 }
 
-static void Envia4bitsLcd(uint8_t valor, _Bool tipo)
+/**
+ * @brief Sends 4 bits to the LCD.
+ * @param data: The data to send.
+ * @param mode: The mode (command/data).
+ * @retval None.
+ */
+static void SendNibbleToLCD(uint8_t data, bool mode)
 {
-	LCD_HAL_I2C_Write(valor + tipo + EN + BL);
-	LCD_HAL_Delay(millisecond);
-	LCD_HAL_I2C_Write(valor + tipo + BL);
-	LCD_HAL_Delay(millisecond);
+	LCD_HAL_I2C_Write(data | mode | LCD_ENABLE_PIN | LCD_BACKLIGHT);
+	LCD_HAL_Delay(LCD_DELAY_MULTIPLIER);
+	LCD_HAL_I2C_Write(data | mode | LCD_BACKLIGHT);
+	LCD_HAL_Delay(LCD_DELAY_MULTIPLIER);
 }
 
-static void Envia8bitsLcd(uint8_t valor, _Bool tipo)
+/**
+ * @brief Writes 8 bits to the LCD by sending two 4-bit sequences.
+ * @param data: The data to send.
+ * @param mode: The mode (command/data).
+ * @retval None.
+ */
+static void WriteDataToLCD(uint8_t data, bool mode)
 {
-	Envia4bitsLcd(valor & HIGH_NIBBLE, tipo);
-	Envia4bitsLcd(valor << LOW_NIBBLE, tipo);
+	SendNibbleToLCD(data & LCD_HIGH_NIBBLE_MASK, mode);
+	SendNibbleToLCD(data << LCD_LOW_NIBBLE_SHIFT, mode);
 }
 
-static void DatoAsciiLcd(uint8_t dato)
+/**
+ * @brief Sends an ASCII character to the LCD.
+ * @param asciiChar: The character to send.
+ * @retval None.
+ */
+static void SendAsciiCharToLCD(uint8_t asciiChar)
 {
-	Envia8bitsLcd(dato + '0', DATOS);
+	WriteDataToLCD(asciiChar + '0', LCD_CMD_DATA_MODE);
 }
 
-// public
-_Bool Init_Lcd(void)
+/* Public Function Definitions ----------------------------------------------- */
+
+/**
+ * @brief Initializes the LCD with the predefined commands.
+ * @retval _Bool: Returns 0 on success.
+ */
+_Bool API_LCD_Initialize(void)
 {
-	LCD_HAL_Delay(millisecond * 20);
-	Envia4bitsLcd(COMANDO_INI1, CONTROL);
-	LCD_HAL_Delay(millisecond * 10);
-	Envia4bitsLcd(COMANDO_INI1, CONTROL);
-	LCD_HAL_Delay(millisecond * 1);
-	Envia4bitsLcd(COMANDO_INI1, CONTROL);
-	Envia4bitsLcd(COMANDO_INI2, CONTROL);
-	for (uint8_t i = 0; i < sizeof(LCD_INIT_CMD); i++) {
-		ControlLcd(LCD_INIT_CMD[i]);
-	}
+	LCD_HAL_Delay(LCD_DELAY_MULTIPLIER * 20);
 
-	LCD_HAL_Delay(millisecond * 2);
+	SendNibbleToLCD(LCD_INIT_CMD_1, LCD_CMD_CONTROL_MODE);
+	LCD_HAL_Delay(LCD_DELAY_MULTIPLIER * 10);
 
-	// Signal that LCD initialization is OK.
-	for (int i = 0; i <= 4; i++)
+	SendNibbleToLCD(LCD_INIT_CMD_1, LCD_CMD_CONTROL_MODE);
+	LCD_HAL_Delay(LCD_DELAY_MULTIPLIER);
+
+	SendNibbleToLCD(LCD_INIT_CMD_1, LCD_CMD_CONTROL_MODE);
+	SendNibbleToLCD(LCD_INIT_CMD_2, LCD_CMD_CONTROL_MODE);
+
+	for (uint8_t i = 0; i < sizeof(LCD_INIT_COMMANDS); i++)
 	{
-		LCD_HAL_Blink(LED1); // Ini LCD OK.
-		LCD_HAL_Delay(millisecond * 1);
+		ExecuteLCDCommand(LCD_INIT_COMMANDS[i]);
 	}
+
+	LCD_HAL_Delay(LCD_DELAY_MULTIPLIER * 2);
+
+	for (int i = 0; i < 4; i++)
+	{
+		LCD_HAL_Blink(LED1);
+		LCD_HAL_Delay(LCD_DELAY_MULTIPLIER);
+	}
+
 	return 0;
 }
 
-// public
-void DatoLcd(uint8_t dato)
+/**
+ * @brief Sends data to the LCD.
+ * @param data: The data to send.
+ * @retval None.
+ */
+void API_LCD_SendData(uint8_t data)
 {
-	Envia8bitsLcd(dato, DATOS);
+	WriteDataToLCD(data, LCD_CMD_DATA_MODE);
 }
 
-// public
-void DatoBCD(uint8_t dato)
+/**
+ * @brief Sends a BCD-encoded byte to the LCD.
+ * @param data: The BCD data to send.
+ * @retval None.
+ */
+void API_LCD_SendBCDData(uint8_t data)
 {
-	DatoAsciiLcd((((dato) & 0xf0) >> 4));
-	DatoAsciiLcd(((dato) & 0x0f));
+	SendAsciiCharToLCD((data & 0xF0) >> 4);
+	SendAsciiCharToLCD(data & 0x0F);
 }
 
-// public
-void SacaTextoLcd(uint8_t *texto)
+/**
+ * @brief Displays a string on the LCD.
+ * @param text: Pointer to the string to be displayed.
+ * @retval None.
+ */
+void API_LCD_DisplayString(uint8_t *text)
 {
-	while (*texto)
-		DatoLcd(*texto++);
+	while (*text)
+	{
+		API_LCD_SendData(*text++);
+	}
 }
 
-// public
-void PosCaracHLcd(uint8_t posH)
+/**
+ * @brief Sets the cursor position on the first line of the LCD.
+ * @param position: The position to set the cursor to.
+ * @retval None.
+ */
+void API_LCD_SetCursorLine1(uint8_t position)
 {
-	ControlLcd(posH | LINEA1);
+	ExecuteLCDCommand(position | LCD_LINE_1);
 }
 
-// public
-void PosCaracLLcd(uint8_t posL)
+/**
+ * @brief Sets the cursor position on the second line of the LCD.
+ * @param position: The position to set the cursor to.
+ * @retval None.
+ */
+void API_LCD_SetCursorLine2(uint8_t position)
 {
-	ControlLcd(posL | LINEA2);
+	ExecuteLCDCommand(position | LCD_LINE_2);
 }

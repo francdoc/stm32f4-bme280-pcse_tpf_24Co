@@ -84,47 +84,46 @@ void prepare_sensor_data_for_lcd(void)
 
 void lcd_display_sensor_data(void)
 {
-    // Display temperature on the LCD
-    PosCaracLLcd(9); // Assuming position 0 on the upper line
-    SacaTextoLcd((uint8_t *)"T:");
-    SacaTextoLcd((uint8_t *)lcdTempStr);
-
     // Display humidity on the LCD
-    PosCaracHLcd(9); // Assuming position 0 on the lower line
-    SacaTextoLcd((uint8_t *)"H:");
-    SacaTextoLcd((uint8_t *)lcdHumStr);
+    API_LCD_SetCursorLine1(9);
+    API_LCD_DisplayString((uint8_t *)"H:");
+    API_LCD_DisplayString((uint8_t *)lcdHumStr);
+
+    // Display temperature on the LCD
+    API_LCD_SetCursorLine2(9);
+    API_LCD_DisplayString((uint8_t *)"T:");
+    API_LCD_DisplayString((uint8_t *)lcdTempStr);
 }
 
 void lcd_alarm()
 {
-    PosCaracLLcd(0);
-    SacaTextoLcd((uint8_t *)"ALARMA! ");
+    API_LCD_SetCursorLine2(0);
+    API_LCD_DisplayString((uint8_t *)"ALARMA! ");
 }
 
 void lcd_display_clock()
 {
-    PosCaracHLcd(0);
-    DatoBCD(sTime.Hours);
-    DatoLcd(':');
-    DatoBCD(sTime.Minutes);
-    DatoLcd(':');
-    DatoBCD(sTime.Seconds);
+    API_LCD_SetCursorLine1(0);
+    API_LCD_SendBCDData(sTime.Hours);
+    API_LCD_SendData(':');
+    API_LCD_SendBCDData(sTime.Minutes);
+    API_LCD_SendData(':');
+    API_LCD_SendBCDData(sTime.Seconds);
 }
 
 void lcd_display_date()
 {
-    PosCaracLLcd(0);
-    DatoBCD(sDate.Date);
-    DatoLcd('/');
-    DatoBCD(sDate.Month);
-    DatoLcd('/');
-    DatoBCD(sDate.Year);
+    API_LCD_SetCursorLine2(0);
+    API_LCD_SendBCDData(sDate.Date);
+    API_LCD_SendData('/');
+    API_LCD_SendBCDData(sDate.Month);
+    API_LCD_SendData('/');
+    API_LCD_SendBCDData(sDate.Year);
 }
 
 void FSM_update()
 {
     eval_data();
-
     switch (currentTempState)
     {
     case TEMP_ALARM:
@@ -144,7 +143,7 @@ void APP_init()
     tempFSM_init();
     API_BME280_Init();
     uartInit();
-    Init_Lcd();
+    API_LCD_Initialize();
 }
 
 void APP_updateLCD(void)
