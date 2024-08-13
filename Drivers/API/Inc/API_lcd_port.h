@@ -5,6 +5,8 @@
 #include "stm32f4xx_nucleo_144.h" /* <- BSP include */
 #include "API_lcd.h"              /* <- LCD driver include */
 
+#define LCD_WRITE_CMD 1
+
 /* I2C handler declaration */
 
 extern I2C_HandleTypeDef hi2c1;

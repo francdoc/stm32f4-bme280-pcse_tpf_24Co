@@ -84,26 +84,18 @@ void prepare_sensor_data_for_lcd(void)
 
 void lcd_display_sensor_data(void)
 {
-    // Display humidity on the LCD
-    API_LCD_SetCursorLine1(9);
-    API_LCD_DisplayString((uint8_t *)"H:");
-    API_LCD_DisplayString((uint8_t *)lcdHumStr);
-
-    // Display temperature on the LCD
-    API_LCD_SetCursorLine2(9);
-    API_LCD_DisplayString((uint8_t *)"T:");
-    API_LCD_DisplayString((uint8_t *)lcdTempStr);
+    API_LCD_DisplayTwoMsgs(FSM_HUM_LCD_CURSOR_POS, FSM_LCD_LINE_1, (uint8_t *)"H:", (uint8_t *)lcdHumStr);
+    API_LCD_DisplayTwoMsgs(FSM_TEMP_LCD_CURSOR_POS, FSM_LCD_LINE_2, (uint8_t *)"T:", (uint8_t *)lcdTempStr);
 }
 
 void lcd_alarm()
 {
-    API_LCD_SetCursorLine2(0);
-    API_LCD_DisplayString((uint8_t *)"ALARMA! ");
+    API_LCD_DisplayMsg(FSM_ALARM_LCD_CURSOR_POS, FSM_LCD_LINE_2, (uint8_t *) "ALARMA! ");
 }
 
 void lcd_display_clock()
 {
-    API_LCD_SetCursorLine1(0);
+    API_LCD_SetCursorLine(0, FSM_LCD_LINE_1);
     API_LCD_SendBCDData(sTime.Hours);
     API_LCD_SendData(':');
     API_LCD_SendBCDData(sTime.Minutes);
@@ -113,7 +105,7 @@ void lcd_display_clock()
 
 void lcd_display_date()
 {
-    API_LCD_SetCursorLine2(0);
+    API_LCD_SetCursorLine(0, FSM_LCD_LINE_2);
     API_LCD_SendBCDData(sDate.Date);
     API_LCD_SendData('/');
     API_LCD_SendBCDData(sDate.Month);

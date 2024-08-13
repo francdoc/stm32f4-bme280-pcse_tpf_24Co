@@ -36,14 +36,14 @@
 #define LCD_HIGH_NIBBLE_MASK 0xF0
 #define LCD_LOW_NIBBLE_SHIFT 4
 
-#define LCD_DELAY_MULTIPLIER 1
+#define MILLISECOND 1
 
 // Public API functions
 _Bool API_LCD_Initialize(void);
 void API_LCD_SendData(uint8_t data);
 void API_LCD_SendBCDData(uint8_t data);
 void API_LCD_DisplayString(uint8_t *text);
-void API_LCD_SetCursorLine1(uint8_t position);
-void API_LCD_SetCursorLine2(uint8_t position);
-
+void API_LCD_SetCursorLine(uint8_t position, uint8_t lcd_line);
+void API_LCD_DisplayTwoMsgs(uint8_t init_pos, uint8_t lcd_line, uint8_t *message1, uint8_t *message2);
+void API_LCD_DisplayMsg(uint8_t init_pos, uint8_t lcd_line, uint8_t *message);
 #endif /* API_INC_API_LCD_H_ */

@@ -1,4 +1,13 @@
-#include "API_lcd.h"
+/*
+ * This code is based on the original implementation by professor Israel Pavelek,
+ * as provided in his class. The original code has been refactored and modified to
+ * integrate into the API FSM system, making it compatible with the specific
+ * requirements of this project. These modifications include changes in function names,
+ * the addition of input/output control variables, and adaptation to the project's
+ * coding standards.
+ * */
+
+ #include "API_lcd.h"
 
 /* Private Function Prototypes ---------------------------------------------- */
 static void ExecuteLCDCommand(uint8_t command);
@@ -18,16 +27,6 @@ static const uint8_t LCD_INIT_COMMANDS[] = {
 /* Private Function Definitions --------------------------------------------- */
 
 /**
- * @brief Executes a command on the LCD.
- * @param command: The command to be sent.
- * @retval None.
- */
-static void ExecuteLCDCommand(uint8_t command)
-{
-	WriteDataToLCD(command, LCD_CMD_CONTROL_MODE);
-}
-
-/**
  * @brief Sends 4 bits to the LCD.
  * @param data: The data to send.
  * @param mode: The mode (command/data).
@@ -36,9 +35,19 @@ static void ExecuteLCDCommand(uint8_t command)
 static void SendNibbleToLCD(uint8_t data, bool mode)
 {
 	LCD_HAL_I2C_Write(data | mode | LCD_ENABLE_PIN | LCD_BACKLIGHT);
-	LCD_HAL_Delay(LCD_DELAY_MULTIPLIER);
+	LCD_HAL_Delay(1 * MILLISECOND);
 	LCD_HAL_I2C_Write(data | mode | LCD_BACKLIGHT);
-	LCD_HAL_Delay(LCD_DELAY_MULTIPLIER);
+	LCD_HAL_Delay(1 * MILLISECOND);
+}
+
+/**
+ * @brief Executes a command on the LCD.
+ * @param command: The command to be sent.
+ * @retval None.
+ */
+static void ExecuteLCDCommand(uint8_t command)
+{
+	WriteDataToLCD(command, LCD_CMD_CONTROL_MODE);
 }
 
 /**
@@ -71,13 +80,13 @@ static void SendAsciiCharToLCD(uint8_t asciiChar)
  */
 _Bool API_LCD_Initialize(void)
 {
-	LCD_HAL_Delay(LCD_DELAY_MULTIPLIER * 20);
+	LCD_HAL_Delay(MILLISECOND * 20);
 
 	SendNibbleToLCD(LCD_INIT_CMD_1, LCD_CMD_CONTROL_MODE);
-	LCD_HAL_Delay(LCD_DELAY_MULTIPLIER * 10);
+	LCD_HAL_Delay(MILLISECOND * 10);
 
 	SendNibbleToLCD(LCD_INIT_CMD_1, LCD_CMD_CONTROL_MODE);
-	LCD_HAL_Delay(LCD_DELAY_MULTIPLIER);
+	LCD_HAL_Delay(MILLISECOND);
 
 	SendNibbleToLCD(LCD_INIT_CMD_1, LCD_CMD_CONTROL_MODE);
 	SendNibbleToLCD(LCD_INIT_CMD_2, LCD_CMD_CONTROL_MODE);
@@ -87,12 +96,12 @@ _Bool API_LCD_Initialize(void)
 		ExecuteLCDCommand(LCD_INIT_COMMANDS[i]);
 	}
 
-	LCD_HAL_Delay(LCD_DELAY_MULTIPLIER * 2);
+	LCD_HAL_Delay(MILLISECOND);
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++) // LCD init OK blink signal
 	{
 		LCD_HAL_Blink(LED1);
-		LCD_HAL_Delay(LCD_DELAY_MULTIPLIER);
+		LCD_HAL_Delay(MILLISECOND);
 	}
 
 	return 0;
@@ -133,21 +142,37 @@ void API_LCD_DisplayString(uint8_t *text)
 }
 
 /**
- * @brief Sets the cursor position on the first line of the LCD.
+ * @brief Sets the cursor position on the first or second line of the LCD
+ * based on its line input.
  * @param position: The position to set the cursor to.
  * @retval None.
  */
-void API_LCD_SetCursorLine1(uint8_t position)
+void API_LCD_SetCursorLine(uint8_t position, uint8_t lcd_line)
 {
-	ExecuteLCDCommand(position | LCD_LINE_1);
+	if (lcd_line == 1)
+	{
+		ExecuteLCDCommand(position | LCD_LINE_1);
+	}
+	if (lcd_line == 2)
+	{
+		ExecuteLCDCommand(position | LCD_LINE_2);
+	}
 }
 
-/**
- * @brief Sets the cursor position on the second line of the LCD.
- * @param position: The position to set the cursor to.
- * @retval None.
- */
-void API_LCD_SetCursorLine2(uint8_t position)
+/* Ad-hoc function to display two consecutive messages on the same LCD line in a single API call.
+ * This approach avoids the use for dynamic memory allocation functions for concatenating strings,
+ * such as malloc, which would provide more flexibility but introduces potential risks in embedded systems.
+ * The downside of this approach is that it is limited to handling a maximum of two input strings
+ * per LCD line.*/
+void API_LCD_DisplayTwoMsgs(uint8_t init_pos, uint8_t lcd_line, uint8_t *message1, uint8_t *message2)
 {
-	ExecuteLCDCommand(position | LCD_LINE_2);
+	API_LCD_SetCursorLine(init_pos, lcd_line);
+	API_LCD_DisplayString(message1);
+	API_LCD_DisplayString(message2);
+}
+
+void API_LCD_DisplayMsg(uint8_t init_pos, uint8_t lcd_line, uint8_t *message)
+{
+	API_LCD_SetCursorLine(init_pos, lcd_line);
+	API_LCD_DisplayString(message);
 }
