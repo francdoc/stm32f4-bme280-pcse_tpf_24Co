@@ -9,8 +9,8 @@
 #include "API_lcd_port.h"
 
 // Define constants with meaningful names
-#define LCD_CMD_DATA_MODE 0x01
 #define LCD_CMD_CONTROL_MODE 0x00
+#define LCD_CMD_DATA_MODE 0x01
 #define LCD_I2C_ADDRESS 0x27
 #define LCD_ENABLE_PIN 0x04
 #define LCD_BACKLIGHT 0x08
@@ -37,6 +37,8 @@
 #define LCD_LOW_NIBBLE_SHIFT 4
 
 #define MILLISECOND 1
+
+#define ASCII_DIGIT_OFFSET '0'
 
 // Public API functions
 _Bool API_LCD_Initialize(void);

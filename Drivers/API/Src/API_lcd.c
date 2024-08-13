@@ -1,19 +1,10 @@
-/*
- * This code is based on the original implementation by professor Israel Pavelek,
- * as provided in his class. The original code has been refactored and modified to
- * integrate into the API FSM system, making it compatible with the specific
- * requirements of this project. These modifications include changes in function names,
- * the addition of input/output control variables, and adaptation to the project's
- * coding standards.
- * */
-
- #include "API_lcd.h"
+#include "API_lcd.h"
 
 /* Private Function Prototypes ---------------------------------------------- */
-static void ExecuteLCDCommand(uint8_t command);
-static void SendNibbleToLCD(uint8_t data, bool mode);
-static void WriteDataToLCD(uint8_t data, bool mode);
-static void SendAsciiCharToLCD(uint8_t asciiChar);
+static void executeLCDCommand(uint8_t command);
+static void sendNibbleToLCD(uint8_t data, bool mode);
+static void writeDataToLCD(uint8_t data, bool mode);
+static void sendAsciiCharToLCD(uint8_t asciiChar);
 
 // Initialization sequence commands
 static const uint8_t LCD_INIT_COMMANDS[] = {
@@ -32,7 +23,7 @@ static const uint8_t LCD_INIT_COMMANDS[] = {
  * @param mode: The mode (command/data).
  * @retval None.
  */
-static void SendNibbleToLCD(uint8_t data, bool mode)
+static void sendNibbleToLCD(uint8_t data, bool mode)
 {
 	LCD_HAL_I2C_Write(data | mode | LCD_ENABLE_PIN | LCD_BACKLIGHT);
 	LCD_HAL_Delay(1 * MILLISECOND);
@@ -41,13 +32,16 @@ static void SendNibbleToLCD(uint8_t data, bool mode)
 }
 
 /**
- * @brief Executes a command on the LCD.
- * @param command: The command to be sent.
+ * @brief Sends nibble to LCD and applies a specified input.
+ * @param data: Data to send.
+ * @param pause: The delay to apply after sending the nibble.
+ * @param mode: The mode (command/data).
  * @retval None.
  */
-static void ExecuteLCDCommand(uint8_t command)
+static void sendNibbleAndPause(uint8_t data, bool mode, uint8_t delay)
 {
-	WriteDataToLCD(command, LCD_CMD_CONTROL_MODE);
+	sendNibbleToLCD(data, mode);
+	LCD_HAL_Delay(delay);
 }
 
 /**
@@ -56,10 +50,20 @@ static void ExecuteLCDCommand(uint8_t command)
  * @param mode: The mode (command/data).
  * @retval None.
  */
-static void WriteDataToLCD(uint8_t data, bool mode)
+static void writeDataToLCD(uint8_t data, bool mode)
 {
-	SendNibbleToLCD(data & LCD_HIGH_NIBBLE_MASK, mode);
-	SendNibbleToLCD(data << LCD_LOW_NIBBLE_SHIFT, mode);
+	sendNibbleToLCD(data & LCD_HIGH_NIBBLE_MASK, mode);
+	sendNibbleToLCD(data << LCD_LOW_NIBBLE_SHIFT, mode);
+}
+
+/**
+ * @brief Executes a command on the LCD.
+ * @param command: The command to be sent.
+ * @retval None.
+ */
+static void executeLCDCommand(uint8_t command)
+{
+	writeDataToLCD(command, LCD_CMD_CONTROL_MODE);
 }
 
 /**
@@ -67,9 +71,25 @@ static void WriteDataToLCD(uint8_t data, bool mode)
  * @param asciiChar: The character to send.
  * @retval None.
  */
-static void SendAsciiCharToLCD(uint8_t asciiChar)
+static void sendAsciiCharToLCD(uint8_t asciiChar)
 {
-	WriteDataToLCD(asciiChar + '0', LCD_CMD_DATA_MODE);
+	writeDataToLCD(asciiChar + ASCII_DIGIT_OFFSET, LCD_CMD_DATA_MODE);
+}
+
+/**
+ * @brief Signals the successful initialization of the LCD by blinking an LED.
+ *
+ * This function provides a visual indication that the LCD has been successfully initialized.
+ * It toggles an LED (LED1) four times.
+ * @retval None.
+ */
+static void okLcdInitSignal(void)
+{
+	for (int i = 0; i < 4; i++) // LCD init OK blink signal
+	{
+		LCD_HAL_Blink(LED1);
+		LCD_HAL_Delay(MILLISECOND);
+	}
 }
 
 /* Public Function Definitions ----------------------------------------------- */
@@ -82,27 +102,19 @@ _Bool API_LCD_Initialize(void)
 {
 	LCD_HAL_Delay(MILLISECOND * 20);
 
-	SendNibbleToLCD(LCD_INIT_CMD_1, LCD_CMD_CONTROL_MODE);
-	LCD_HAL_Delay(MILLISECOND * 10);
-
-	SendNibbleToLCD(LCD_INIT_CMD_1, LCD_CMD_CONTROL_MODE);
-	LCD_HAL_Delay(MILLISECOND);
-
-	SendNibbleToLCD(LCD_INIT_CMD_1, LCD_CMD_CONTROL_MODE);
-	SendNibbleToLCD(LCD_INIT_CMD_2, LCD_CMD_CONTROL_MODE);
+	sendNibbleAndPause(LCD_INIT_CMD_1, LCD_CMD_CONTROL_MODE, MILLISECOND * 10);
+	sendNibbleAndPause(LCD_INIT_CMD_1, LCD_CMD_CONTROL_MODE, MILLISECOND * 10);
+	sendNibbleAndPause(LCD_INIT_CMD_1, LCD_CMD_CONTROL_MODE, MILLISECOND * 10);
+	sendNibbleAndPause(LCD_INIT_CMD_2, LCD_CMD_CONTROL_MODE, MILLISECOND * 10);
 
 	for (uint8_t i = 0; i < sizeof(LCD_INIT_COMMANDS); i++)
 	{
-		ExecuteLCDCommand(LCD_INIT_COMMANDS[i]);
+		executeLCDCommand(LCD_INIT_COMMANDS[i]);
 	}
+
+	okLcdInitSignal();
 
 	LCD_HAL_Delay(MILLISECOND);
-
-	for (int i = 0; i < 4; i++) // LCD init OK blink signal
-	{
-		LCD_HAL_Blink(LED1);
-		LCD_HAL_Delay(MILLISECOND);
-	}
 
 	return 0;
 }
@@ -114,7 +126,7 @@ _Bool API_LCD_Initialize(void)
  */
 void API_LCD_SendData(uint8_t data)
 {
-	WriteDataToLCD(data, LCD_CMD_DATA_MODE);
+	writeDataToLCD(data, LCD_CMD_DATA_MODE);
 }
 
 /**
@@ -124,8 +136,8 @@ void API_LCD_SendData(uint8_t data)
  */
 void API_LCD_SendBCDData(uint8_t data)
 {
-	SendAsciiCharToLCD((data & 0xF0) >> 4);
-	SendAsciiCharToLCD(data & 0x0F);
+	sendAsciiCharToLCD((data & 0xF0) >> 4);
+	sendAsciiCharToLCD(data & 0x0F);
 }
 
 /**
@@ -135,10 +147,15 @@ void API_LCD_SendBCDData(uint8_t data)
  */
 void API_LCD_DisplayString(uint8_t *text)
 {
-	while (*text)
-	{
-		API_LCD_SendData(*text++);
-	}
+    // Loop through each character in the string until the null terminator is encountered
+    while (*text != '\0')
+    {
+        // Send the current character to the LCD
+        API_LCD_SendData(*text);
+
+        // Move to the next character in the string
+        text++;
+    }
 }
 
 /**
@@ -151,19 +168,27 @@ void API_LCD_SetCursorLine(uint8_t position, uint8_t lcd_line)
 {
 	if (lcd_line == 1)
 	{
-		ExecuteLCDCommand(position | LCD_LINE_1);
+		executeLCDCommand(position | LCD_LINE_1);
 	}
 	if (lcd_line == 2)
 	{
-		ExecuteLCDCommand(position | LCD_LINE_2);
+		executeLCDCommand(position | LCD_LINE_2);
 	}
 }
 
-/* Ad-hoc function to display two consecutive messages on the same LCD line in a single API call.
- * This approach avoids the use for dynamic memory allocation functions for concatenating strings,
- * such as malloc, which would provide more flexibility but introduces potential risks in embedded systems.
- * The downside of this approach is that it is limited to handling a maximum of two input strings
- * per LCD line.*/
+/**
+ * @brief Displays two consecutive messages on the same LCD line in a single API call.
+ *
+ * This ad-hoc function allows you to display two messages on a specified LCD line starting from an initial position.
+ * This function avoids the use of dynamic memory allocation (e.g., malloc) which, while providing flexibility, can introduce
+ * potential risks in embedded systems. This approach is safer but limited to handling a maximum of two input strings per LCD line.
+ *
+ * @param init_pos: The initial cursor position on the LCD line.
+ * @param lcd_line: Specifies the LCD line to display the messages on (1 for the first line, 2 for the second line).
+ * @param message1: Pointer to the first message string to be displayed.
+ * @param message2: Pointer to the second message string to be displayed.
+ * @retval None.
+ */
 void API_LCD_DisplayTwoMsgs(uint8_t init_pos, uint8_t lcd_line, uint8_t *message1, uint8_t *message2)
 {
 	API_LCD_SetCursorLine(init_pos, lcd_line);
@@ -171,6 +196,17 @@ void API_LCD_DisplayTwoMsgs(uint8_t init_pos, uint8_t lcd_line, uint8_t *message
 	API_LCD_DisplayString(message2);
 }
 
+/**
+ * @brief Displays a single message on a specified LCD line at a given position.
+ *
+ * This function sets the cursor to a specified position on a given LCD line and displays the provided message.
+ * It is useful for displaying individual messages on the LCD without the need for string concatenation.
+ *
+ * @param init_pos: The initial cursor position on the LCD line.
+ * @param lcd_line: Specifies the LCD line to display the message on (1 for the first line, 2 for the second line).
+ * @param message: Pointer to the message string to be displayed.
+ * @retval None.
+ */
 void API_LCD_DisplayMsg(uint8_t init_pos, uint8_t lcd_line, uint8_t *message)
 {
 	API_LCD_SetCursorLine(init_pos, lcd_line);
