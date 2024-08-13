@@ -85,7 +85,7 @@ static void sendAsciiCharToLCD(uint8_t asciiChar)
  */
 static void okLcdInitSignal(void)
 {
-	for (int i = 0; i < 4; i++) // LCD init OK blink signal
+	for (int i = 0; i < NUM_OK_INIT_LCD_BLINKS; i++) // LCD init OK blink signal
 	{
 		LCD_HAL_Blink(LED1);
 		LCD_HAL_Delay(MILLISECOND);
@@ -130,14 +130,14 @@ void API_LCD_SendData(uint8_t data)
 }
 
 /**
- * @brief Sends a BCD-encoded byte to the LCD.
+ * @brief Sends a BCD-encoded byte to the LCD. This function prepares and formats data.
  * @param data: The BCD data to send.
  * @retval None.
  */
 void API_LCD_SendBCDData(uint8_t data)
 {
-	sendAsciiCharToLCD((data & 0xF0) >> 4);
-	sendAsciiCharToLCD(data & 0x0F);
+	sendAsciiCharToLCD((data & BCD_HIGH_NIBBLE_MASK) >> BCD_HIGH_NIBBLE_SHIFT);
+	sendAsciiCharToLCD(data & BCD_LOW_NIBBLE_MASK);
 }
 
 /**
@@ -153,7 +153,7 @@ void API_LCD_SendBCDData(uint8_t data)
 void API_LCD_DisplayString(uint8_t *text)
 {
 	// Loop through each character in the string until the null terminator is encountered
-	while (*text != '\0')
+	while (*text != EOL)
 	{
 		// Send the current character to the LCD
 		API_LCD_SendData(*text);

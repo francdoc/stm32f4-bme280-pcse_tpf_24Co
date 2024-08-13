@@ -62,6 +62,17 @@
 #define LCD_FIRST_ROW_INDEX 1
 #define LCD_SECOND_ROW_INDEX 2
 
+// Number of LED blinks to indicate successful initialization of the LCD
+#define NUM_OK_INIT_LCD_BLINKS 4
+
+// End of line terminator
+#define EOL '\0'
+
+// Define constants for bit manipulation
+#define BCD_HIGH_NIBBLE_MASK 0xF0 // Mask to extract the high nibble (upper 4 bits)
+#define BCD_LOW_NIBBLE_MASK 0x0F  // Mask to extract the low nibble (lower 4 bits)
+#define BCD_HIGH_NIBBLE_SHIFT 4   // Number of bits to shift the high nibble to the right
+
 /* Public API Functions ----------------------------------------------------- */
 
 _Bool API_LCD_Initialize(void);
