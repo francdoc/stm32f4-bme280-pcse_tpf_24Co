@@ -29,25 +29,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  12 .ARM.attributes 00000030  00000000  00000000  00007018  2**0
                   CONTENTS, READONLY
- 13 .debug_info   0001234c  00000000  00000000  00007048  2**0
+ 13 .debug_info   00012346  00000000  00000000  00007048  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 00002c4f  00000000  00000000  00019394  2**0
+ 14 .debug_abbrev 00002c50  00000000  00000000  0001938e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00000fa0  00000000  00000000  0001bfe8  2**3
+ 15 .debug_aranges 00000fa0  00000000  00000000  0001bfe0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 00000c0a  00000000  00000000  0001cf88  2**0
+ 16 .debug_rnglists 00000c0a  00000000  00000000  0001cf80  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  0002791f  00000000  00000000  0001db92  2**0
+ 17 .debug_macro  0002791f  00000000  00000000  0001db8a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   000155da  00000000  00000000  000454b1  2**0
+ 18 .debug_line   000155f2  00000000  00000000  000454a9  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e5789  00000000  00000000  0005aa8b  2**0
+ 19 .debug_str    000e5789  00000000  00000000  0005aa9b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  00140214  2**0
+ 20 .comment      00000043  00000000  00000000  00140224  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003fd0  00000000  00000000  00140258  2**2
+ 21 .debug_frame  00003fd0  00000000  00000000  00140268  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  00144228  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  00144238  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -4031,19 +4031,19 @@ void LCD_HAL_Blink(Led_TypeDef Led)
  8001a3e:	bd80      	pop	{r7, pc}
 
 08001a40 <uartInit>:
-  * @param  None.
-  * @retval bool_t: returns true if initialization is successful, otherwise false.
-  */
+ * @param  None.
+ * @retval bool_t: returns true if initialization is successful, otherwise false.
+ */
 
 bool_t uartInit(void)
 {
  8001a40:	b580      	push	{r7, lr}
  8001a42:	af00      	add	r7, sp, #0
-  UartHandle.Instance        = USARTx;
+  UartHandle.Instance = USARTx;
  8001a44:	4b13      	ldr	r3, [pc, #76]	@ (8001a94 <uartInit+0x54>)
  8001a46:	4a14      	ldr	r2, [pc, #80]	@ (8001a98 <uartInit+0x58>)
  8001a48:	601a      	str	r2, [r3, #0]
-  UartHandle.Init.BaudRate   = 9600;
+  UartHandle.Init.BaudRate = 9600;
  8001a4a:	4b12      	ldr	r3, [pc, #72]	@ (8001a94 <uartInit+0x54>)
  8001a4c:	f44f 5216 	mov.w	r2, #9600	@ 0x2580
  8001a50:	605a      	str	r2, [r3, #4]
@@ -4051,19 +4051,19 @@ bool_t uartInit(void)
  8001a52:	4b10      	ldr	r3, [pc, #64]	@ (8001a94 <uartInit+0x54>)
  8001a54:	2200      	movs	r2, #0
  8001a56:	609a      	str	r2, [r3, #8]
-  UartHandle.Init.StopBits   = UART_STOPBITS_1;
+  UartHandle.Init.StopBits = UART_STOPBITS_1;
  8001a58:	4b0e      	ldr	r3, [pc, #56]	@ (8001a94 <uartInit+0x54>)
  8001a5a:	2200      	movs	r2, #0
  8001a5c:	60da      	str	r2, [r3, #12]
-  UartHandle.Init.Parity     = UART_PARITY_ODD;
+  UartHandle.Init.Parity = UART_PARITY_ODD;
  8001a5e:	4b0d      	ldr	r3, [pc, #52]	@ (8001a94 <uartInit+0x54>)
  8001a60:	f44f 62c0 	mov.w	r2, #1536	@ 0x600
  8001a64:	611a      	str	r2, [r3, #16]
-  UartHandle.Init.HwFlowCtl  = UART_HWCONTROL_NONE;
+  UartHandle.Init.HwFlowCtl = UART_HWCONTROL_NONE;
  8001a66:	4b0b      	ldr	r3, [pc, #44]	@ (8001a94 <uartInit+0x54>)
  8001a68:	2200      	movs	r2, #0
  8001a6a:	619a      	str	r2, [r3, #24]
-  UartHandle.Init.Mode       = UART_MODE_TX_RX;
+  UartHandle.Init.Mode = UART_MODE_TX_RX;
  8001a6c:	4b09      	ldr	r3, [pc, #36]	@ (8001a94 <uartInit+0x54>)
  8001a6e:	220c      	movs	r2, #12
  8001a70:	615a      	str	r2, [r3, #20]
@@ -4080,12 +4080,12 @@ bool_t uartInit(void)
  8001a82:	d001      	beq.n	8001a88 <uartInit+0x48>
   {
     /* Initialization Error */
-   return false;
+    return false;
  8001a84:	2300      	movs	r3, #0
  8001a86:	e003      	b.n	8001a90 <uartInit+0x50>
   }
 
-  uartSendString((uint8_t*)"UART init OK -> baud rate configured = 9600 | stopbits = 1 | parity = odd.\r\n");
+  uartSendString((uint8_t *)"UART init OK -> baud rate configured = 9600 | stopbits = 1 | parity = odd.\r\n");
  8001a88:	4804      	ldr	r0, [pc, #16]	@ (8001a9c <uartInit+0x5c>)
  8001a8a:	f000 f809 	bl	8001aa0 <uartSendString>
 
@@ -4099,17 +4099,17 @@ bool_t uartInit(void)
  8001a9c:	08005504 	.word	0x08005504
 
 08001aa0 <uartSendString>:
-  * @brief  Send a null-terminated string via UART.
-  * @param  uint8_t * pstring: pointer to the null-terminated string.
-  * @retval None.
-  */
-void uartSendString(uint8_t * pstring)
+ * @brief  Send a null-terminated string via UART.
+ * @param  uint8_t * pstring: pointer to the null-terminated string.
+ * @retval None.
+ */
+void uartSendString(uint8_t *pstring)
 {
  8001aa0:	b580      	push	{r7, lr}
  8001aa2:	b082      	sub	sp, #8
  8001aa4:	af00      	add	r7, sp, #0
  8001aa6:	6078      	str	r0, [r7, #4]
-  if(NULL != pstring && MAXbUFFER > strlen((char*)pstring))
+  if (NULL != pstring && MAXbUFFER > strlen((char *)pstring))
  8001aa8:	687b      	ldr	r3, [r7, #4]
  8001aaa:	2b00      	cmp	r3, #0
  8001aac:	d016      	beq.n	8001adc <uartSendString+0x3c>
@@ -4119,7 +4119,7 @@ void uartSendString(uint8_t * pstring)
  8001ab6:	2bff      	cmp	r3, #255	@ 0xff
  8001ab8:	d810      	bhi.n	8001adc <uartSendString+0x3c>
   {
-    if(HAL_OK != HAL_UART_Transmit(&UartHandle, pstring, strlen((char*)pstring), TxTIMEOUT))
+    if (HAL_OK != HAL_UART_Transmit(&UartHandle, pstring, strlen((char *)pstring), TxTIMEOUT))
  8001aba:	6878      	ldr	r0, [r7, #4]
  8001abc:	f7fe fb96 	bl	80001ec <strlen>
  8001ac0:	4603      	mov	r3, r0
@@ -4133,7 +4133,7 @@ void uartSendString(uint8_t * pstring)
  8001ad4:	d005      	beq.n	8001ae2 <uartSendString+0x42>
       Error_Handler();
  8001ad6:	f000 f80b 	bl	8001af0 <Error_Handler>
-    if(HAL_OK != HAL_UART_Transmit(&UartHandle, pstring, strlen((char*)pstring), TxTIMEOUT))
+    if (HAL_OK != HAL_UART_Transmit(&UartHandle, pstring, strlen((char *)pstring), TxTIMEOUT))
  8001ada:	e002      	b.n	8001ae2 <uartSendString+0x42>
   }
   else
@@ -4149,10 +4149,10 @@ void uartSendString(uint8_t * pstring)
  8001aec:	20000194 	.word	0x20000194
 
 08001af0 <Error_Handler>:
-  * @brief  Handles errors by entering an infinite loop.
-  * @param  None.
-  * @retval None.
-  */
+ * @brief  Handles errors by entering an infinite loop.
+ * @param  None.
+ * @retval None.
+ */
 static void Error_Handler(void)
 {
  8001af0:	b480      	push	{r7}
