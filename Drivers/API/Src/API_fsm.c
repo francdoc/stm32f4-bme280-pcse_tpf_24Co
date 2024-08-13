@@ -71,12 +71,10 @@ char lcdHumStr[20];
 
 void prepare_sensor_data_for_lcd(void)
 {
-    // Prepare temperature string for LCD
     itoa((int)bme280_temperature, lcdTempStr, 10);
     strcat(lcdTempStr, ".");
     itoa((int)((bme280_temperature - (int)bme280_temperature) * 100), lcdTempStr + strlen(lcdTempStr), 10);
 
-    // Prepare humidity string for LCD
     itoa((int)bme280_humidity, lcdHumStr, 10);
     strcat(lcdHumStr, ".");
     itoa((int)((bme280_humidity - (int)bme280_humidity) * 100), lcdHumStr + strlen(lcdHumStr), 10);
@@ -90,8 +88,9 @@ void lcd_display_sensor_data(void)
 
 void lcd_alarm()
 {
-    API_LCD_DisplayMsg(FSM_ALARM_LCD_CURSOR_POS, FSM_LCD_LINE_2, (uint8_t *) "ALARMA! ");
+    API_LCD_DisplayMsg(FSM_ALARM_LCD_CURSOR_POS, FSM_LCD_LINE_2, (uint8_t *)"ALARMA! ");
 }
+
 
 void lcd_display_clock()
 {
@@ -131,7 +130,7 @@ void FSM_update()
 
 void APP_init()
 {
-    clock_init_code();
+	ClockInit();
     tempFSM_init();
     API_BME280_Init();
     uartInit();
@@ -140,7 +139,7 @@ void APP_init()
 
 void APP_updateLCD(void)
 {
-    update_lcd_clock();
+	ClockUpdateTimeDate();
     lcd_display_clock();
 }
 

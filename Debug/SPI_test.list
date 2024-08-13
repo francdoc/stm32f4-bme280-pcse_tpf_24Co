@@ -29,9 +29,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  12 .ARM.attributes 00000030  00000000  00000000  00007018  2**0
                   CONTENTS, READONLY
- 13 .debug_info   00012346  00000000  00000000  00007048  2**0
+ 13 .debug_info   00012343  00000000  00000000  00007048  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 00002c50  00000000  00000000  0001938e  2**0
+ 14 .debug_abbrev 00002c51  00000000  00000000  0001938b  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  15 .debug_aranges 00000fa0  00000000  00000000  0001bfe0  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
@@ -39,15 +39,15 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_macro  0002791f  00000000  00000000  0001db8a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   000155f2  00000000  00000000  000454a9  2**0
+ 18 .debug_line   000155f6  00000000  00000000  000454a9  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e5789  00000000  00000000  0005aa9b  2**0
+ 19 .debug_str    000e5788  00000000  00000000  0005aa9f  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  00140224  2**0
+ 20 .comment      00000043  00000000  00000000  00140227  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003fd0  00000000  00000000  00140268  2**2
+ 21 .debug_frame  00003fd0  00000000  00000000  0014026c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  00144238  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  0014423c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2631,90 +2631,94 @@ void BME280_HAL_Blink(Led_TypeDef Led)
  8001178:	46bd      	mov	sp, r7
  800117a:	bd80      	pop	{r7, pc}
 
-0800117c <RTC_Error_Handler>:
-
-RTC_TimeTypeDef sTime = {0}; // key user variables for RTC date
-RTC_DateTypeDef sDate = {0};
-
-void RTC_Error_Handler(void)
+0800117c <Clock_Error_Handler>:
+ *         This function enters an infinite loop, indicating a critical error.
+ * @param  None
+ * @retval None
+ */
+void Clock_Error_Handler(void)
 {
  800117c:	b480      	push	{r7}
  800117e:	af00      	add	r7, sp, #0
-    /* USER CODE BEGIN Error_Handler_Debug */
     while (1)
  8001180:	bf00      	nop
- 8001182:	e7fd      	b.n	8001180 <RTC_Error_Handler+0x4>
+ 8001182:	e7fd      	b.n	8001180 <Clock_Error_Handler+0x4>
 
-08001184 <clock_init_code>:
-    }
-    /* USER CODE END Error_Handler_Debug */
-}
-
-void clock_init_code(void)
+08001184 <ClockInit>:
+ * @brief  Initializes the RTC clock with a predefined time and date.
+ * @param  None
+ * @retval None
+ */
+void ClockInit(void)
 {
  8001184:	b580      	push	{r7, lr}
  8001186:	af00      	add	r7, sp, #0
+    // Set initial time values (in BCD format)
     sTime.Hours = 0x01;
- 8001188:	4b18      	ldr	r3, [pc, #96]	@ (80011ec <clock_init_code+0x68>)
+ 8001188:	4b18      	ldr	r3, [pc, #96]	@ (80011ec <ClockInit+0x68>)
  800118a:	2201      	movs	r2, #1
  800118c:	701a      	strb	r2, [r3, #0]
     sTime.Minutes = 0x20;
- 800118e:	4b17      	ldr	r3, [pc, #92]	@ (80011ec <clock_init_code+0x68>)
+ 800118e:	4b17      	ldr	r3, [pc, #92]	@ (80011ec <ClockInit+0x68>)
  8001190:	2220      	movs	r2, #32
  8001192:	705a      	strb	r2, [r3, #1]
     sTime.Seconds = 0x00;
- 8001194:	4b15      	ldr	r3, [pc, #84]	@ (80011ec <clock_init_code+0x68>)
+ 8001194:	4b15      	ldr	r3, [pc, #84]	@ (80011ec <ClockInit+0x68>)
  8001196:	2200      	movs	r2, #0
  8001198:	709a      	strb	r2, [r3, #2]
     sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
- 800119a:	4b14      	ldr	r3, [pc, #80]	@ (80011ec <clock_init_code+0x68>)
+ 800119a:	4b14      	ldr	r3, [pc, #80]	@ (80011ec <ClockInit+0x68>)
  800119c:	2200      	movs	r2, #0
  800119e:	60da      	str	r2, [r3, #12]
     sTime.StoreOperation = RTC_STOREOPERATION_RESET;
- 80011a0:	4b12      	ldr	r3, [pc, #72]	@ (80011ec <clock_init_code+0x68>)
+ 80011a0:	4b12      	ldr	r3, [pc, #72]	@ (80011ec <ClockInit+0x68>)
  80011a2:	2200      	movs	r2, #0
  80011a4:	611a      	str	r2, [r3, #16]
 
+    // Set the RTC time, check for errors
     if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
  80011a6:	2201      	movs	r2, #1
- 80011a8:	4910      	ldr	r1, [pc, #64]	@ (80011ec <clock_init_code+0x68>)
- 80011aa:	4811      	ldr	r0, [pc, #68]	@ (80011f0 <clock_init_code+0x6c>)
+ 80011a8:	4910      	ldr	r1, [pc, #64]	@ (80011ec <ClockInit+0x68>)
+ 80011aa:	4811      	ldr	r0, [pc, #68]	@ (80011f0 <ClockInit+0x6c>)
  80011ac:	f002 fc5d 	bl	8003a6a <HAL_RTC_SetTime>
  80011b0:	4603      	mov	r3, r0
  80011b2:	2b00      	cmp	r3, #0
- 80011b4:	d001      	beq.n	80011ba <clock_init_code+0x36>
+ 80011b4:	d001      	beq.n	80011ba <ClockInit+0x36>
     {
-    	RTC_Error_Handler();
- 80011b6:	f7ff ffe1 	bl	800117c <RTC_Error_Handler>
+        Clock_Error_Handler();
+ 80011b6:	f7ff ffe1 	bl	800117c <Clock_Error_Handler>
     }
+
+    // Set initial date values (in BCD format)
     sDate.WeekDay = RTC_WEEKDAY_MONDAY;
- 80011ba:	4b0e      	ldr	r3, [pc, #56]	@ (80011f4 <clock_init_code+0x70>)
+ 80011ba:	4b0e      	ldr	r3, [pc, #56]	@ (80011f4 <ClockInit+0x70>)
  80011bc:	2201      	movs	r2, #1
  80011be:	701a      	strb	r2, [r3, #0]
     sDate.Month = RTC_MONTH_AUGUST;
- 80011c0:	4b0c      	ldr	r3, [pc, #48]	@ (80011f4 <clock_init_code+0x70>)
+ 80011c0:	4b0c      	ldr	r3, [pc, #48]	@ (80011f4 <ClockInit+0x70>)
  80011c2:	2208      	movs	r2, #8
  80011c4:	705a      	strb	r2, [r3, #1]
     sDate.Date = 0x05;
- 80011c6:	4b0b      	ldr	r3, [pc, #44]	@ (80011f4 <clock_init_code+0x70>)
+ 80011c6:	4b0b      	ldr	r3, [pc, #44]	@ (80011f4 <ClockInit+0x70>)
  80011c8:	2205      	movs	r2, #5
  80011ca:	709a      	strb	r2, [r3, #2]
     sDate.Year = 0x24;
- 80011cc:	4b09      	ldr	r3, [pc, #36]	@ (80011f4 <clock_init_code+0x70>)
+ 80011cc:	4b09      	ldr	r3, [pc, #36]	@ (80011f4 <ClockInit+0x70>)
  80011ce:	2224      	movs	r2, #36	@ 0x24
  80011d0:	70da      	strb	r2, [r3, #3]
 
+    // Set the RTC date, check for errors
     if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
  80011d2:	2201      	movs	r2, #1
- 80011d4:	4907      	ldr	r1, [pc, #28]	@ (80011f4 <clock_init_code+0x70>)
- 80011d6:	4806      	ldr	r0, [pc, #24]	@ (80011f0 <clock_init_code+0x6c>)
+ 80011d4:	4907      	ldr	r1, [pc, #28]	@ (80011f4 <ClockInit+0x70>)
+ 80011d6:	4806      	ldr	r0, [pc, #24]	@ (80011f0 <ClockInit+0x6c>)
  80011d8:	f002 fd3f 	bl	8003c5a <HAL_RTC_SetDate>
  80011dc:	4603      	mov	r3, r0
  80011de:	2b00      	cmp	r3, #0
- 80011e0:	d001      	beq.n	80011e6 <clock_init_code+0x62>
+ 80011e0:	d001      	beq.n	80011e6 <ClockInit+0x62>
     {
-    	RTC_Error_Handler();
- 80011e2:	f7ff ffcb 	bl	800117c <RTC_Error_Handler>
+        Clock_Error_Handler();
+ 80011e2:	f7ff ffcb 	bl	800117c <Clock_Error_Handler>
     }
 }
  80011e6:	bf00      	nop
@@ -2724,21 +2728,27 @@ void clock_init_code(void)
  80011f0:	200000e0 	.word	0x200000e0
  80011f4:	2000013c 	.word	0x2000013c
 
-080011f8 <update_lcd_clock>:
-
-void update_lcd_clock(void)
+080011f8 <ClockUpdateTimeDate>:
+ * @brief  Updates the global time and date variables with the current RTC time and date.
+ * @param  None
+ * @retval None
+ */
+void ClockUpdateTimeDate(void)
 {
  80011f8:	b580      	push	{r7, lr}
  80011fa:	af00      	add	r7, sp, #0
+    // Get the current time from the RTC
     HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BCD);
  80011fc:	2201      	movs	r2, #1
- 80011fe:	4905      	ldr	r1, [pc, #20]	@ (8001214 <update_lcd_clock+0x1c>)
- 8001200:	4805      	ldr	r0, [pc, #20]	@ (8001218 <update_lcd_clock+0x20>)
+ 80011fe:	4905      	ldr	r1, [pc, #20]	@ (8001214 <ClockUpdateTimeDate+0x1c>)
+ 8001200:	4805      	ldr	r0, [pc, #20]	@ (8001218 <ClockUpdateTimeDate+0x20>)
  8001202:	f002 fccc 	bl	8003b9e <HAL_RTC_GetTime>
+
+    // Get the current date from the RTC
     HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BCD);
  8001206:	2201      	movs	r2, #1
- 8001208:	4904      	ldr	r1, [pc, #16]	@ (800121c <update_lcd_clock+0x24>)
- 800120a:	4803      	ldr	r0, [pc, #12]	@ (8001218 <update_lcd_clock+0x20>)
+ 8001208:	4904      	ldr	r1, [pc, #16]	@ (800121c <ClockUpdateTimeDate+0x24>)
+ 800120a:	4803      	ldr	r0, [pc, #12]	@ (8001218 <ClockUpdateTimeDate+0x20>)
  800120c:	f002 fda9 	bl	8003d62 <HAL_RTC_GetDate>
 }
  8001210:	bf00      	nop
@@ -3045,7 +3055,6 @@ void prepare_sensor_data_for_lcd(void)
  8001450:	b580      	push	{r7, lr}
  8001452:	ed2d 8b02 	vpush	{d8}
  8001456:	af00      	add	r7, sp, #0
-    // Prepare temperature string for LCD
     itoa((int)bme280_temperature, lcdTempStr, 10);
  8001458:	4b37      	ldr	r3, [pc, #220]	@ (8001538 <prepare_sensor_data_for_lcd+0xe8>)
  800145a:	edd3 7a00 	vldr	s15, [r3]
@@ -3087,7 +3096,6 @@ void prepare_sensor_data_for_lcd(void)
  80014ba:	ee18 0a10 	vmov	r0, s16
  80014be:	f003 ff57 	bl	8005370 <itoa>
 
-    // Prepare humidity string for LCD
     itoa((int)bme280_humidity, lcdHumStr, 10);
  80014c2:	4b21      	ldr	r3, [pc, #132]	@ (8001548 <prepare_sensor_data_for_lcd+0xf8>)
  80014c4:	edd3 7a00 	vldr	s15, [r3]
@@ -3173,7 +3181,7 @@ void lcd_alarm()
 {
  8001580:	b580      	push	{r7, lr}
  8001582:	af00      	add	r7, sp, #0
-    API_LCD_DisplayMsg(FSM_ALARM_LCD_CURSOR_POS, FSM_LCD_LINE_2, (uint8_t *) "ALARMA! ");
+    API_LCD_DisplayMsg(FSM_ALARM_LCD_CURSOR_POS, FSM_LCD_LINE_2, (uint8_t *)"ALARMA! ");
  8001584:	4a03      	ldr	r2, [pc, #12]	@ (8001594 <lcd_alarm+0x14>)
  8001586:	2102      	movs	r1, #2
  8001588:	2000      	movs	r0, #0
@@ -3185,6 +3193,7 @@ void lcd_alarm()
  8001594:	080054f8 	.word	0x080054f8
 
 08001598 <lcd_display_clock>:
+
 
 void lcd_display_clock()
 {
@@ -3300,8 +3309,8 @@ void APP_init()
 {
  8001644:	b580      	push	{r7, lr}
  8001646:	af00      	add	r7, sp, #0
-    clock_init_code();
- 8001648:	f7ff fd9c 	bl	8001184 <clock_init_code>
+	ClockInit();
+ 8001648:	f7ff fd9c 	bl	8001184 <ClockInit>
     tempFSM_init();
  800164c:	f7ff fde8 	bl	8001220 <tempFSM_init>
     API_BME280_Init();
@@ -3320,8 +3329,8 @@ void APP_updateLCD(void)
 {
  8001660:	b580      	push	{r7, lr}
  8001662:	af00      	add	r7, sp, #0
-    update_lcd_clock();
- 8001664:	f7ff fdc8 	bl	80011f8 <update_lcd_clock>
+	ClockUpdateTimeDate();
+ 8001664:	f7ff fdc8 	bl	80011f8 <ClockUpdateTimeDate>
     lcd_display_clock();
  8001668:	f7ff ff96 	bl	8001598 <lcd_display_clock>
 }
