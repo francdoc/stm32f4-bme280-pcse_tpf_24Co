@@ -10,21 +10,31 @@ char message_hum[SIZE];
 char lcdTempStr[SIZE];
 char lcdHumStr[SIZE];
 
+void lcd_display_date(void);
+void lcd_display_clock(void);
+void lcd_alarm();
+void prepare_sensor_data_for_lcd(void);
+void lcd_display_sensor_data(void);
+void prepare_sensor_data_for_uart(char *message_1, char *message_2);
+void uart_display_data(char *message_1, char *message_2);
+void APP_updateLCD(void);
+void APP_updateSensorData(void);
+void APP_prepareAndDisplaySensorData(void);
+void APP_prepareAndSendUARTData(void);
+
 void tempFSM_init()
 {
     currentTempState = TEMP_NORMAL;
 }
 
-void FSM_update(void);
-
 void eval_data()
 {
-    uint8_t message[50];
+    char message[50];
     if (bme280_temperature > THRESHOLD_TEMP)
     {
         currentTempState = TEMP_ALARM;
-        strcpy((char *)message, "Temperature Alarm State.\r\n");
-        uartSendString(message);
+        strcpy(message, "Temperature Alarm State.\r\n");
+        uartSendString((uint8_t *)message);
 
 #ifdef DEBUG_EVAL_DATA
         for (int i = 0; i <= 3; i++)
@@ -37,8 +47,8 @@ void eval_data()
     else
     {
         currentTempState = TEMP_NORMAL;
-        strcpy((char *)message, "Temperature Normal State.\r\n");
-        uartSendString(message);
+        strcpy(message, "Temperature Normal State.\r\n");
+        uartSendString((uint8_t *)message);
     }
 }
 
@@ -55,51 +65,51 @@ void eval_data()
  * @param unit: Pointer to the unit string (e.g., "C" or "%") to append to the data.
  * @retval None
  */
-void prepareUartData(float bme280_data, uint8_t *message, const char *tag, const char *unit)
+void prepareUartData(float bme280_data, char *message, const char *tag, const char *unit)
 {
     int intPart = (int)bme280_data;
-    int fracPart = (int)(bme280_data - intPart) * 100;
+    int fracPart = (int)((bme280_data - intPart) * 100);
 
-    strcpy((char *)message, tag);
+    strcpy(message, tag);
 
     memset(strbuff, ZEROVAL, sizeof(strbuff));
 
     itoa(intPart, strbuff, DECIMAL);
-    strcat((char *)message, strbuff);
+    strcat(message, strbuff);
 
-    strcat((char *)message, ".");
+    strcat(message, ".");
 
     memset(strbuff, ZEROVAL, sizeof(strbuff));
 
     itoa(fracPart, strbuff, DECIMAL);
-    strcat((char *)message, strbuff);
+    strcat(message, strbuff);
 
-    strcat((char *)message, " ");
-    strcat((char *)message, unit);
-    strcat((char *)message, "\r\n");
+    strcat(message, " ");
+    strcat(message, unit);
+    strcat(message, "\r\n");
 }
 
-void prepare_sensor_data_for_uart(uint8_t *message_tem, uint8_t *message_hum)
+void prepare_sensor_data_for_uart(char *message_tem, char *message_hum)
 {
     prepareUartData((float)bme280_temperature, message_tem, "Temperature: ", "C");
     prepareUartData((float)bme280_humidity, message_hum, "Humidity: ", "%");
 }
 
-void uart_display_data(uint8_t *message_1, uint8_t *message_2)
+void uart_display_data(char *message_1, char *message_2)
 {
-    uartSendString(message_1);
-    uartSendString(message_2);
+    uartSendString((uint8_t *)message_1);
+    uartSendString((uint8_t *)message_2);
 }
 
 void prepare_sensor_data_for_lcd(void)
 {
-    itoa((int)bme280_temperature, lcdTempStr, 10);
+    itoa((int)bme280_temperature, lcdTempStr, DECIMAL);
     strcat(lcdTempStr, ".");
-    itoa((int)((bme280_temperature - (int)bme280_temperature) * 100), lcdTempStr + strlen(lcdTempStr), 10);
+    itoa((int)((bme280_temperature - (int)bme280_temperature) * 100), lcdTempStr + strlen(lcdTempStr), DECIMAL);
 
-    itoa((int)bme280_humidity, lcdHumStr, 10);
+    itoa((int)bme280_humidity, lcdHumStr, DECIMAL);
     strcat(lcdHumStr, ".");
-    itoa((int)((bme280_humidity - (int)bme280_humidity) * 100), lcdHumStr + strlen(lcdHumStr), 10);
+    itoa((int)((bme280_humidity - (int)bme280_humidity) * 100), lcdHumStr + strlen(lcdHumStr), DECIMAL);
 }
 
 void lcd_display_sensor_data(void)
@@ -180,8 +190,8 @@ void APP_prepareAndSendUARTData(void)
     memset(message_tem, ZEROVAL, sizeof(message_tem));
     memset(message_hum, ZEROVAL, sizeof(message_hum));
 
-    prepare_sensor_data_for_uart((char *)message_tem, (char *)message_hum);
-    uart_display_data((char *)message_tem, (char *)message_hum);
+    prepare_sensor_data_for_uart(message_tem, message_hum);
+    uart_display_data(message_tem, message_hum);
 }
 
 void APP_update()
