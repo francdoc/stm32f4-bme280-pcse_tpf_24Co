@@ -37,17 +37,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_rnglists 00000bfe  00000000  00000000  0001cf20  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  000278ef  00000000  00000000  0001db1e  2**0
+ 17 .debug_macro  000278fb  00000000  00000000  0001db1e  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   0001554c  00000000  00000000  0004540d  2**0
+ 18 .debug_line   0001554c  00000000  00000000  00045419  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e56c3  00000000  00000000  0005a959  2**0
+ 19 .debug_str    000e56f0  00000000  00000000  0005a965  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  0014001c  2**0
+ 20 .comment      00000043  00000000  00000000  00140055  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00003f90  00000000  00000000  00140060  2**2
+ 21 .debug_frame  00003f90  00000000  00000000  00140098  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  00143ff0  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  00144028  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -3729,8 +3729,8 @@ void API_LCD_SendBCDData(uint8_t data)
  80018aa:	bd80      	pop	{r7, pc}
 
 080018ac <API_LCD_DisplayString>:
- * @brief Displays a string on the LCD.
- * @param text: Pointer to the string to be displayed.
+ *
+ * @param text: Pointer to the null-terminated string to be displayed.
  * @retval None.
  */
 void API_LCD_DisplayString(uint8_t *text)
@@ -3739,28 +3739,28 @@ void API_LCD_DisplayString(uint8_t *text)
  80018ae:	b082      	sub	sp, #8
  80018b0:	af00      	add	r7, sp, #0
  80018b2:	6078      	str	r0, [r7, #4]
-    // Loop through each character in the string until the null terminator is encountered
-    while (*text != '\0')
+	// Loop through each character in the string until the null terminator is encountered
+	while (*text != '\0')
  80018b4:	e007      	b.n	80018c6 <API_LCD_DisplayString+0x1a>
-    {
-        // Send the current character to the LCD
-        API_LCD_SendData(*text);
+	{
+		// Send the current character to the LCD
+		API_LCD_SendData(*text);
  80018b6:	687b      	ldr	r3, [r7, #4]
  80018b8:	781b      	ldrb	r3, [r3, #0]
  80018ba:	4618      	mov	r0, r3
  80018bc:	f7ff ffd2 	bl	8001864 <API_LCD_SendData>
 
-        // Move to the next character in the string
-        text++;
+		// Move to the next character in the string
+		text++;
  80018c0:	687b      	ldr	r3, [r7, #4]
  80018c2:	3301      	adds	r3, #1
  80018c4:	607b      	str	r3, [r7, #4]
-    while (*text != '\0')
+	while (*text != '\0')
  80018c6:	687b      	ldr	r3, [r7, #4]
  80018c8:	781b      	ldrb	r3, [r3, #0]
  80018ca:	2b00      	cmp	r3, #0
  80018cc:	d1f3      	bne.n	80018b6 <API_LCD_DisplayString+0xa>
-    }
+	}
 }
  80018ce:	bf00      	nop
  80018d0:	bf00      	nop
@@ -3769,8 +3769,8 @@ void API_LCD_DisplayString(uint8_t *text)
  80018d6:	bd80      	pop	{r7, pc}
 
 080018d8 <API_LCD_SetCursorLine>:
- * based on its line input.
- * @param position: The position to set the cursor to.
+ * @param position: The cursor position relative to the start of the line.
+ * @param lcd_line: Specifies the LCD line to set the cursor to (1 for the first line, 2 for the second line).
  * @retval None.
  */
 void API_LCD_SetCursorLine(uint8_t position, uint8_t lcd_line)
@@ -3783,7 +3783,7 @@ void API_LCD_SetCursorLine(uint8_t position, uint8_t lcd_line)
  80018e2:	71fb      	strb	r3, [r7, #7]
  80018e4:	4613      	mov	r3, r2
  80018e6:	71bb      	strb	r3, [r7, #6]
-	if (lcd_line == 1)
+	if (lcd_line == LCD_FIRST_ROW_INDEX)
  80018e8:	79bb      	ldrb	r3, [r7, #6]
  80018ea:	2b01      	cmp	r3, #1
  80018ec:	d106      	bne.n	80018fc <API_LCD_SetCursorLine+0x24>
@@ -3795,7 +3795,7 @@ void API_LCD_SetCursorLine(uint8_t position, uint8_t lcd_line)
  80018f6:	4618      	mov	r0, r3
  80018f8:	f7ff ff49 	bl	800178e <executeLCDCommand>
 	}
-	if (lcd_line == 2)
+	if (lcd_line == LCD_SECOND_ROW_INDEX)
  80018fc:	79bb      	ldrb	r3, [r7, #6]
  80018fe:	2b02      	cmp	r3, #2
  8001900:	d106      	bne.n	8001910 <API_LCD_SetCursorLine+0x38>

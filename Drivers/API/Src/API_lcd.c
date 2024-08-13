@@ -142,35 +142,46 @@ void API_LCD_SendBCDData(uint8_t data)
 
 /**
  * @brief Displays a string on the LCD.
- * @param text: Pointer to the string to be displayed.
+ *
+ * This function loops through each character in the provided string
+ * and sends it to the LCD one by one. The string should be null-terminated,
+ * and the LCD cursor will automatically move to the next position after each character.
+ *
+ * @param text: Pointer to the null-terminated string to be displayed.
  * @retval None.
  */
 void API_LCD_DisplayString(uint8_t *text)
 {
-    // Loop through each character in the string until the null terminator is encountered
-    while (*text != '\0')
-    {
-        // Send the current character to the LCD
-        API_LCD_SendData(*text);
+	// Loop through each character in the string until the null terminator is encountered
+	while (*text != '\0')
+	{
+		// Send the current character to the LCD
+		API_LCD_SendData(*text);
 
-        // Move to the next character in the string
-        text++;
-    }
+		// Move to the next character in the string
+		text++;
+	}
 }
 
 /**
  * @brief Sets the cursor position on the first or second line of the LCD
  * based on its line input.
- * @param position: The position to set the cursor to.
+ *
+ * This function moves the cursor to the specified position on either the first or second line
+ * of the LCD, depending on the `lcd_line` parameter. The `position` parameter specifies the
+ * horizontal position on the line, starting from the leftmost position (0).
+ *
+ * @param position: The cursor position relative to the start of the line.
+ * @param lcd_line: Specifies the LCD line to set the cursor to (1 for the first line, 2 for the second line).
  * @retval None.
  */
 void API_LCD_SetCursorLine(uint8_t position, uint8_t lcd_line)
 {
-	if (lcd_line == 1)
+	if (lcd_line == LCD_FIRST_ROW_INDEX)
 	{
 		executeLCDCommand(position | LCD_LINE_1);
 	}
-	if (lcd_line == 2)
+	if (lcd_line == LCD_SECOND_ROW_INDEX)
 	{
 		executeLCDCommand(position | LCD_LINE_2);
 	}

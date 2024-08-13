@@ -7,7 +7,7 @@
 ../Drivers/API/Src/API_lcd.c:101:7:API_LCD_Initialize	16	static
 ../Drivers/API/Src/API_lcd.c:127:6:API_LCD_SendData	16	static
 ../Drivers/API/Src/API_lcd.c:137:6:API_LCD_SendBCDData	16	static
-../Drivers/API/Src/API_lcd.c:148:6:API_LCD_DisplayString	16	static
-../Drivers/API/Src/API_lcd.c:167:6:API_LCD_SetCursorLine	16	static
-../Drivers/API/Src/API_lcd.c:192:6:API_LCD_DisplayTwoMsgs	24	static
-../Drivers/API/Src/API_lcd.c:210:6:API_LCD_DisplayMsg	16	static
+../Drivers/API/Src/API_lcd.c:153:6:API_LCD_DisplayString	16	static
+../Drivers/API/Src/API_lcd.c:178:6:API_LCD_SetCursorLine	16	static
+../Drivers/API/Src/API_lcd.c:203:6:API_LCD_DisplayTwoMsgs	24	static
+../Drivers/API/Src/API_lcd.c:221:6:API_LCD_DisplayMsg	16	static
