@@ -1,10 +1,12 @@
 #include "API_lcd.h"
 
 /* Private Function Prototypes ---------------------------------------------- */
-static void executeLCDCommand(uint8_t command);
 static void sendNibbleToLCD(uint8_t data, bool mode);
+static void sendNibbleAndPause(uint8_t data, bool mode, uint8_t delay);
 static void writeDataToLCD(uint8_t data, bool mode);
+static void executeLCDCommand(uint8_t command);
 static void sendAsciiCharToLCD(uint8_t asciiChar);
+static void okLcdInitSignal(void);
 
 // Initialization sequence commands
 static const uint8_t LCD_INIT_COMMANDS[] = {
