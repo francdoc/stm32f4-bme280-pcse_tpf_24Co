@@ -66,6 +66,9 @@
 // Number of LED blinks to indicate successful initialization of the LCD
 #define NUM_OK_INIT_LCD_BLINKS 4
 
+// Number of LED blinks to indicate an error in LCD operations
+#define NUM_ERROR_LCD_BLINKS 4
+
 // End of line terminator
 #define EOL '\0'
 
@@ -83,5 +86,6 @@ void API_LCD_DisplayString(uint8_t *text);
 void API_LCD_SetCursorLine(uint8_t position, uint8_t lcd_line);
 void API_LCD_DisplayTwoMsgs(uint8_t init_pos, uint8_t lcd_line, uint8_t *message1, uint8_t *message2);
 void API_LCD_DisplayMsg(uint8_t init_pos, uint8_t lcd_line, uint8_t *message);
+void API_LCD_ErrorHandler(void);
 
 #endif /* API_INC_API_LCD_H_ */
