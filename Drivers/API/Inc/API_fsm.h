@@ -25,6 +25,10 @@
 #define FSM_TEMP_LCD_CURSOR_POS 9
 #define FSM_HUM_LCD_CURSOR_POS 9
 
+#define SIZE 50
+#define DECIMAL 10
+#define ZEROVAL 0
+
 typedef enum
 {
   TEMP_NORMAL,

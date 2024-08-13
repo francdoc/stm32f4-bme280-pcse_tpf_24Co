@@ -2,6 +2,14 @@
 
 static tempState_t currentTempState;
 
+char strbuff[SIZE];
+
+char message_tem[SIZE];
+char message_hum[SIZE];
+
+char lcdTempStr[SIZE];
+char lcdHumStr[SIZE];
+
 void tempFSM_init()
 {
     currentTempState = TEMP_NORMAL;
@@ -34,30 +42,47 @@ void eval_data()
     }
 }
 
-char tempStr[20];
-char humStr[20];
-
-void prepare_sensor_data_for_uart(uint8_t *message_1, uint8_t *message_2)
+/**
+ * @brief Prepares a formatted UART message with the specified tag and sensor data.
+ *
+ * This function takes a floating-point sensor data value, converts it to a string format with the specified tag,
+ * and stores the result in the provided message buffer. The formatted string will be in the format of:
+ * "Tag: <integer_part>.<fractional_part> <unit>\r\n".
+ *
+ * @param bme280_data: The sensor data (e.g., temperature or humidity) to be formatted.
+ * @param message: Pointer to the buffer where the formatted message will be stored.
+ * @param tag: Pointer to the string tag (e.g., "Temperature: " or "Humidity: ") to prepend to the data.
+ * @param unit: Pointer to the unit string (e.g., "C" or "%") to append to the data.
+ * @retval None
+ */
+void prepareUartData(float bme280_data, uint8_t *message, const char *tag, const char *unit)
 {
-    int intPart = (int)bme280_temperature;
-    int fracPart = (int)((bme280_temperature - intPart) * 100);
-    strcpy((char *)message_1, "Temperature: ");
-    itoa(intPart, tempStr, 10);
-    strcat((char *)message_1, tempStr);
-    strcat((char *)message_1, ".");
-    itoa(fracPart, tempStr, 10);
-    strcat((char *)message_1, tempStr);
-    strcat((char *)message_1, " C\r\n");
+    int intPart = (int)bme280_data;
+    int fracPart = (int)(bme280_data - intPart) * 100;
 
-    strcpy((char *)message_2, "Humidity: ");
-    intPart = (int)bme280_humidity;
-    fracPart = (int)((bme280_humidity - intPart) * 100);
-    itoa(intPart, humStr, 10);
-    strcat((char *)message_2, humStr);
-    strcat((char *)message_2, ".");
-    itoa(fracPart, humStr, 10);
-    strcat((char *)message_2, humStr);
-    strcat((char *)message_2, " %\r\n");
+    strcpy((char *)message, tag);
+
+    memset(strbuff, ZEROVAL, sizeof(strbuff));
+
+    itoa(intPart, strbuff, DECIMAL);
+    strcat((char *)message, strbuff);
+
+    strcat((char *)message, ".");
+
+    memset(strbuff, ZEROVAL, sizeof(strbuff));
+
+    itoa(fracPart, strbuff, DECIMAL);
+    strcat((char *)message, strbuff);
+
+    strcat((char *)message, " ");
+    strcat((char *)message, unit);
+    strcat((char *)message, "\r\n");
+}
+
+void prepare_sensor_data_for_uart(uint8_t *message_tem, uint8_t *message_hum)
+{
+    prepareUartData((float)bme280_temperature, message_tem, "Temperature: ", "C");
+    prepareUartData((float)bme280_humidity, message_hum, "Humidity: ", "%");
 }
 
 void uart_display_data(uint8_t *message_1, uint8_t *message_2)
@@ -65,9 +90,6 @@ void uart_display_data(uint8_t *message_1, uint8_t *message_2)
     uartSendString(message_1);
     uartSendString(message_2);
 }
-
-char lcdTempStr[20];
-char lcdHumStr[20];
 
 void prepare_sensor_data_for_lcd(void)
 {
@@ -90,7 +112,6 @@ void lcd_alarm()
 {
     API_LCD_DisplayMsg(FSM_ALARM_LCD_CURSOR_POS, FSM_LCD_LINE_2, (uint8_t *)"ALARMA! ");
 }
-
 
 void lcd_display_clock()
 {
@@ -130,7 +151,7 @@ void FSM_update()
 
 void APP_init()
 {
-	ClockInit();
+    ClockInit();
     tempFSM_init();
     API_BME280_Init();
     uartInit();
@@ -139,7 +160,7 @@ void APP_init()
 
 void APP_updateLCD(void)
 {
-	ClockUpdateTimeDate();
+    ClockUpdateTimeDate();
     lcd_display_clock();
 }
 
@@ -156,10 +177,11 @@ void APP_prepareAndDisplaySensorData(void)
 
 void APP_prepareAndSendUARTData(void)
 {
-    uint8_t message_tem[50];
-    uint8_t message_hum[50];
-    prepare_sensor_data_for_uart(message_tem, message_hum);
-    uart_display_data(message_tem, message_hum);
+    memset(message_tem, ZEROVAL, sizeof(message_tem));
+    memset(message_hum, ZEROVAL, sizeof(message_hum));
+
+    prepare_sensor_data_for_uart((char *)message_tem, (char *)message_hum);
+    uart_display_data((char *)message_tem, (char *)message_hum);
 }
 
 void APP_update()
