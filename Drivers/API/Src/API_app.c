@@ -13,7 +13,8 @@ char messageFsm[50];
 /* Function Prototypes -------------------------------------------------------------*/
 
 void APP_FSM_init(void);
-void APP_evalData(void);
+void APP_FSM_update(void);
+
 void APP_uartPrepareData(float bme280_data, char *message, const char *tag, const char *unit);
 void APP_uartPrepareSensorTempHum(char *message_tem, char *message_hum);
 void APP_uartDisplaySensorData(char *message_tem, char *message_hum);
@@ -22,7 +23,6 @@ void APP_lcdDisplaySensorData(void);
 void APP_lcdAlarm(void);
 void APP_lcdDisplayClock(void);
 void APP_lcdDisplayDate(void);
-void APP_FSM_update(void);
 void APP_lcdUpdateTime(void);
 void APP_updateSensorData(void);
 void APP_prepareAndDisplaySensorData(void);
@@ -37,29 +37,6 @@ void APP_prepareAndSendUARTData(void);
 void APP_FSM_init(void)
 {
     currentTempState = TEMP_NORMAL;
-}
-
-/**
- * @brief Evaluates the current temperature and updates the FSM state accordingly.
- *        Sends a corresponding state message over UART.
- * @retval None
- */
-void APP_evalData(void)
-{
-    memset(messageFsm, ZEROVAL, sizeof(messageFsm));
-
-    if (bme280_temperature > THRESHOLD_TEMP)
-    {
-        currentTempState = TEMP_ALARM;
-        strcpy(messageFsm, "Temperature Alarm State.\r\n");
-        uartSendString((uint8_t *)messageFsm);
-    }
-    else
-    {
-        currentTempState = TEMP_NORMAL;
-        strcpy(messageFsm, "Temperature Normal State.\r\n");
-        uartSendString((uint8_t *)messageFsm);
-    }
 }
 
 /**
@@ -175,21 +152,51 @@ void APP_lcdDisplayDate(void)
 }
 
 /**
- * @brief Updates the FSM state and triggers the appropriate LCD display based on the current state.
+ * @brief Updates the FSM state and triggers the appropriate actions and displays based on the current state.
  * @retval None
  */
 void APP_FSM_update(void)
 {
-    APP_evalData();
+    memset(messageFsm, ZEROVAL, sizeof(messageFsm)); // Clear the FSM message buffer
+
     switch (currentTempState)
     {
-    case TEMP_ALARM:
-        APP_lcdAlarm();
-        break;
     case TEMP_NORMAL:
-        APP_lcdDisplayDate();
+        if (bme280_temperature > THRESHOLD_TEMP) // Transition to ALARM state
+        {
+            currentTempState = TEMP_ALARM;
+
+            strcpy(messageFsm, "Temperature Alarm State.\r\n");
+            uartSendString((uint8_t *)messageFsm);
+            APP_lcdAlarm();
+        }
+        else // Remain in NORMAL state
+        {
+            strcpy(messageFsm, "Temperature Normal State.\r\n");
+            uartSendString((uint8_t *)messageFsm);
+            APP_lcdDisplayDate();
+        }
         break;
+
+    case TEMP_ALARM:
+        if (bme280_temperature <= THRESHOLD_TEMP) // Transition to NORMAL state
+        {
+            currentTempState = TEMP_NORMAL;
+
+            strcpy(messageFsm, "Temperature Normal State.\r\n");
+            uartSendString((uint8_t *)messageFsm);
+            APP_lcdDisplayDate();
+        }
+        else // Remain in ALARM state
+        {
+            strcpy(messageFsm, "Temperature Alarm State.\r\n");
+            uartSendString((uint8_t *)messageFsm);
+            APP_lcdAlarm();
+        }
+        break;
+
     default:
+        // Handle unexpected state, though this shouldn't occur.
         break;
     }
 }
