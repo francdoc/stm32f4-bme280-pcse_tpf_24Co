@@ -10,45 +10,43 @@ char message_hum[SIZE];
 char lcdTempStr[SIZE];
 char lcdHumStr[SIZE];
 
-void lcd_display_date(void);
-void lcd_display_clock(void);
-void lcd_alarm();
-void prepare_sensor_data_for_lcd(void);
-void lcd_display_sensor_data(void);
-void prepare_sensor_data_for_uart(char *message_1, char *message_2);
-void uart_display_data(char *message_1, char *message_2);
-void APP_updateLCD(void);
+char messageFsm[50];
+
+void APP_FSM_init(void);
+void APP_evalData(void);
+void APP_uartPrepareData(float bme280_data, char *message, const char *tag, const char *unit);
+void APP_uartPrepareSensorTempHum(char *message_tem, char *message_hum);
+void APP_uartDisplaySensorData(char *message_tem, char *message_hum);
+void APP_lcdPrepareSensorData(void);
+void APP_lcdDisplaySensorData(void);
+void APP_lcdAlarm(void);
+void APP_lcdDisplayClock(void);
+void APP_lcdDisplayDate(void);
+void APP_FSM_update(void);
+void APP_lcdUpdateTime(void);
 void APP_updateSensorData(void);
 void APP_prepareAndDisplaySensorData(void);
-void APP_prepareAndSendUARTData(void);
 
-void tempFSM_init()
+void APP_FSM_init(void)
 {
     currentTempState = TEMP_NORMAL;
 }
 
-void eval_data()
+void APP_evalData(void)
 {
-    char message[50];
+    memset(messageFsm, ZEROVAL, sizeof(messageFsm));
+
     if (bme280_temperature > THRESHOLD_TEMP)
     {
         currentTempState = TEMP_ALARM;
-        strcpy(message, "Temperature Alarm State.\r\n");
-        uartSendString((uint8_t *)message);
-
-#ifdef DEBUG_EVAL_DATA
-        for (int i = 0; i <= 3; i++)
-        {
-            BSP_LED_Toggle(LED3);
-            HAL_Delay(20);
-        }
-#endif
+        strcpy(messageFsm, "Temperature Alarm State.\r\n");
+        uartSendString((uint8_t *)messageFsm);
     }
     else
     {
         currentTempState = TEMP_NORMAL;
-        strcpy(message, "Temperature Normal State.\r\n");
-        uartSendString((uint8_t *)message);
+        strcpy(messageFsm, "Temperature Normal State.\r\n");
+        uartSendString((uint8_t *)messageFsm);
     }
 }
 
@@ -65,7 +63,7 @@ void eval_data()
  * @param unit: Pointer to the unit string (e.g., "C" or "%") to append to the data.
  * @retval None
  */
-void prepareUartData(float bme280_data, char *message, const char *tag, const char *unit)
+void APP_uartPrepareData(float bme280_data, char *message, const char *tag, const char *unit)
 {
     int intPart = (int)bme280_data;
     int fracPart = (int)((bme280_data - intPart) * 100);
@@ -89,19 +87,19 @@ void prepareUartData(float bme280_data, char *message, const char *tag, const ch
     strcat(message, "\r\n");
 }
 
-void prepare_sensor_data_for_uart(char *message_tem, char *message_hum)
+void APP_uartPrepareSensorTempHum(char *message_tem, char *message_hum)
 {
-    prepareUartData((float)bme280_temperature, message_tem, "Temperature: ", "C");
-    prepareUartData((float)bme280_humidity, message_hum, "Humidity: ", "%");
+	APP_uartPrepareData((float)bme280_temperature, message_tem, "Temperature: ", "C");
+	APP_uartPrepareData((float)bme280_humidity, message_hum, "Humidity: ", "%");
 }
 
-void uart_display_data(char *message_1, char *message_2)
+void APP_uartDisplaySensorData(char *message_1, char *message_2)
 {
     uartSendString((uint8_t *)message_1);
     uartSendString((uint8_t *)message_2);
 }
 
-void prepare_sensor_data_for_lcd(void)
+void APP_lcdPrepareSensorData(void)
 {
     itoa((int)bme280_temperature, lcdTempStr, DECIMAL);
     strcat(lcdTempStr, ".");
@@ -112,18 +110,18 @@ void prepare_sensor_data_for_lcd(void)
     itoa((int)((bme280_humidity - (int)bme280_humidity) * 100), lcdHumStr + strlen(lcdHumStr), DECIMAL);
 }
 
-void lcd_display_sensor_data(void)
+void APP_lcdDisplaySensorData(void)
 {
     API_LCD_DisplayTwoMsgs(FSM_HUM_LCD_CURSOR_POS, FSM_LCD_LINE_1, (uint8_t *)"H:", (uint8_t *)lcdHumStr);
     API_LCD_DisplayTwoMsgs(FSM_TEMP_LCD_CURSOR_POS, FSM_LCD_LINE_2, (uint8_t *)"T:", (uint8_t *)lcdTempStr);
 }
 
-void lcd_alarm()
+void APP_lcdAlarm(void)
 {
     API_LCD_DisplayMsg(FSM_ALARM_LCD_CURSOR_POS, FSM_LCD_LINE_2, (uint8_t *)"ALARMA! ");
 }
 
-void lcd_display_clock()
+void APP_lcdDisplayClock(void)
 {
     API_LCD_SetCursorLine(0, FSM_LCD_LINE_1);
     API_LCD_SendBCDData(sTime.Hours);
@@ -133,7 +131,7 @@ void lcd_display_clock()
     API_LCD_SendBCDData(sTime.Seconds);
 }
 
-void lcd_display_date()
+void APP_lcdDisplayDate(void)
 {
     API_LCD_SetCursorLine(0, FSM_LCD_LINE_2);
     API_LCD_SendBCDData(sDate.Date);
@@ -143,37 +141,29 @@ void lcd_display_date()
     API_LCD_SendBCDData(sDate.Year);
 }
 
-void FSM_update()
+void APP_FSM_update(void)
 {
-    eval_data();
+    APP_evalData();
     switch (currentTempState)
     {
     case TEMP_ALARM:
-        lcd_alarm();
+        APP_lcdAlarm();
         break;
     case TEMP_NORMAL:
-        lcd_display_date();
+        APP_lcdDisplayDate();
         break;
     default:
         break;
     }
 }
 
-void APP_init()
-{
-    ClockInit();
-    tempFSM_init();
-    API_BME280_Init();
-    uartInit();
-    API_LCD_Initialize();
-}
-
-void APP_updateLCD(void)
+void APP_lcdUpdateTime(void)
 {
     ClockUpdateTimeDate();
-    lcd_display_clock();
+    APP_lcdDisplayClock();
 }
 
+// Updates bme280_temperature and bme280_humidity global variables
 void APP_updateSensorData(void)
 {
     API_BME280_ReadAndProcess();
@@ -181,8 +171,8 @@ void APP_updateSensorData(void)
 
 void APP_prepareAndDisplaySensorData(void)
 {
-    prepare_sensor_data_for_lcd();
-    lcd_display_sensor_data();
+    APP_lcdPrepareSensorData();
+    APP_lcdDisplaySensorData();
 }
 
 void APP_prepareAndSendUARTData(void)
@@ -190,15 +180,26 @@ void APP_prepareAndSendUARTData(void)
     memset(message_tem, ZEROVAL, sizeof(message_tem));
     memset(message_hum, ZEROVAL, sizeof(message_hum));
 
-    prepare_sensor_data_for_uart(message_tem, message_hum);
-    uart_display_data(message_tem, message_hum);
+    APP_uartPrepareSensorTempHum(message_tem, message_hum);
+    APP_uartDisplaySensorData(message_tem, message_hum);
 }
 
+// global function
+void APP_init()
+{
+    ClockInit();
+    APP_FSM_init();
+    API_BME280_Init();
+    uartInit();
+    API_LCD_Initialize();
+}
+
+// global function
 void APP_update()
 {
     APP_updateSensorData();
-    APP_updateLCD();
+    APP_lcdUpdateTime();
     APP_prepareAndDisplaySensorData();
     APP_prepareAndSendUARTData();
-    FSM_update();
+    APP_FSM_update();
 }
