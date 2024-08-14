@@ -37,17 +37,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_rnglists 00000c10  00000000  00000000  0001cfd0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  00027b0c  00000000  00000000  0001dbe0  2**0
+ 17 .debug_macro  00027b12  00000000  00000000  0001dbe0  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   000155fa  00000000  00000000  000456ec  2**0
+ 18 .debug_line   000155fa  00000000  00000000  000456f2  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e580b  00000000  00000000  0005ace6  2**0
+ 19 .debug_str    000e5825  00000000  00000000  0005acec  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  001404f1  2**0
+ 20 .comment      00000043  00000000  00000000  00140511  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00004000  00000000  00000000  00140534  2**2
+ 21 .debug_frame  00004000  00000000  00000000  00140554  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  00144534  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  00144554  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2124,7 +2124,7 @@ void APP_lcdPrepareSensorData(void)
  8000ea8:	460b      	mov	r3, r1
  8000eaa:	881b      	ldrh	r3, [r3, #0]
  8000eac:	8013      	strh	r3, [r2, #0]
-    itoa((int)((bme280_temperature - (int)bme280_temperature) * 100), lcdTempStr + strlen(lcdTempStr), DECIMAL);
+    itoa((int)((bme280_temperature - (int)bme280_temperature) * FRACTIONAL_MULTIPLIER), lcdTempStr + strlen(lcdTempStr), DECIMAL);
  8000eae:	4b2c      	ldr	r3, [pc, #176]	@ (8000f60 <APP_lcdPrepareSensorData+0xe8>)
  8000eb0:	ed93 7a00 	vldr	s14, [r3]
  8000eb4:	4b2a      	ldr	r3, [pc, #168]	@ (8000f60 <APP_lcdPrepareSensorData+0xe8>)
@@ -2165,7 +2165,7 @@ void APP_lcdPrepareSensorData(void)
  8000f12:	460b      	mov	r3, r1
  8000f14:	881b      	ldrh	r3, [r3, #0]
  8000f16:	8013      	strh	r3, [r2, #0]
-    itoa((int)((bme280_humidity - (int)bme280_humidity) * 100), lcdHumStr + strlen(lcdHumStr), DECIMAL);
+    itoa((int)((bme280_humidity - (int)bme280_humidity) * FRACTIONAL_MULTIPLIER), lcdHumStr + strlen(lcdHumStr), DECIMAL);
  8000f18:	4b15      	ldr	r3, [pc, #84]	@ (8000f70 <APP_lcdPrepareSensorData+0xf8>)
  8000f1a:	ed93 7a00 	vldr	s14, [r3]
  8000f1e:	4b14      	ldr	r3, [pc, #80]	@ (8000f70 <APP_lcdPrepareSensorData+0xf8>)

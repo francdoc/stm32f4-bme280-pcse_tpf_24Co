@@ -103,11 +103,11 @@ void APP_lcdPrepareSensorData(void)
 {
     itoa((int)bme280_temperature, lcdTempStr, DECIMAL);
     strcat(lcdTempStr, ".");
-    itoa((int)((bme280_temperature - (int)bme280_temperature) * 100), lcdTempStr + strlen(lcdTempStr), DECIMAL);
+    itoa((int)((bme280_temperature - (int)bme280_temperature) * FRACTIONAL_MULTIPLIER), lcdTempStr + strlen(lcdTempStr), DECIMAL);
 
     itoa((int)bme280_humidity, lcdHumStr, DECIMAL);
     strcat(lcdHumStr, ".");
-    itoa((int)((bme280_humidity - (int)bme280_humidity) * 100), lcdHumStr + strlen(lcdHumStr), DECIMAL);
+    itoa((int)((bme280_humidity - (int)bme280_humidity) * FRACTIONAL_MULTIPLIER), lcdHumStr + strlen(lcdHumStr), DECIMAL);
 }
 
 void APP_lcdDisplaySensorData(void)

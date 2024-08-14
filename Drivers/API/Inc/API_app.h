@@ -29,6 +29,7 @@
 #define SIZE 50
 #define DECIMAL 10
 #define ZEROVAL 0
+#define FRACTIONAL_MULTIPLIER 100
 
 typedef enum
 {
