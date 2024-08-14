@@ -1,4 +1,4 @@
-#include "API_fsm.h"
+#include "API_app.h"
 
 static tempState_t currentTempState;
 
@@ -112,18 +112,18 @@ void APP_lcdPrepareSensorData(void)
 
 void APP_lcdDisplaySensorData(void)
 {
-    API_LCD_DisplayTwoMsgs(FSM_HUM_LCD_CURSOR_POS, FSM_LCD_LINE_1, (uint8_t *)"H:", (uint8_t *)lcdHumStr);
-    API_LCD_DisplayTwoMsgs(FSM_TEMP_LCD_CURSOR_POS, FSM_LCD_LINE_2, (uint8_t *)"T:", (uint8_t *)lcdTempStr);
+    API_LCD_DisplayTwoMsgs(APP_HUM_LCD_CURSOR_POS, APP_LCD_LINE_1, (uint8_t *)"H:", (uint8_t *)lcdHumStr);
+    API_LCD_DisplayTwoMsgs(APP_TEMP_LCD_CURSOR_POS, APP_LCD_LINE_2, (uint8_t *)"T:", (uint8_t *)lcdTempStr);
 }
 
 void APP_lcdAlarm(void)
 {
-    API_LCD_DisplayMsg(FSM_ALARM_LCD_CURSOR_POS, FSM_LCD_LINE_2, (uint8_t *)"ALARMA! ");
+    API_LCD_DisplayMsg(APP_ALARM_LCD_CURSOR_POS, APP_LCD_LINE_2, (uint8_t *)"ALARMA! ");
 }
 
 void APP_lcdDisplayClock(void)
 {
-    API_LCD_SetCursorLine(0, FSM_LCD_LINE_1);
+    API_LCD_SetCursorLine(APP_CLOCK_CURSOR_POS, APP_LCD_LINE_1);
     API_LCD_SendBCDData(sTime.Hours);
     API_LCD_SendData(':');
     API_LCD_SendBCDData(sTime.Minutes);
@@ -133,7 +133,7 @@ void APP_lcdDisplayClock(void)
 
 void APP_lcdDisplayDate(void)
 {
-    API_LCD_SetCursorLine(0, FSM_LCD_LINE_2);
+    API_LCD_SetCursorLine(APP_CLOCK_CURSOR_POS, APP_LCD_LINE_2);
     API_LCD_SendBCDData(sDate.Date);
     API_LCD_SendData('/');
     API_LCD_SendBCDData(sDate.Month);

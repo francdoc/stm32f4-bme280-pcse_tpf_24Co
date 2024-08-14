@@ -15,15 +15,16 @@
 
 #include "API_clock_date.h"
 
-// FSM logic define parameters
+// APP FSM logic define parameters
 #define THRESHOLD_TEMP 22 // degrees celsius
 
-// FSM display define parameters
-#define FSM_LCD_LINE_1 1
-#define FSM_LCD_LINE_2 2
-#define FSM_ALARM_LCD_CURSOR_POS 0
-#define FSM_TEMP_LCD_CURSOR_POS 9
-#define FSM_HUM_LCD_CURSOR_POS 9
+// APP LCD display define parameters
+#define APP_LCD_LINE_1 1
+#define APP_LCD_LINE_2 2
+#define APP_ALARM_LCD_CURSOR_POS 0
+#define APP_TEMP_LCD_CURSOR_POS 9
+#define APP_HUM_LCD_CURSOR_POS 9
+#define APP_CLOCK_CURSOR_POS 0
 
 #define SIZE 50
 #define DECIMAL 10

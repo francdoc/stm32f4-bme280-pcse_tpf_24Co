@@ -3,7 +3,7 @@ Archive member included to satisfy reference by file (symbol)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-exit.o)
                               /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/crt0.o (exit)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-itoa.o)
-                              ./Drivers/API/Src/API_fsm.o (itoa)
+                              ./Drivers/API/Src/API_app.o (itoa)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-utoa.o)
                               /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-itoa.o) (__utoa)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o)
@@ -15,7 +15,7 @@ Archive member included to satisfy reference by file (symbol)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-memset.o)
                               /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/crt0.o (memset)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-strcat.o)
-                              ./Drivers/API/Src/API_fsm.o (strcat)
+                              ./Drivers/API/Src/API_app.o (strcat)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-closer.o)
                               /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-stdio.o) (_close_r)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-reent.o)
@@ -35,9 +35,9 @@ Archive member included to satisfy reference by file (symbol)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-lock.o)
                               /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-findfp.o) (__retarget_lock_init_recursive)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-strcpy.o)
-                              ./Drivers/API/Src/API_fsm.o (strcpy)
+                              ./Drivers/API/Src/API_app.o (strcpy)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-strlen.o)
-                              ./Drivers/API/Src/API_fsm.o (strlen)
+                              ./Drivers/API/Src/API_app.o (strlen)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-freer.o)
                               /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-reent.o) (_free_r)
 /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.linux64_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard/libc_nano.a(libc_a-mallocr.o)
@@ -328,7 +328,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xd0 ./Core/Src/stm32f4xx_hal_msp.o
  .debug_macro   0x00000000      0x19b ./Core/Src/stm32f4xx_hal_msp.o
  .debug_macro   0x00000000      0x130 ./Core/Src/stm32f4xx_hal_msp.o
- .debug_macro   0x00000000       0x3a ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_macro   0x00000000       0x40 ./Core/Src/stm32f4xx_hal_msp.o
  .debug_macro   0x00000000      0x130 ./Core/Src/stm32f4xx_hal_msp.o
  .group         0x00000000        0xc ./Core/Src/stm32f4xx_it.o
  .group         0x00000000        0xc ./Core/Src/stm32f4xx_it.o
@@ -489,7 +489,7 @@ Discarded input sections
  .debug_macro   0x00000000       0xd0 ./Core/Src/stm32f4xx_it.o
  .debug_macro   0x00000000      0x19b ./Core/Src/stm32f4xx_it.o
  .debug_macro   0x00000000      0x130 ./Core/Src/stm32f4xx_it.o
- .debug_macro   0x00000000       0x3a ./Core/Src/stm32f4xx_it.o
+ .debug_macro   0x00000000       0x40 ./Core/Src/stm32f4xx_it.o
  .debug_macro   0x00000000      0x130 ./Core/Src/stm32f4xx_it.o
  .group         0x00000000        0xc ./Core/Src/syscalls.o
  .group         0x00000000        0xc ./Core/Src/syscalls.o
@@ -791,6 +791,160 @@ Discarded input sections
  .text          0x00000000       0x14 ./Core/Startup/startup_stm32f429zitx.o
  .data          0x00000000        0x0 ./Core/Startup/startup_stm32f429zitx.o
  .bss           0x00000000        0x0 ./Core/Startup/startup_stm32f429zitx.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .group         0x00000000        0xc ./Drivers/API/Src/API_app.o
+ .text          0x00000000        0x0 ./Drivers/API/Src/API_app.o
+ .data          0x00000000        0x0 ./Drivers/API/Src/API_app.o
+ .bss           0x00000000        0x0 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0xab4 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x22 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x5b ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x2a ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x94 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x43 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x34 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x57 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x369 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x10 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x16 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x43 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x34 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x10 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x58 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x8e ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x1c ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x177 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x16 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x146 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x103 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x6a ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x1df ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x16 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x35 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x16 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x29 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x2b3 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x2e ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x28 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x1c ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x22 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0xfb ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000     0x1011 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x11f ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000    0x17fd8 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x6d ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000     0x3703 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0xcba ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x9e9 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x115 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x156 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0xa5 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x182 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x287 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x5f ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x236 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0xd44 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x132 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x41d ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x2e ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x1b5 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x22 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0xd6 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x127 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0xe2 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x89 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x30c ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x44b ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0xeb ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x225 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x2aa ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x293 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0xba ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x134 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x250 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x22 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x20 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0xd0 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x19b ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000      0x130 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00000000       0x40 ./Drivers/API/Src/API_app.o
  .group         0x00000000        0xc ./Drivers/API/Src/API_bme280.o
  .group         0x00000000        0xc ./Drivers/API/Src/API_bme280.o
  .group         0x00000000        0xc ./Drivers/API/Src/API_bme280.o
@@ -904,6 +1058,7 @@ Discarded input sections
  .debug_macro   0x00000000    0x17fd8 ./Drivers/API/Src/API_bme280.o
  .debug_macro   0x00000000       0x6d ./Drivers/API/Src/API_bme280.o
  .debug_macro   0x00000000     0x3703 ./Drivers/API/Src/API_bme280.o
+ .debug_macro   0x00000000       0x56 ./Drivers/API/Src/API_bme280.o
  .debug_macro   0x00000000      0xcba ./Drivers/API/Src/API_bme280.o
  .debug_macro   0x00000000      0x9e9 ./Drivers/API/Src/API_bme280.o
  .debug_macro   0x00000000      0x115 ./Drivers/API/Src/API_bme280.o
@@ -1331,165 +1486,6 @@ Discarded input sections
  .debug_frame   0x00000000       0xac ./Drivers/API/Src/API_delay.o
  .ARM.attributes
                 0x00000000       0x34 ./Drivers/API/Src/API_delay.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .group         0x00000000        0xc ./Drivers/API/Src/API_fsm.o
- .text          0x00000000        0x0 ./Drivers/API/Src/API_fsm.o
- .data          0x00000000        0x0 ./Drivers/API/Src/API_fsm.o
- .bss           0x00000000        0x0 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0xab4 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x22 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x5b ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x2a ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x94 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x43 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x34 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x16 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x57 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x9e ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x369 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x10b ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x10 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x16 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x43 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x34 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x10 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x58 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x8e ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x1c ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x177 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x16 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x16 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x146 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x103 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x6a ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x1df ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x16 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x35 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x16 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x29 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x2b3 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x2e ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x28 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x1c ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x22 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0xfb ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000     0x1011 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x11f ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000    0x17fd8 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x6d ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000     0x3703 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x56 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0xcba ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x9e9 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x115 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x156 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0xa5 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x182 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x287 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x5f ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x236 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0xd44 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x132 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x41d ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x2e ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x1b5 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x22 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0xd6 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x127 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0xe2 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x89 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x30c ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x44b ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0xeb ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x225 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x2aa ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x293 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0xba ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x134 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x250 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x22 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x20 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0xd0 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x19b ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000      0x130 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00000000       0x3a ./Drivers/API/Src/API_fsm.o
  .group         0x00000000        0xc ./Drivers/API/Src/API_lcd.o
  .group         0x00000000        0xc ./Drivers/API/Src/API_lcd.o
  .group         0x00000000        0xc ./Drivers/API/Src/API_lcd.o
@@ -6037,11 +6033,11 @@ LOAD ./Core/Src/syscalls.o
 LOAD ./Core/Src/sysmem.o
 LOAD ./Core/Src/system_stm32f4xx.o
 LOAD ./Core/Startup/startup_stm32f429zitx.o
+LOAD ./Drivers/API/Src/API_app.o
 LOAD ./Drivers/API/Src/API_bme280.o
 LOAD ./Drivers/API/Src/API_bme280_port.o
 LOAD ./Drivers/API/Src/API_clock_date.o
 LOAD ./Drivers/API/Src/API_delay.o
-LOAD ./Drivers/API/Src/API_fsm.o
 LOAD ./Drivers/API/Src/API_lcd.o
 LOAD ./Drivers/API/Src/API_lcd_port.o
 LOAD ./Drivers/API/Src/API_uart.o
@@ -6274,103 +6270,103 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
                 0x08000c74                DMA2_Stream6_IRQHandler
                 0x08000c74                SAI1_IRQHandler
                 0x08000c74                DMA1_Stream3_IRQHandler
- .text.combineBytes
-                0x08000c76       0x2c ./Drivers/API/Src/API_bme280.o
- .text.extractBits
-                0x08000ca2       0x36 ./Drivers/API/Src/API_bme280.o
- .text.errorLedSignal
-                0x08000cd8       0x2e ./Drivers/API/Src/API_bme280.o
- *fill*         0x08000d06        0x2 
- .text.calibrationParams
-                0x08000d08       0xe8 ./Drivers/API/Src/API_bme280.o
- .text.BME280_compensate_T_int32
-                0x08000df0       0x90 ./Drivers/API/Src/API_bme280.o
- .text.BME280_compensate_H_int32
-                0x08000e80       0xe8 ./Drivers/API/Src/API_bme280.o
- .text.API_BME280_Init
-                0x08000f68       0x6a ./Drivers/API/Src/API_bme280.o
-                0x08000f68                API_BME280_Init
- *fill*         0x08000fd2        0x2 
- .text.API_BME280_ReadAndProcess
-                0x08000fd4       0xb4 ./Drivers/API/Src/API_bme280.o
-                0x08000fd4                API_BME280_ReadAndProcess
- .text.API_BME280_ErrorHandler
-                0x08001088        0xa ./Drivers/API/Src/API_bme280.o
-                0x08001088                API_BME280_ErrorHandler
- *fill*         0x08001092        0x2 
- .text.BME280_HAL_SPI_Write
-                0x08001094       0x5c ./Drivers/API/Src/API_bme280_port.o
-                0x08001094                BME280_HAL_SPI_Write
- .text.BME280_HAL_SPI_Read
-                0x080010f0       0x5c ./Drivers/API/Src/API_bme280_port.o
-                0x080010f0                BME280_HAL_SPI_Read
- .text.BME280_HAL_Delay
-                0x0800114c       0x16 ./Drivers/API/Src/API_bme280_port.o
-                0x0800114c                BME280_HAL_Delay
- .text.BME280_HAL_Blink
-                0x08001162       0x1a ./Drivers/API/Src/API_bme280_port.o
-                0x08001162                BME280_HAL_Blink
- .text.Clock_Error_Handler
-                0x0800117c        0x8 ./Drivers/API/Src/API_clock_date.o
-                0x0800117c                Clock_Error_Handler
- .text.ClockInit
-                0x08001184       0x74 ./Drivers/API/Src/API_clock_date.o
-                0x08001184                ClockInit
- .text.ClockUpdateTimeDate
-                0x080011f8       0x28 ./Drivers/API/Src/API_clock_date.o
-                0x080011f8                ClockUpdateTimeDate
+ *fill*         0x08000c76        0x2 
  .text.APP_FSM_init
-                0x08001220       0x18 ./Drivers/API/Src/API_fsm.o
-                0x08001220                APP_FSM_init
+                0x08000c78       0x18 ./Drivers/API/Src/API_app.o
+                0x08000c78                APP_FSM_init
  .text.APP_evalData
-                0x08001238       0x84 ./Drivers/API/Src/API_fsm.o
-                0x08001238                APP_evalData
+                0x08000c90       0x84 ./Drivers/API/Src/API_app.o
+                0x08000c90                APP_evalData
  .text.APP_uartPrepareData
-                0x080012bc       0xf0 ./Drivers/API/Src/API_fsm.o
-                0x080012bc                APP_uartPrepareData
+                0x08000d14       0xf0 ./Drivers/API/Src/API_app.o
+                0x08000d14                APP_uartPrepareData
  .text.APP_uartPrepareSensorTempHum
-                0x080013ac       0x54 ./Drivers/API/Src/API_fsm.o
-                0x080013ac                APP_uartPrepareSensorTempHum
+                0x08000e04       0x54 ./Drivers/API/Src/API_app.o
+                0x08000e04                APP_uartPrepareSensorTempHum
  .text.APP_uartDisplaySensorData
-                0x08001400       0x1e ./Drivers/API/Src/API_fsm.o
-                0x08001400                APP_uartDisplaySensorData
- *fill*         0x0800141e        0x2 
+                0x08000e58       0x1e ./Drivers/API/Src/API_app.o
+                0x08000e58                APP_uartDisplaySensorData
+ *fill*         0x08000e76        0x2 
  .text.APP_lcdPrepareSensorData
-                0x08001420      0x100 ./Drivers/API/Src/API_fsm.o
-                0x08001420                APP_lcdPrepareSensorData
+                0x08000e78      0x100 ./Drivers/API/Src/API_app.o
+                0x08000e78                APP_lcdPrepareSensorData
  .text.APP_lcdDisplaySensorData
-                0x08001520       0x30 ./Drivers/API/Src/API_fsm.o
-                0x08001520                APP_lcdDisplaySensorData
+                0x08000f78       0x30 ./Drivers/API/Src/API_app.o
+                0x08000f78                APP_lcdDisplaySensorData
  .text.APP_lcdAlarm
-                0x08001550       0x18 ./Drivers/API/Src/API_fsm.o
-                0x08001550                APP_lcdAlarm
+                0x08000fa8       0x18 ./Drivers/API/Src/API_app.o
+                0x08000fa8                APP_lcdAlarm
  .text.APP_lcdDisplayClock
-                0x08001568       0x40 ./Drivers/API/Src/API_fsm.o
-                0x08001568                APP_lcdDisplayClock
+                0x08000fc0       0x40 ./Drivers/API/Src/API_app.o
+                0x08000fc0                APP_lcdDisplayClock
  .text.APP_lcdDisplayDate
-                0x080015a8       0x40 ./Drivers/API/Src/API_fsm.o
-                0x080015a8                APP_lcdDisplayDate
+                0x08001000       0x40 ./Drivers/API/Src/API_app.o
+                0x08001000                APP_lcdDisplayDate
  .text.APP_FSM_update
-                0x080015e8       0x2c ./Drivers/API/Src/API_fsm.o
-                0x080015e8                APP_FSM_update
+                0x08001040       0x2c ./Drivers/API/Src/API_app.o
+                0x08001040                APP_FSM_update
  .text.APP_lcdUpdateTime
-                0x08001614       0x10 ./Drivers/API/Src/API_fsm.o
-                0x08001614                APP_lcdUpdateTime
+                0x0800106c       0x10 ./Drivers/API/Src/API_app.o
+                0x0800106c                APP_lcdUpdateTime
  .text.APP_updateSensorData
-                0x08001624        0xc ./Drivers/API/Src/API_fsm.o
-                0x08001624                APP_updateSensorData
+                0x0800107c        0xc ./Drivers/API/Src/API_app.o
+                0x0800107c                APP_updateSensorData
  .text.APP_prepareAndDisplaySensorData
-                0x08001630       0x10 ./Drivers/API/Src/API_fsm.o
-                0x08001630                APP_prepareAndDisplaySensorData
+                0x08001088       0x10 ./Drivers/API/Src/API_app.o
+                0x08001088                APP_prepareAndDisplaySensorData
  .text.APP_prepareAndSendUARTData
-                0x08001640       0x34 ./Drivers/API/Src/API_fsm.o
-                0x08001640                APP_prepareAndSendUARTData
+                0x08001098       0x34 ./Drivers/API/Src/API_app.o
+                0x08001098                APP_prepareAndSendUARTData
  .text.APP_init
-                0x08001674       0x1c ./Drivers/API/Src/API_fsm.o
-                0x08001674                APP_init
+                0x080010cc       0x1c ./Drivers/API/Src/API_app.o
+                0x080010cc                APP_init
  .text.APP_update
-                0x08001690       0x1c ./Drivers/API/Src/API_fsm.o
-                0x08001690                APP_update
+                0x080010e8       0x1c ./Drivers/API/Src/API_app.o
+                0x080010e8                APP_update
+ .text.combineBytes
+                0x08001104       0x2c ./Drivers/API/Src/API_bme280.o
+ .text.extractBits
+                0x08001130       0x36 ./Drivers/API/Src/API_bme280.o
+ .text.errorLedSignal
+                0x08001166       0x2e ./Drivers/API/Src/API_bme280.o
+ .text.calibrationParams
+                0x08001194       0xe8 ./Drivers/API/Src/API_bme280.o
+ .text.BME280_compensate_T_int32
+                0x0800127c       0x90 ./Drivers/API/Src/API_bme280.o
+ .text.BME280_compensate_H_int32
+                0x0800130c       0xe8 ./Drivers/API/Src/API_bme280.o
+ .text.API_BME280_Init
+                0x080013f4       0x6a ./Drivers/API/Src/API_bme280.o
+                0x080013f4                API_BME280_Init
+ *fill*         0x0800145e        0x2 
+ .text.API_BME280_ReadAndProcess
+                0x08001460       0xb4 ./Drivers/API/Src/API_bme280.o
+                0x08001460                API_BME280_ReadAndProcess
+ .text.API_BME280_ErrorHandler
+                0x08001514        0xa ./Drivers/API/Src/API_bme280.o
+                0x08001514                API_BME280_ErrorHandler
+ *fill*         0x0800151e        0x2 
+ .text.BME280_HAL_SPI_Write
+                0x08001520       0x5c ./Drivers/API/Src/API_bme280_port.o
+                0x08001520                BME280_HAL_SPI_Write
+ .text.BME280_HAL_SPI_Read
+                0x0800157c       0x5c ./Drivers/API/Src/API_bme280_port.o
+                0x0800157c                BME280_HAL_SPI_Read
+ .text.BME280_HAL_Delay
+                0x080015d8       0x16 ./Drivers/API/Src/API_bme280_port.o
+                0x080015d8                BME280_HAL_Delay
+ .text.BME280_HAL_Blink
+                0x080015ee       0x1a ./Drivers/API/Src/API_bme280_port.o
+                0x080015ee                BME280_HAL_Blink
+ .text.Clock_Error_Handler
+                0x08001608        0x8 ./Drivers/API/Src/API_clock_date.o
+                0x08001608                Clock_Error_Handler
+ .text.ClockInit
+                0x08001610       0x74 ./Drivers/API/Src/API_clock_date.o
+                0x08001610                ClockInit
+ .text.ClockUpdateTimeDate
+                0x08001684       0x28 ./Drivers/API/Src/API_clock_date.o
+                0x08001684                ClockUpdateTimeDate
  .text.sendNibbleToLCD
                 0x080016ac       0x6a ./Drivers/API/Src/API_lcd.o
  .text.sendNibbleAndPause
@@ -6629,7 +6625,7 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
 .rodata         0x08005474      0x118
                 0x08005474                        . = ALIGN (0x4)
  *(.rodata)
- .rodata        0x08005474       0x79 ./Drivers/API/Src/API_fsm.o
+ .rodata        0x08005474       0x79 ./Drivers/API/Src/API_app.o
  *fill*         0x080054ed        0x3 
  .rodata        0x080054f0       0x4d ./Drivers/API/Src/API_uart.o
  *(.rodata*)
@@ -6743,57 +6739,57 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
                 0x20000088                hspi1
  .bss.hrtc      0x200000e0       0x20 ./Core/Src/main.o
                 0x200000e0                hrtc
- .bss.bme280_temperature
-                0x20000100        0x4 ./Drivers/API/Src/API_bme280.o
-                0x20000100                bme280_temperature
- .bss.bme280_humidity
-                0x20000104        0x4 ./Drivers/API/Src/API_bme280.o
-                0x20000104                bme280_humidity
- .bss.dig_T1    0x20000108        0x2 ./Drivers/API/Src/API_bme280.o
- .bss.dig_T2    0x2000010a        0x2 ./Drivers/API/Src/API_bme280.o
- .bss.dig_T3    0x2000010c        0x2 ./Drivers/API/Src/API_bme280.o
- .bss.dig_H1    0x2000010e        0x1 ./Drivers/API/Src/API_bme280.o
- *fill*         0x2000010f        0x1 
- .bss.dig_H2    0x20000110        0x2 ./Drivers/API/Src/API_bme280.o
- .bss.dig_H3    0x20000112        0x1 ./Drivers/API/Src/API_bme280.o
- *fill*         0x20000113        0x1 
- .bss.dig_H4    0x20000114        0x2 ./Drivers/API/Src/API_bme280.o
- .bss.dig_H5    0x20000116        0x2 ./Drivers/API/Src/API_bme280.o
- .bss.dig_H6    0x20000118        0x1 ./Drivers/API/Src/API_bme280.o
- *fill*         0x20000119        0x3 
- .bss.temp_adc  0x2000011c        0x4 ./Drivers/API/Src/API_bme280.o
- .bss.hum_adc   0x20000120        0x4 ./Drivers/API/Src/API_bme280.o
- .bss.t_fine    0x20000124        0x4 ./Drivers/API/Src/API_bme280.o
- .bss.sTime     0x20000128       0x14 ./Drivers/API/Src/API_clock_date.o
-                0x20000128                sTime
- .bss.sDate     0x2000013c        0x4 ./Drivers/API/Src/API_clock_date.o
-                0x2000013c                sDate
  .bss.currentTempState
-                0x20000140        0x1 ./Drivers/API/Src/API_fsm.o
- *fill*         0x20000141        0x3 
- .bss.strbuff   0x20000144       0x32 ./Drivers/API/Src/API_fsm.o
-                0x20000144                strbuff
- *fill*         0x20000176        0x2 
+                0x20000100        0x1 ./Drivers/API/Src/API_app.o
+ *fill*         0x20000101        0x3 
+ .bss.strbuff   0x20000104       0x32 ./Drivers/API/Src/API_app.o
+                0x20000104                strbuff
+ *fill*         0x20000136        0x2 
  .bss.message_tem
-                0x20000178       0x32 ./Drivers/API/Src/API_fsm.o
-                0x20000178                message_tem
- *fill*         0x200001aa        0x2 
+                0x20000138       0x32 ./Drivers/API/Src/API_app.o
+                0x20000138                message_tem
+ *fill*         0x2000016a        0x2 
  .bss.message_hum
-                0x200001ac       0x32 ./Drivers/API/Src/API_fsm.o
-                0x200001ac                message_hum
- *fill*         0x200001de        0x2 
+                0x2000016c       0x32 ./Drivers/API/Src/API_app.o
+                0x2000016c                message_hum
+ *fill*         0x2000019e        0x2 
  .bss.lcdTempStr
-                0x200001e0       0x32 ./Drivers/API/Src/API_fsm.o
-                0x200001e0                lcdTempStr
- *fill*         0x20000212        0x2 
+                0x200001a0       0x32 ./Drivers/API/Src/API_app.o
+                0x200001a0                lcdTempStr
+ *fill*         0x200001d2        0x2 
  .bss.lcdHumStr
-                0x20000214       0x32 ./Drivers/API/Src/API_fsm.o
-                0x20000214                lcdHumStr
- *fill*         0x20000246        0x2 
+                0x200001d4       0x32 ./Drivers/API/Src/API_app.o
+                0x200001d4                lcdHumStr
+ *fill*         0x20000206        0x2 
  .bss.messageFsm
-                0x20000248       0x32 ./Drivers/API/Src/API_fsm.o
-                0x20000248                messageFsm
- *fill*         0x2000027a        0x2 
+                0x20000208       0x32 ./Drivers/API/Src/API_app.o
+                0x20000208                messageFsm
+ *fill*         0x2000023a        0x2 
+ .bss.bme280_temperature
+                0x2000023c        0x4 ./Drivers/API/Src/API_bme280.o
+                0x2000023c                bme280_temperature
+ .bss.bme280_humidity
+                0x20000240        0x4 ./Drivers/API/Src/API_bme280.o
+                0x20000240                bme280_humidity
+ .bss.dig_T1    0x20000244        0x2 ./Drivers/API/Src/API_bme280.o
+ .bss.dig_T2    0x20000246        0x2 ./Drivers/API/Src/API_bme280.o
+ .bss.dig_T3    0x20000248        0x2 ./Drivers/API/Src/API_bme280.o
+ .bss.dig_H1    0x2000024a        0x1 ./Drivers/API/Src/API_bme280.o
+ *fill*         0x2000024b        0x1 
+ .bss.dig_H2    0x2000024c        0x2 ./Drivers/API/Src/API_bme280.o
+ .bss.dig_H3    0x2000024e        0x1 ./Drivers/API/Src/API_bme280.o
+ *fill*         0x2000024f        0x1 
+ .bss.dig_H4    0x20000250        0x2 ./Drivers/API/Src/API_bme280.o
+ .bss.dig_H5    0x20000252        0x2 ./Drivers/API/Src/API_bme280.o
+ .bss.dig_H6    0x20000254        0x1 ./Drivers/API/Src/API_bme280.o
+ *fill*         0x20000255        0x3 
+ .bss.temp_adc  0x20000258        0x4 ./Drivers/API/Src/API_bme280.o
+ .bss.hum_adc   0x2000025c        0x4 ./Drivers/API/Src/API_bme280.o
+ .bss.t_fine    0x20000260        0x4 ./Drivers/API/Src/API_bme280.o
+ .bss.sTime     0x20000264       0x14 ./Drivers/API/Src/API_clock_date.o
+                0x20000264                sTime
+ .bss.sDate     0x20000278        0x4 ./Drivers/API/Src/API_clock_date.o
+                0x20000278                sDate
  .bss.UartHandle
                 0x2000027c       0x48 ./Drivers/API/Src/API_uart.o
                 0x2000027c                UartHandle
@@ -6838,13 +6834,13 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .ARM.attributes
                 0x00000126       0x21 ./Core/Startup/startup_stm32f429zitx.o
  .ARM.attributes
-                0x00000147       0x34 ./Drivers/API/Src/API_bme280.o
+                0x00000147       0x34 ./Drivers/API/Src/API_app.o
  .ARM.attributes
-                0x0000017b       0x34 ./Drivers/API/Src/API_bme280_port.o
+                0x0000017b       0x34 ./Drivers/API/Src/API_bme280.o
  .ARM.attributes
-                0x000001af       0x34 ./Drivers/API/Src/API_clock_date.o
+                0x000001af       0x34 ./Drivers/API/Src/API_bme280_port.o
  .ARM.attributes
-                0x000001e3       0x34 ./Drivers/API/Src/API_fsm.o
+                0x000001e3       0x34 ./Drivers/API/Src/API_clock_date.o
  .ARM.attributes
                 0x00000217       0x34 ./Drivers/API/Src/API_lcd.o
  .ARM.attributes
@@ -6907,10 +6903,10 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .debug_info    0x00003684      0x12e ./Core/Src/stm32f4xx_it.o
  .debug_info    0x000037b2      0x52e ./Core/Src/system_stm32f4xx.o
  .debug_info    0x00003ce0       0x30 ./Core/Startup/startup_stm32f429zitx.o
- .debug_info    0x00003d10      0x513 ./Drivers/API/Src/API_bme280.o
- .debug_info    0x00004223      0x848 ./Drivers/API/Src/API_bme280_port.o
- .debug_info    0x00004a6b      0x5a6 ./Drivers/API/Src/API_clock_date.o
- .debug_info    0x00005011      0x579 ./Drivers/API/Src/API_fsm.o
+ .debug_info    0x00003d10      0x579 ./Drivers/API/Src/API_app.o
+ .debug_info    0x00004289      0x513 ./Drivers/API/Src/API_bme280.o
+ .debug_info    0x0000479c      0x848 ./Drivers/API/Src/API_bme280_port.o
+ .debug_info    0x00004fe4      0x5a6 ./Drivers/API/Src/API_clock_date.o
  .debug_info    0x0000558a      0x3fc ./Drivers/API/Src/API_lcd.o
  .debug_info    0x00005986      0x700 ./Drivers/API/Src/API_lcd_port.o
  .debug_info    0x00006086      0x704 ./Drivers/API/Src/API_uart.o
@@ -6932,10 +6928,10 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .debug_abbrev  0x00000580       0x73 ./Core/Src/stm32f4xx_it.o
  .debug_abbrev  0x000005f3      0x11a ./Core/Src/system_stm32f4xx.o
  .debug_abbrev  0x0000070d       0x24 ./Core/Startup/startup_stm32f429zitx.o
- .debug_abbrev  0x00000731      0x1bb ./Drivers/API/Src/API_bme280.o
- .debug_abbrev  0x000008ec      0x1e4 ./Drivers/API/Src/API_bme280_port.o
- .debug_abbrev  0x00000ad0      0x14a ./Drivers/API/Src/API_clock_date.o
- .debug_abbrev  0x00000c1a      0x1af ./Drivers/API/Src/API_fsm.o
+ .debug_abbrev  0x00000731      0x1af ./Drivers/API/Src/API_app.o
+ .debug_abbrev  0x000008e0      0x1bb ./Drivers/API/Src/API_bme280.o
+ .debug_abbrev  0x00000a9b      0x1e4 ./Drivers/API/Src/API_bme280_port.o
+ .debug_abbrev  0x00000c7f      0x14a ./Drivers/API/Src/API_clock_date.o
  .debug_abbrev  0x00000dc9      0x15a ./Drivers/API/Src/API_lcd.o
  .debug_abbrev  0x00000f23      0x1a9 ./Drivers/API/Src/API_lcd_port.o
  .debug_abbrev  0x000010cc      0x1a8 ./Drivers/API/Src/API_uart.o
@@ -6963,13 +6959,13 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .debug_aranges
                 0x00000158       0x28 ./Core/Startup/startup_stm32f429zitx.o
  .debug_aranges
-                0x00000180       0x68 ./Drivers/API/Src/API_bme280.o
+                0x00000180       0xa0 ./Drivers/API/Src/API_app.o
  .debug_aranges
-                0x000001e8       0x38 ./Drivers/API/Src/API_bme280_port.o
+                0x00000220       0x68 ./Drivers/API/Src/API_bme280.o
  .debug_aranges
-                0x00000220       0x30 ./Drivers/API/Src/API_clock_date.o
+                0x00000288       0x38 ./Drivers/API/Src/API_bme280_port.o
  .debug_aranges
-                0x00000250       0xa0 ./Drivers/API/Src/API_fsm.o
+                0x000002c0       0x30 ./Drivers/API/Src/API_clock_date.o
  .debug_aranges
                 0x000002f0       0x90 ./Drivers/API/Src/API_lcd.o
  .debug_aranges
@@ -7012,13 +7008,13 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .debug_rnglists
                 0x000000f7       0x19 ./Core/Startup/startup_stm32f429zitx.o
  .debug_rnglists
-                0x00000110       0x4d ./Drivers/API/Src/API_bme280.o
+                0x00000110       0x76 ./Drivers/API/Src/API_app.o
  .debug_rnglists
-                0x0000015d       0x25 ./Drivers/API/Src/API_bme280_port.o
+                0x00000186       0x4d ./Drivers/API/Src/API_bme280.o
  .debug_rnglists
-                0x00000182       0x1f ./Drivers/API/Src/API_clock_date.o
+                0x000001d3       0x25 ./Drivers/API/Src/API_bme280_port.o
  .debug_rnglists
-                0x000001a1       0x76 ./Drivers/API/Src/API_fsm.o
+                0x000001f8       0x1f ./Drivers/API/Src/API_clock_date.o
  .debug_rnglists
                 0x00000217       0x67 ./Drivers/API/Src/API_lcd.o
  .debug_rnglists
@@ -7048,7 +7044,7 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .debug_rnglists
                 0x00000a54      0x1bc ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
 
-.debug_macro    0x00000000    0x27931
+.debug_macro    0x00000000    0x27b0c
  .debug_macro   0x00000000      0x3fe ./Core/Src/main.o
  .debug_macro   0x000003fe      0xab4 ./Core/Src/main.o
  .debug_macro   0x00000eb2      0x2b3 ./Core/Src/main.o
@@ -7127,33 +7123,37 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .debug_macro   0x0002383c       0xd0 ./Core/Src/main.o
  .debug_macro   0x0002390c      0x19b ./Core/Src/main.o
  .debug_macro   0x00023aa7      0x130 ./Core/Src/main.o
- .debug_macro   0x00023bd7       0x3a ./Core/Src/main.o
- .debug_macro   0x00023c11      0x130 ./Core/Src/main.o
- .debug_macro   0x00023d41      0x3f8 ./Core/Src/stm32f4xx_hal_msp.o
- .debug_macro   0x00024139      0x402 ./Core/Src/stm32f4xx_it.o
- .debug_macro   0x0002453b      0x224 ./Core/Src/system_stm32f4xx.o
- .debug_macro   0x0002475f      0x323 ./Drivers/API/Src/API_bme280.o
- .debug_macro   0x00024a82       0x56 ./Drivers/API/Src/API_bme280.o
- .debug_macro   0x00024ad8      0x329 ./Drivers/API/Src/API_bme280_port.o
- .debug_macro   0x00024e01      0x23d ./Drivers/API/Src/API_clock_date.o
- .debug_macro   0x0002503e      0x3ef ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x0002542d       0x16 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x00025443       0x64 ./Drivers/API/Src/API_fsm.o
- .debug_macro   0x000254a7      0x325 ./Drivers/API/Src/API_lcd.o
- .debug_macro   0x000257cc      0x32f ./Drivers/API/Src/API_lcd_port.o
- .debug_macro   0x00025afb      0x33e ./Drivers/API/Src/API_uart.o
- .debug_macro   0x00025e39      0x25d ./Drivers/BSP/STM32F4xx_Nucleo_144/stm32f4xx_nucleo_144.o
- .debug_macro   0x00026096      0x24a ./Drivers/BSP/STM32F4xx_Nucleo_144/stm32f4xx_nucleo_144.o
- .debug_macro   0x000262e0      0x284 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
- .debug_macro   0x00026564      0x224 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
- .debug_macro   0x00026788      0x22a ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
- .debug_macro   0x000269b2      0x272 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
- .debug_macro   0x00026c24      0x224 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.o
- .debug_macro   0x00026e48      0x248 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
- .debug_macro   0x00027090      0x224 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
- .debug_macro   0x000272b4      0x225 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc.o
- .debug_macro   0x000274d9      0x233 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
- .debug_macro   0x0002770c      0x225 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+ .debug_macro   0x00023bd7       0x40 ./Core/Src/main.o
+ .debug_macro   0x00023c17      0x130 ./Core/Src/main.o
+ .debug_macro   0x00023d47      0x3f8 ./Core/Src/stm32f4xx_hal_msp.o
+ .debug_macro   0x0002413f      0x402 ./Core/Src/stm32f4xx_it.o
+ .debug_macro   0x00024541      0x224 ./Core/Src/system_stm32f4xx.o
+ .debug_macro   0x00024765      0x3ef ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00024b54       0x16 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00024b6a       0x9e ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00024c08      0x10b ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00024d13       0x16 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00024d29       0x56 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00024d7f       0x16 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00024d95       0x64 ./Drivers/API/Src/API_app.o
+ .debug_macro   0x00024df9      0x323 ./Drivers/API/Src/API_bme280.o
+ .debug_macro   0x0002511c      0x329 ./Drivers/API/Src/API_bme280_port.o
+ .debug_macro   0x00025445      0x23d ./Drivers/API/Src/API_clock_date.o
+ .debug_macro   0x00025682      0x325 ./Drivers/API/Src/API_lcd.o
+ .debug_macro   0x000259a7      0x32f ./Drivers/API/Src/API_lcd_port.o
+ .debug_macro   0x00025cd6      0x33e ./Drivers/API/Src/API_uart.o
+ .debug_macro   0x00026014      0x25d ./Drivers/BSP/STM32F4xx_Nucleo_144/stm32f4xx_nucleo_144.o
+ .debug_macro   0x00026271      0x24a ./Drivers/BSP/STM32F4xx_Nucleo_144/stm32f4xx_nucleo_144.o
+ .debug_macro   0x000264bb      0x284 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_macro   0x0002673f      0x224 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_macro   0x00026963      0x22a ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_macro   0x00026b8d      0x272 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
+ .debug_macro   0x00026dff      0x224 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.o
+ .debug_macro   0x00027023      0x248 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_macro   0x0002726b      0x224 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
+ .debug_macro   0x0002748f      0x225 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc.o
+ .debug_macro   0x000276b4      0x233 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
+ .debug_macro   0x000278e7      0x225 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
 
 .debug_line     0x00000000    0x155fa
  .debug_line    0x00000000      0xbbe ./Core/Src/main.o
@@ -7161,10 +7161,10 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .debug_line    0x000017f7      0xad3 ./Core/Src/stm32f4xx_it.o
  .debug_line    0x000022ca      0x7be ./Core/Src/system_stm32f4xx.o
  .debug_line    0x00002a88       0x7a ./Core/Startup/startup_stm32f429zitx.o
- .debug_line    0x00002b02      0xbf7 ./Drivers/API/Src/API_bme280.o
- .debug_line    0x000036f9      0x99e ./Drivers/API/Src/API_bme280_port.o
- .debug_line    0x00004097      0x83f ./Drivers/API/Src/API_clock_date.o
- .debug_line    0x000048d6      0xbfc ./Drivers/API/Src/API_fsm.o
+ .debug_line    0x00002b02      0xbfc ./Drivers/API/Src/API_app.o
+ .debug_line    0x000036fe      0xbf7 ./Drivers/API/Src/API_bme280.o
+ .debug_line    0x000042f5      0x99e ./Drivers/API/Src/API_bme280_port.o
+ .debug_line    0x00004c93      0x83f ./Drivers/API/Src/API_clock_date.o
  .debug_line    0x000054d2      0xb6a ./Drivers/API/Src/API_lcd.o
  .debug_line    0x0000603c      0x970 ./Drivers/API/Src/API_lcd_port.o
  .debug_line    0x000069ac      0x9d7 ./Drivers/API/Src/API_uart.o
@@ -7180,52 +7180,52 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .debug_line    0x00010fdf     0x1d22 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
  .debug_line    0x00012d01     0x28f9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
 
-.debug_str      0x00000000    0xe57f4
- .debug_str     0x00000000    0xe1118 ./Core/Src/main.o
-                              0xe14a8 (size before relaxing)
- .debug_str     0x000e1118      0xc17 ./Core/Src/stm32f4xx_hal_msp.o
-                              0xe1e29 (size before relaxing)
- .debug_str     0x000e1d2f       0xc9 ./Core/Src/stm32f4xx_it.o
-                              0xe0801 (size before relaxing)
- .debug_str     0x000e1df8       0xdb ./Core/Src/system_stm32f4xx.o
+.debug_str      0x00000000    0xe580b
+ .debug_str     0x00000000    0xe112f ./Core/Src/main.o
+                              0xe14bf (size before relaxing)
+ .debug_str     0x000e112f      0xc17 ./Core/Src/stm32f4xx_hal_msp.o
+                              0xe1e40 (size before relaxing)
+ .debug_str     0x000e1d46       0xc9 ./Core/Src/stm32f4xx_it.o
+                              0xe0818 (size before relaxing)
+ .debug_str     0x000e1e0f       0xdb ./Core/Src/system_stm32f4xx.o
                               0xdaa10 (size before relaxing)
- .debug_str     0x000e1ed3       0x44 ./Core/Startup/startup_stm32f429zitx.o
+ .debug_str     0x000e1eea       0x44 ./Core/Startup/startup_stm32f429zitx.o
                                  0x77 (size before relaxing)
- .debug_str     0x000e1f17      0x251 ./Drivers/API/Src/API_bme280.o
+ .debug_str     0x000e1f2e      0x3a7 ./Drivers/API/Src/API_app.o
+                              0xe0690 (size before relaxing)
+ .debug_str     0x000e22d5      0x204 ./Drivers/API/Src/API_bme280.o
                               0xdfdc4 (size before relaxing)
- .debug_str     0x000e2168       0x57 ./Drivers/API/Src/API_bme280_port.o
+ .debug_str     0x000e24d9       0x57 ./Drivers/API/Src/API_bme280_port.o
                               0xe00d7 (size before relaxing)
- .debug_str     0x000e21bf      0x12a ./Drivers/API/Src/API_clock_date.o
+ .debug_str     0x000e2530       0x93 ./Drivers/API/Src/API_clock_date.o
                               0xdbb69 (size before relaxing)
- .debug_str     0x000e22e9      0x2c3 ./Drivers/API/Src/API_fsm.o
-                              0xe0679 (size before relaxing)
- .debug_str     0x000e25ac      0x12a ./Drivers/API/Src/API_lcd.o
+ .debug_str     0x000e25c3      0x12a ./Drivers/API/Src/API_lcd.o
                               0xdf419 (size before relaxing)
- .debug_str     0x000e26d6       0x40 ./Drivers/API/Src/API_lcd_port.o
+ .debug_str     0x000e26ed       0x40 ./Drivers/API/Src/API_lcd_port.o
                               0xdf7f0 (size before relaxing)
- .debug_str     0x000e2716       0x8b ./Drivers/API/Src/API_uart.o
+ .debug_str     0x000e272d       0x8b ./Drivers/API/Src/API_uart.o
                               0xde75d (size before relaxing)
- .debug_str     0x000e27a1      0x9c2 ./Drivers/BSP/STM32F4xx_Nucleo_144/stm32f4xx_nucleo_144.o
+ .debug_str     0x000e27b8      0x9c2 ./Drivers/BSP/STM32F4xx_Nucleo_144/stm32f4xx_nucleo_144.o
                               0xdc8a3 (size before relaxing)
- .debug_str     0x000e3163      0x63e ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_str     0x000e317a      0x63e ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
                               0xdb633 (size before relaxing)
- .debug_str     0x000e37a1      0x31f ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_str     0x000e37b8      0x31f ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
                               0xdb32f (size before relaxing)
- .debug_str     0x000e3ac0       0xfd ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_str     0x000e3ad7       0xfd ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
                               0xdab8b (size before relaxing)
- .debug_str     0x000e3bbd      0xb44 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
+ .debug_str     0x000e3bd4      0xb44 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.o
                               0xdba20 (size before relaxing)
- .debug_str     0x000e4701       0x3b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.o
+ .debug_str     0x000e4718       0x3b ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.o
                               0xdaddf (size before relaxing)
- .debug_str     0x000e473c      0x213 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_str     0x000e4753      0x213 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
                               0xdae44 (size before relaxing)
- .debug_str     0x000e494f      0x133 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
+ .debug_str     0x000e4966      0x133 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
                               0xdac0b (size before relaxing)
- .debug_str     0x000e4a82      0x285 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc.o
+ .debug_str     0x000e4a99      0x285 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc.o
                               0xdae6c (size before relaxing)
- .debug_str     0x000e4d07      0x507 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
+ .debug_str     0x000e4d1e      0x507 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.o
                               0xdb2c1 (size before relaxing)
- .debug_str     0x000e520e      0x5e6 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+ .debug_str     0x000e5225      0x5e6 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
                               0xdb412 (size before relaxing)
 
 .comment        0x00000000       0x43
@@ -7234,10 +7234,10 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .comment       0x00000043       0x44 ./Core/Src/stm32f4xx_hal_msp.o
  .comment       0x00000043       0x44 ./Core/Src/stm32f4xx_it.o
  .comment       0x00000043       0x44 ./Core/Src/system_stm32f4xx.o
+ .comment       0x00000043       0x44 ./Drivers/API/Src/API_app.o
  .comment       0x00000043       0x44 ./Drivers/API/Src/API_bme280.o
  .comment       0x00000043       0x44 ./Drivers/API/Src/API_bme280_port.o
  .comment       0x00000043       0x44 ./Drivers/API/Src/API_clock_date.o
- .comment       0x00000043       0x44 ./Drivers/API/Src/API_fsm.o
  .comment       0x00000043       0x44 ./Drivers/API/Src/API_lcd.o
  .comment       0x00000043       0x44 ./Drivers/API/Src/API_lcd_port.o
  .comment       0x00000043       0x44 ./Drivers/API/Src/API_uart.o
@@ -7258,10 +7258,10 @@ LOAD /opt/st/stm32cubeide_1.15.1/plugins/com.st.stm32cube.ide.mcu.externaltools.
  .debug_frame   0x000000e8      0x1ec ./Core/Src/stm32f4xx_hal_msp.o
  .debug_frame   0x000002d4      0x104 ./Core/Src/stm32f4xx_it.o
  .debug_frame   0x000003d8       0x58 ./Core/Src/system_stm32f4xx.o
- .debug_frame   0x00000430      0x178 ./Drivers/API/Src/API_bme280.o
- .debug_frame   0x000005a8       0xa0 ./Drivers/API/Src/API_bme280_port.o
- .debug_frame   0x00000648       0x60 ./Drivers/API/Src/API_clock_date.o
- .debug_frame   0x000006a8      0x220 ./Drivers/API/Src/API_fsm.o
+ .debug_frame   0x00000430      0x220 ./Drivers/API/Src/API_app.o
+ .debug_frame   0x00000650      0x178 ./Drivers/API/Src/API_bme280.o
+ .debug_frame   0x000007c8       0xa0 ./Drivers/API/Src/API_bme280_port.o
+ .debug_frame   0x00000868       0x60 ./Drivers/API/Src/API_clock_date.o
  .debug_frame   0x000008c8      0x224 ./Drivers/API/Src/API_lcd.o
  .debug_frame   0x00000aec       0x7c ./Drivers/API/Src/API_lcd_port.o
  .debug_frame   0x00000b68       0xb0 ./Drivers/API/Src/API_uart.o

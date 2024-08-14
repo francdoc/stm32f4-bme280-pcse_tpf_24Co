@@ -5,6 +5,7 @@
         "stdio.h": "c",
         "api_delay.h": "c",
         "stm32f4xx_nucleo_144.h": "c",
-        "api_fsm.h": "c"
+        "api_fsm.h": "c",
+        "api_app.h": "c"
     }
 }
