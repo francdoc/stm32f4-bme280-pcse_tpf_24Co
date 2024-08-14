@@ -1,16 +1,16 @@
 #include "API_app.h"
 
+/* Global and Static Variables -------------------------------------------------------*/
+
 static tempState_t currentTempState;
-
 char strbuff[SIZE];
-
 char message_tem[SIZE];
 char message_hum[SIZE];
-
 char lcdTempStr[SIZE];
 char lcdHumStr[SIZE];
-
 char messageFsm[50];
+
+/* Function Prototypes -------------------------------------------------------------*/
 
 void APP_FSM_init(void);
 void APP_evalData(void);
@@ -26,12 +26,24 @@ void APP_FSM_update(void);
 void APP_lcdUpdateTime(void);
 void APP_updateSensorData(void);
 void APP_prepareAndDisplaySensorData(void);
+void APP_prepareAndSendUARTData(void);
 
+/* Function Definitions -------------------------------------------------------------*/
+
+/**
+ * @brief Initializes the finite state machine (FSM) to the default temperature state.
+ * @retval None
+ */
 void APP_FSM_init(void)
 {
     currentTempState = TEMP_NORMAL;
 }
 
+/**
+ * @brief Evaluates the current temperature and updates the FSM state accordingly.
+ *        Sends a corresponding state message over UART.
+ * @retval None
+ */
 void APP_evalData(void)
 {
     memset(messageFsm, ZEROVAL, sizeof(messageFsm));
@@ -51,54 +63,59 @@ void APP_evalData(void)
 }
 
 /**
- * @brief Prepares a formatted UART message with the specified tag and sensor data.
- *
- * This function takes a floating-point sensor data value, converts it to a string format with the specified tag,
- * and stores the result in the provided message buffer. The formatted string will be in the format of:
- * "Tag: <integer_part>.<fractional_part> <unit>\r\n".
- *
- * @param bme280_data: The sensor data (e.g., temperature or humidity) to be formatted.
- * @param message: Pointer to the buffer where the formatted message will be stored.
- * @param tag: Pointer to the string tag (e.g., "Temperature: " or "Humidity: ") to prepend to the data.
- * @param unit: Pointer to the unit string (e.g., "C" or "%") to append to the data.
+ * @brief Prepares a UART message with formatted sensor data.
+ * @param bme280_data: The sensor data to format.
+ * @param message: Buffer to store the formatted message.
+ * @param tag: The tag to prepend to the data (e.g., "Temperature: ").
+ * @param unit: The unit to append to the data (e.g., "C" or "%").
  * @retval None
  */
 void APP_uartPrepareData(float bme280_data, char *message, const char *tag, const char *unit)
 {
     int intPart = (int)bme280_data;
-    int fracPart = (int)((bme280_data - intPart) * 100);
+    int fracPart = (int)((bme280_data - intPart) * FRACTIONAL_MULTIPLIER);
 
     strcpy(message, tag);
-
     memset(strbuff, ZEROVAL, sizeof(strbuff));
-
     itoa(intPart, strbuff, DECIMAL);
     strcat(message, strbuff);
-
     strcat(message, ".");
-
     memset(strbuff, ZEROVAL, sizeof(strbuff));
-
     itoa(fracPart, strbuff, DECIMAL);
     strcat(message, strbuff);
-
     strcat(message, " ");
     strcat(message, unit);
     strcat(message, "\r\n");
 }
 
+/**
+ * @brief Prepares the temperature and humidity data for UART transmission.
+ * @param message_tem: Buffer to store the formatted temperature data.
+ * @param message_hum: Buffer to store the formatted humidity data.
+ * @retval None
+ */
 void APP_uartPrepareSensorTempHum(char *message_tem, char *message_hum)
 {
-	APP_uartPrepareData((float)bme280_temperature, message_tem, "Temperature: ", "C");
-	APP_uartPrepareData((float)bme280_humidity, message_hum, "Humidity: ", "%");
+    APP_uartPrepareData((float)bme280_temperature, message_tem, "Temperature: ", "C");
+    APP_uartPrepareData((float)bme280_humidity, message_hum, "Humidity: ", "%");
 }
 
+/**
+ * @brief Sends the temperature and humidity data over UART.
+ * @param message_1: The formatted temperature message to send.
+ * @param message_2: The formatted humidity message to send.
+ * @retval None
+ */
 void APP_uartDisplaySensorData(char *message_1, char *message_2)
 {
     uartSendString((uint8_t *)message_1);
     uartSendString((uint8_t *)message_2);
 }
 
+/**
+ * @brief Prepares the temperature and humidity data for LCD display.
+ * @retval None
+ */
 void APP_lcdPrepareSensorData(void)
 {
     itoa((int)bme280_temperature, lcdTempStr, DECIMAL);
@@ -110,17 +127,29 @@ void APP_lcdPrepareSensorData(void)
     itoa((int)((bme280_humidity - (int)bme280_humidity) * FRACTIONAL_MULTIPLIER), lcdHumStr + strlen(lcdHumStr), DECIMAL);
 }
 
+/**
+ * @brief Displays the prepared temperature and humidity data on the LCD.
+ * @retval None
+ */
 void APP_lcdDisplaySensorData(void)
 {
     API_LCD_DisplayTwoMsgs(APP_HUM_LCD_CURSOR_POS, APP_LCD_LINE_1, (uint8_t *)"H:", (uint8_t *)lcdHumStr);
     API_LCD_DisplayTwoMsgs(APP_TEMP_LCD_CURSOR_POS, APP_LCD_LINE_2, (uint8_t *)"T:", (uint8_t *)lcdTempStr);
 }
 
+/**
+ * @brief Displays an alarm message on the LCD in the event of a temperature alarm.
+ * @retval None
+ */
 void APP_lcdAlarm(void)
 {
     API_LCD_DisplayMsg(APP_ALARM_LCD_CURSOR_POS, APP_LCD_LINE_2, (uint8_t *)"ALARMA! ");
 }
 
+/**
+ * @brief Displays the current time on the LCD.
+ * @retval None
+ */
 void APP_lcdDisplayClock(void)
 {
     API_LCD_SetCursorLine(APP_CLOCK_CURSOR_POS, APP_LCD_LINE_1);
@@ -131,6 +160,10 @@ void APP_lcdDisplayClock(void)
     API_LCD_SendBCDData(sTime.Seconds);
 }
 
+/**
+ * @brief Displays the current date on the LCD.
+ * @retval None
+ */
 void APP_lcdDisplayDate(void)
 {
     API_LCD_SetCursorLine(APP_CLOCK_CURSOR_POS, APP_LCD_LINE_2);
@@ -141,6 +174,10 @@ void APP_lcdDisplayDate(void)
     API_LCD_SendBCDData(sDate.Year);
 }
 
+/**
+ * @brief Updates the FSM state and triggers the appropriate LCD display based on the current state.
+ * @retval None
+ */
 void APP_FSM_update(void)
 {
     APP_evalData();
@@ -157,35 +194,53 @@ void APP_FSM_update(void)
     }
 }
 
+/**
+ * @brief Updates the current time and displays it on the LCD.
+ * @retval None
+ */
 void APP_lcdUpdateTime(void)
 {
     ClockUpdateTimeDate();
     APP_lcdDisplayClock();
 }
 
-// Updates bme280_temperature and bme280_humidity global variables
+/**
+ * @brief Updates the sensor data by reading from the BME280 sensor.
+ * @retval None
+ */
 void APP_updateSensorData(void)
 {
     API_BME280_ReadAndProcess();
 }
 
+/**
+ * @brief Prepares and displays the sensor data on the LCD.
+ * @retval None
+ */
 void APP_prepareAndDisplaySensorData(void)
 {
     APP_lcdPrepareSensorData();
     APP_lcdDisplaySensorData();
 }
 
+/**
+ * @brief Prepares and sends the sensor data over UART.
+ * @retval None
+ */
 void APP_prepareAndSendUARTData(void)
 {
-    memset(message_tem, ZEROVAL, sizeof(message_tem));
+    memset(message_tem, ZEROVAL, sizeof(message_tem)); // I clean the message buffer before populating it again with the data prepare function that's next.
     memset(message_hum, ZEROVAL, sizeof(message_hum));
 
     APP_uartPrepareSensorTempHum(message_tem, message_hum);
     APP_uartDisplaySensorData(message_tem, message_hum);
 }
 
-// global function
-void APP_init()
+/**
+ * @brief Initializes all necessary components for the application, including the clock, FSM, BME280 sensor, UART, and LCD.
+ * @retval None
+ */
+void APP_init(void)
 {
     ClockInit();
     APP_FSM_init();
@@ -194,8 +249,11 @@ void APP_init()
     API_LCD_Initialize();
 }
 
-// global function
-void APP_update()
+/**
+ * @brief Main update function that handles sensor data acquisition, LCD updates, sensor data display, and FSM updates.
+ * @retval None
+ */
+void APP_update(void)
 {
     APP_updateSensorData();
     APP_lcdUpdateTime();

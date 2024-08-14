@@ -100,8 +100,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_I2C1_Init();
   MX_RTC_Init();
-
-  // Init GPIO & SPI
   MX_GPIO_Init();
   MX_SPI1_Init();
 
@@ -117,8 +115,9 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Infinite loop */
+
   /* USER CODE BEGIN WHILE */
-  while (1)
+  while (1) // system loop
   {
     /* USER CODE END WHILE */
 
@@ -242,7 +241,6 @@ static void MX_I2C1_Init(void)
 
 }
 
-
 /**
  * @brief SPI1 Initialization Function
  * @param None
@@ -274,7 +272,7 @@ void MX_SPI1_Init(void)
 
     if (HAL_SPI_Init(&hspi1) != HAL_OK)
     {
-    	API_BME280_ErrorHandler();
+    	Error_Handler();
     }
     /* USER CODE BEGIN SPI1_Init 2 */
 

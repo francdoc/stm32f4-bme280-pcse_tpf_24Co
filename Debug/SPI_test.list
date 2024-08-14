@@ -29,25 +29,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  12 .ARM.attributes 00000030  00000000  00000000  00007018  2**0
                   CONTENTS, READONLY
- 13 .debug_info   000123a4  00000000  00000000  00007048  2**0
+ 13 .debug_info   0001239e  00000000  00000000  00007048  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_abbrev 00002c3b  00000000  00000000  000193ec  2**0
+ 14 .debug_abbrev 00002c55  00000000  00000000  000193e6  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_aranges 00000fa8  00000000  00000000  0001c028  2**3
+ 15 .debug_aranges 00000fa8  00000000  00000000  0001c040  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_rnglists 00000c10  00000000  00000000  0001cfd0  2**0
+ 16 .debug_rnglists 00000c10  00000000  00000000  0001cfe8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_macro  00027b12  00000000  00000000  0001dbe0  2**0
+ 17 .debug_macro  00027b12  00000000  00000000  0001dbf8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_line   000155fa  00000000  00000000  000456f2  2**0
+ 18 .debug_line   000155fa  00000000  00000000  0004570a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .debug_str    000e5825  00000000  00000000  0005acec  2**0
+ 19 .debug_str    000e5825  00000000  00000000  0005ad04  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 20 .comment      00000043  00000000  00000000  00140511  2**0
+ 20 .comment      00000043  00000000  00000000  00140529  2**0
                   CONTENTS, READONLY
- 21 .debug_frame  00004000  00000000  00000000  00140554  2**2
+ 21 .debug_frame  00004000  00000000  00000000  0014056c  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 22 .debug_line_str 0000005b  00000000  00000000  00144554  2**0
+ 22 .debug_line_str 0000005b  00000000  00000000  0014456c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -387,8 +387,6 @@ int main(void)
  80004f8:	f000 f884 	bl	8000604 <MX_I2C1_Init>
   MX_RTC_Init();
  80004fc:	f000 f9da 	bl	80008b4 <MX_RTC_Init>
-
-  // Init GPIO & SPI
   MX_GPIO_Init();
  8000500:	f000 f92a 	bl	8000758 <MX_GPIO_Init>
   MX_SPI1_Init();
@@ -789,8 +787,8 @@ void MX_SPI1_Init(void)
  8000744:	2b00      	cmp	r3, #0
  8000746:	d001      	beq.n	800074c <MX_SPI1_Init+0x60>
     {
-    	API_BME280_ErrorHandler();
- 8000748:	f000 fee4 	bl	8001514 <API_BME280_ErrorHandler>
+    	Error_Handler();
+ 8000748:	f000 f8da 	bl	8000900 <Error_Handler>
     }
     /* USER CODE BEGIN SPI1_Init 2 */
 
@@ -1824,10 +1822,10 @@ Infinite_Loop:
 	...
 
 08000c78 <APP_FSM_init>:
-void APP_lcdUpdateTime(void);
-void APP_updateSensorData(void);
-void APP_prepareAndDisplaySensorData(void);
-
+/**
+ * @brief Initializes the finite state machine (FSM) to the default temperature state.
+ * @retval None
+ */
 void APP_FSM_init(void)
 {
  8000c78:	b480      	push	{r7}
@@ -1844,7 +1842,10 @@ void APP_FSM_init(void)
  8000c8c:	20000100 	.word	0x20000100
 
 08000c90 <APP_evalData>:
-
+ * @brief Evaluates the current temperature and updates the FSM state accordingly.
+ *        Sends a corresponding state message over UART.
+ * @retval None
+ */
 void APP_evalData(void)
 {
  8000c90:	b5b0      	push	{r4, r5, r7, lr}
@@ -1917,8 +1918,8 @@ void APP_evalData(void)
  8000d10:	08005490 	.word	0x08005490
 
 08000d14 <APP_uartPrepareData>:
- * @param tag: Pointer to the string tag (e.g., "Temperature: " or "Humidity: ") to prepend to the data.
- * @param unit: Pointer to the unit string (e.g., "C" or "%") to append to the data.
+ * @param tag: The tag to prepend to the data (e.g., "Temperature: ").
+ * @param unit: The unit to append to the data (e.g., "C" or "%").
  * @retval None
  */
 void APP_uartPrepareData(float bme280_data, char *message, const char *tag, const char *unit)
@@ -1935,7 +1936,7 @@ void APP_uartPrepareData(float bme280_data, char *message, const char *tag, cons
  8000d28:	eefd 7ae7 	vcvt.s32.f32	s15, s15
  8000d2c:	ee17 3a90 	vmov	r3, s15
  8000d30:	617b      	str	r3, [r7, #20]
-    int fracPart = (int)((bme280_data - intPart) * 100);
+    int fracPart = (int)((bme280_data - intPart) * FRACTIONAL_MULTIPLIER);
  8000d32:	697b      	ldr	r3, [r7, #20]
  8000d34:	ee07 3a90 	vmov	s15, r3
  8000d38:	eef8 7ae7 	vcvt.f32.s32	s15, s15
@@ -1951,13 +1952,11 @@ void APP_uartPrepareData(float bme280_data, char *message, const char *tag, cons
  8000d56:	6879      	ldr	r1, [r7, #4]
  8000d58:	68b8      	ldr	r0, [r7, #8]
  8000d5a:	f004 fb77 	bl	800544c <strcpy>
-
     memset(strbuff, ZEROVAL, sizeof(strbuff));
  8000d5e:	2232      	movs	r2, #50	@ 0x32
  8000d60:	2100      	movs	r1, #0
  8000d62:	4824      	ldr	r0, [pc, #144]	@ (8000df4 <APP_uartPrepareData+0xe0>)
  8000d64:	f004 fb36 	bl	80053d4 <memset>
-
     itoa(intPart, strbuff, DECIMAL);
  8000d68:	220a      	movs	r2, #10
  8000d6a:	4922      	ldr	r1, [pc, #136]	@ (8000df4 <APP_uartPrepareData+0xe0>)
@@ -1967,7 +1966,6 @@ void APP_uartPrepareData(float bme280_data, char *message, const char *tag, cons
  8000d72:	4920      	ldr	r1, [pc, #128]	@ (8000df4 <APP_uartPrepareData+0xe0>)
  8000d74:	68b8      	ldr	r0, [r7, #8]
  8000d76:	f004 fb35 	bl	80053e4 <strcat>
-
     strcat(message, ".");
  8000d7a:	68b8      	ldr	r0, [r7, #8]
  8000d7c:	f7ff fa36 	bl	80001ec <strlen>
@@ -1980,13 +1978,11 @@ void APP_uartPrepareData(float bme280_data, char *message, const char *tag, cons
  8000d8c:	460b      	mov	r3, r1
  8000d8e:	881b      	ldrh	r3, [r3, #0]
  8000d90:	8013      	strh	r3, [r2, #0]
-
     memset(strbuff, ZEROVAL, sizeof(strbuff));
  8000d92:	2232      	movs	r2, #50	@ 0x32
  8000d94:	2100      	movs	r1, #0
  8000d96:	4817      	ldr	r0, [pc, #92]	@ (8000df4 <APP_uartPrepareData+0xe0>)
  8000d98:	f004 fb1c 	bl	80053d4 <memset>
-
     itoa(fracPart, strbuff, DECIMAL);
  8000d9c:	220a      	movs	r2, #10
  8000d9e:	4915      	ldr	r1, [pc, #84]	@ (8000df4 <APP_uartPrepareData+0xe0>)
@@ -1996,7 +1992,6 @@ void APP_uartPrepareData(float bme280_data, char *message, const char *tag, cons
  8000da6:	4913      	ldr	r1, [pc, #76]	@ (8000df4 <APP_uartPrepareData+0xe0>)
  8000da8:	68b8      	ldr	r0, [r7, #8]
  8000daa:	f004 fb1b 	bl	80053e4 <strcat>
-
     strcat(message, " ");
  8000dae:	68b8      	ldr	r0, [r7, #8]
  8000db0:	f7ff fa1c 	bl	80001ec <strlen>
@@ -2038,7 +2033,10 @@ void APP_uartPrepareData(float bme280_data, char *message, const char *tag, cons
  8000e00:	080054b4 	.word	0x080054b4
 
 08000e04 <APP_uartPrepareSensorTempHum>:
-
+ * @param message_tem: Buffer to store the formatted temperature data.
+ * @param message_hum: Buffer to store the formatted humidity data.
+ * @retval None
+ */
 void APP_uartPrepareSensorTempHum(char *message_tem, char *message_hum)
 {
  8000e04:	b580      	push	{r7, lr}
@@ -2046,7 +2044,7 @@ void APP_uartPrepareSensorTempHum(char *message_tem, char *message_hum)
  8000e08:	af00      	add	r7, sp, #0
  8000e0a:	6078      	str	r0, [r7, #4]
  8000e0c:	6039      	str	r1, [r7, #0]
-	APP_uartPrepareData((float)bme280_temperature, message_tem, "Temperature: ", "C");
+    APP_uartPrepareData((float)bme280_temperature, message_tem, "Temperature: ", "C");
  8000e0e:	4b0c      	ldr	r3, [pc, #48]	@ (8000e40 <APP_uartPrepareSensorTempHum+0x3c>)
  8000e10:	edd3 7a00 	vldr	s15, [r3]
  8000e14:	4a0b      	ldr	r2, [pc, #44]	@ (8000e44 <APP_uartPrepareSensorTempHum+0x40>)
@@ -2054,7 +2052,7 @@ void APP_uartPrepareSensorTempHum(char *message_tem, char *message_hum)
  8000e18:	6878      	ldr	r0, [r7, #4]
  8000e1a:	eeb0 0a67 	vmov.f32	s0, s15
  8000e1e:	f7ff ff79 	bl	8000d14 <APP_uartPrepareData>
-	APP_uartPrepareData((float)bme280_humidity, message_hum, "Humidity: ", "%");
+    APP_uartPrepareData((float)bme280_humidity, message_hum, "Humidity: ", "%");
  8000e22:	4b0a      	ldr	r3, [pc, #40]	@ (8000e4c <APP_uartPrepareSensorTempHum+0x48>)
  8000e24:	edd3 7a00 	vldr	s15, [r3]
  8000e28:	4a09      	ldr	r2, [pc, #36]	@ (8000e50 <APP_uartPrepareSensorTempHum+0x4c>)
@@ -2076,7 +2074,10 @@ void APP_uartPrepareSensorTempHum(char *message_tem, char *message_hum)
  8000e54:	080054d0 	.word	0x080054d0
 
 08000e58 <APP_uartDisplaySensorData>:
-
+ * @param message_1: The formatted temperature message to send.
+ * @param message_2: The formatted humidity message to send.
+ * @retval None
+ */
 void APP_uartDisplaySensorData(char *message_1, char *message_2)
 {
  8000e58:	b580      	push	{r7, lr}
@@ -2098,7 +2099,10 @@ void APP_uartDisplaySensorData(char *message_1, char *message_2)
 	...
 
 08000e78 <APP_lcdPrepareSensorData>:
-
+/**
+ * @brief Prepares the temperature and humidity data for LCD display.
+ * @retval None
+ */
 void APP_lcdPrepareSensorData(void)
 {
  8000e78:	b580      	push	{r7, lr}
@@ -2199,7 +2203,10 @@ void APP_lcdPrepareSensorData(void)
  8000f74:	200001d4 	.word	0x200001d4
 
 08000f78 <APP_lcdDisplaySensorData>:
-
+/**
+ * @brief Displays the prepared temperature and humidity data on the LCD.
+ * @retval None
+ */
 void APP_lcdDisplaySensorData(void)
 {
  8000f78:	b580      	push	{r7, lr}
@@ -2225,7 +2232,10 @@ void APP_lcdDisplaySensorData(void)
  8000fa4:	080054e0 	.word	0x080054e0
 
 08000fa8 <APP_lcdAlarm>:
-
+/**
+ * @brief Displays an alarm message on the LCD in the event of a temperature alarm.
+ * @retval None
+ */
 void APP_lcdAlarm(void)
 {
  8000fa8:	b580      	push	{r7, lr}
@@ -2242,7 +2252,10 @@ void APP_lcdAlarm(void)
  8000fbc:	080054e4 	.word	0x080054e4
 
 08000fc0 <APP_lcdDisplayClock>:
-
+/**
+ * @brief Displays the current time on the LCD.
+ * @retval None
+ */
 void APP_lcdDisplayClock(void)
 {
  8000fc0:	b580      	push	{r7, lr}
@@ -2279,7 +2292,10 @@ void APP_lcdDisplayClock(void)
  8000ffc:	20000264 	.word	0x20000264
 
 08001000 <APP_lcdDisplayDate>:
-
+/**
+ * @brief Displays the current date on the LCD.
+ * @retval None
+ */
 void APP_lcdDisplayDate(void)
 {
  8001000:	b580      	push	{r7, lr}
@@ -2316,7 +2332,10 @@ void APP_lcdDisplayDate(void)
  800103c:	20000278 	.word	0x20000278
 
 08001040 <APP_FSM_update>:
-
+/**
+ * @brief Updates the FSM state and triggers the appropriate LCD display based on the current state.
+ * @retval None
+ */
 void APP_FSM_update(void)
 {
  8001040:	b580      	push	{r7, lr}
@@ -2352,7 +2371,10 @@ void APP_FSM_update(void)
  8001068:	20000100 	.word	0x20000100
 
 0800106c <APP_lcdUpdateTime>:
-
+/**
+ * @brief Updates the current time and displays it on the LCD.
+ * @retval None
+ */
 void APP_lcdUpdateTime(void)
 {
  800106c:	b580      	push	{r7, lr}
@@ -2366,8 +2388,10 @@ void APP_lcdUpdateTime(void)
  800107a:	bd80      	pop	{r7, pc}
 
 0800107c <APP_updateSensorData>:
-
-// Updates bme280_temperature and bme280_humidity global variables
+/**
+ * @brief Updates the sensor data by reading from the BME280 sensor.
+ * @retval None
+ */
 void APP_updateSensorData(void)
 {
  800107c:	b580      	push	{r7, lr}
@@ -2379,7 +2403,10 @@ void APP_updateSensorData(void)
  8001086:	bd80      	pop	{r7, pc}
 
 08001088 <APP_prepareAndDisplaySensorData>:
-
+/**
+ * @brief Prepares and displays the sensor data on the LCD.
+ * @retval None
+ */
 void APP_prepareAndDisplaySensorData(void)
 {
  8001088:	b580      	push	{r7, lr}
@@ -2393,12 +2420,15 @@ void APP_prepareAndDisplaySensorData(void)
  8001096:	bd80      	pop	{r7, pc}
 
 08001098 <APP_prepareAndSendUARTData>:
-
+/**
+ * @brief Prepares and sends the sensor data over UART.
+ * @retval None
+ */
 void APP_prepareAndSendUARTData(void)
 {
  8001098:	b580      	push	{r7, lr}
  800109a:	af00      	add	r7, sp, #0
-    memset(message_tem, ZEROVAL, sizeof(message_tem));
+    memset(message_tem, ZEROVAL, sizeof(message_tem)); // I clean the message buffer before populating it again with the data prepare function that's next.
  800109c:	2232      	movs	r2, #50	@ 0x32
  800109e:	2100      	movs	r1, #0
  80010a0:	4808      	ldr	r0, [pc, #32]	@ (80010c4 <APP_prepareAndSendUARTData+0x2c>)
@@ -2424,9 +2454,11 @@ void APP_prepareAndSendUARTData(void)
  80010c8:	2000016c 	.word	0x2000016c
 
 080010cc <APP_init>:
-
-// global function
-void APP_init()
+/**
+ * @brief Initializes all necessary components for the application, including the clock, FSM, BME280 sensor, UART, and LCD.
+ * @retval None
+ */
+void APP_init(void)
 {
  80010cc:	b580      	push	{r7, lr}
  80010ce:	af00      	add	r7, sp, #0
@@ -2445,9 +2477,11 @@ void APP_init()
  80010e6:	bd80      	pop	{r7, pc}
 
 080010e8 <APP_update>:
-
-// global function
-void APP_update()
+/**
+ * @brief Main update function that handles sensor data acquisition, LCD updates, sensor data display, and FSM updates.
+ * @retval None
+ */
+void APP_update(void)
 {
  80010e8:	b580      	push	{r7, lr}
  80010ea:	af00      	add	r7, sp, #0
