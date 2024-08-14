@@ -1,8 +1,8 @@
 #include "API_app.h"
 
 /* Global and Static Variables -------------------------------------------------------*/
-
 static tempState_t currentTempState;
+
 char strbuff[SIZE];
 char message_tem[SIZE];
 char message_hum[SIZE];
@@ -11,24 +11,24 @@ char lcdHumStr[SIZE];
 char messageFsm[50];
 
 /* Function Prototypes -------------------------------------------------------------*/
+static void APP_FSM_init(void);
+static void APP_FSM_update(void);
 
-void APP_FSM_init(void);
-void APP_FSM_update(void);
+static void APP_uartPrepareData(float bme280_data, char *message, const char *tag, const char *unit);
+static void APP_uartPrepareSensorTempHum(char *message_tem, char *message_hum);
+static void APP_uartDisplaySensorData(char *message_tem, char *message_hum);
+static void APP_lcdPrepareSensorData(void);
+static void APP_lcdDisplaySensorData(void);
+static void APP_lcdAlarm(void);
+static void APP_lcdDisplayClock(void);
+static void APP_lcdDisplayDate(void);
+static void APP_lcdUpdateTime(void);
+static void APP_updateSensorData(void);
+static void APP_prepareAndDisplaySensorData(void);
+static void APP_prepareAndSendUARTData(void);
+static void APP_FsmErrorHandler(void);
 
-void APP_uartPrepareData(float bme280_data, char *message, const char *tag, const char *unit);
-void APP_uartPrepareSensorTempHum(char *message_tem, char *message_hum);
-void APP_uartDisplaySensorData(char *message_tem, char *message_hum);
-void APP_lcdPrepareSensorData(void);
-void APP_lcdDisplaySensorData(void);
-void APP_lcdAlarm(void);
-void APP_lcdDisplayClock(void);
-void APP_lcdDisplayDate(void);
-void APP_lcdUpdateTime(void);
-void APP_updateSensorData(void);
-void APP_prepareAndDisplaySensorData(void);
-void APP_prepareAndSendUARTData(void);
-
-/* Function Definitions -------------------------------------------------------------*/
+/* Private Function Definitions --------------------------------------------- */
 
 /**
  * @brief Initializes the finite state machine (FSM) to the default temperature state.
@@ -196,7 +196,7 @@ void APP_FSM_update(void)
         break;
 
     default:
-        // Handle unexpected state, though this shouldn't occur.
+    	APP_FsmErrorHandler();
         break;
     }
 }
@@ -242,6 +242,18 @@ void APP_prepareAndSendUARTData(void)
     APP_uartPrepareSensorTempHum(message_tem, message_hum);
     APP_uartDisplaySensorData(message_tem, message_hum);
 }
+
+/**
+ * @brief Handles invalid case in APP FSM.
+ */
+static void APP_FsmErrorHandler()
+{
+    while (1)
+    {
+    }
+}
+
+/* Public Function Definitions ----------------------------------------------- */
 
 /**
  * @brief Initializes all necessary components for the application, including the clock, FSM, BME280 sensor, UART, and LCD.

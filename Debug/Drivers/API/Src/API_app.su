@@ -12,5 +12,6 @@
 ../Drivers/API/Src/API_app.c:218:6:APP_updateSensorData	8	static
 ../Drivers/API/Src/API_app.c:227:6:APP_prepareAndDisplaySensorData	8	static
 ../Drivers/API/Src/API_app.c:237:6:APP_prepareAndSendUARTData	8	static
-../Drivers/API/Src/API_app.c:250:6:APP_init	8	static
-../Drivers/API/Src/API_app.c:263:6:APP_update	8	static
+../Drivers/API/Src/API_app.c:249:13:APP_FsmErrorHandler	4	static
+../Drivers/API/Src/API_app.c:262:6:APP_init	8	static
+../Drivers/API/Src/API_app.c:275:6:APP_update	8	static
